@@ -12,6 +12,7 @@
     "test": "npm run build && node --test test/platform.test.mjs"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

@@ -1,29 +1,12 @@
 import { db, execute, queryAll, queryOne } from './models/db.js';
 import { catalog } from './catalog/index.js';
-import bcrypt from 'bcryptjs';
 import { randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 
 /** Explicit provisioning: re-running seed restores the requested default credentials. */
 export async function seedDatabase() {
-  const accounts = await Promise.all([
-    { username: 'user', password: '123', role: 'student' },
-    { username: 'student', password: 'student123', role: 'student' },
-    { username: 'admin', password: '3663', role: 'admin' },
-    { username: 'admin123', password: 'admin123', role: 'admin' },
-  ].map(async account => ({ ...account, hash: await bcrypt.hash(account.password, 10) })));
-
   db.exec('BEGIN IMMEDIATE');
   try {
-    for (const account of accounts) {
-      const existing = queryOne('SELECT id FROM users WHERE username = ?', [account.username]);
-      if (existing) {
-        execute('UPDATE users SET password_hash = ?, role = ? WHERE id = ?', [account.hash, account.role, existing.id]);
-      } else {
-        execute('INSERT INTO users (id, username, email, password_hash, role) VALUES (?, ?, ?, ?, ?)',
-          [randomUUID(), account.username, `${account.username}@platform.edu`, account.hash, account.role]);
-      }
-    }
     // Move existing catalog rows temporarily so Reverse (#12 -> #49) cannot collide.
     // IDs, submissions and progress are retained. Custom questions are never deleted.
     const slugs = new Set(catalog.map(p => p.slug));
@@ -62,7 +45,7 @@ export async function seedDatabase() {
     // All editors now start empty, including admin-authored questions.
     execute("UPDATE problems SET starter_c='', starter_cpp='', starter_java='', starter_python=''");
     db.exec('COMMIT');
-    console.log(`Seeded ${catalog.length} PDF problems and ${catalog.reduce((n,p)=>n+p.tests.length,0)} test cases. Default accounts: user / 123; admin / 3663.`);
+    console.log(`Seeded ${catalog.length} PDF problems and ${catalog.reduce((n,p)=>n+p.tests.length,0)} test cases.`);
   } catch (error) {
     db.exec('ROLLBACK');
     throw error;

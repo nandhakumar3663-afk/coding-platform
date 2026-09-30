@@ -121,24 +121,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
             {isLogin ? 'Register' : 'Sign In'}
           </button>
         </div>
-
-        <div className="mt-4 pt-4 border-t border-dark-700 text-center">
-          <p className="text-xs text-slate-500 mb-2">Quick Demo Login</p>
-          <div className="flex justify-center space-x-2">
-            <button
-              onClick={async () => { await login('student', 'student123'); onClose(); }}
-              className="px-3 py-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium hover:bg-emerald-500/20 transition-all"
-            >
-              Student Demo
-            </button>
-            <button
-              onClick={async () => { await login('admin', 'admin123'); onClose(); }}
-              className="px-3 py-1.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-medium hover:bg-amber-500/20 transition-all"
-            >
-              Admin Demo
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );

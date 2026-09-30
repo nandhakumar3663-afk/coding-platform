@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { randomBytes } from 'node:crypto';
+import { supabase, supabaseAdmin, isSupabaseConfigured } from '../lib/supabase.js';
+import { syncSupabaseUserToSqlite } from '../models/userSync.js';
+import { queryOne } from '../models/db.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || randomBytes(48).toString('hex');
 
@@ -14,11 +17,18 @@ export interface AuthRequest extends Request {
   };
 }
 
+/**
+ * Used for offline testing / backward-compatible session tokens.
+ */
 export function generateToken(user: { id: string; username: string; email: string; role: string }): string {
   return jwt.sign(user, JWT_SECRET, { expiresIn: '7d' });
 }
 
-export function authenticate(req: AuthRequest, res: Response, next: NextFunction): void {
+/**
+ * Securely authenticates incoming requests using Supabase Auth access tokens,
+ * with trusted server/database role resolution and safe local foreign-key synchronization.
+ */
+export async function authenticate(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     next();
@@ -26,13 +36,80 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
   }
 
   const token = authHeader.split(' ')[1];
+  if (!token) {
+    next();
+    return;
+  }
+
+  // 1. Primary Authentication: Secure Supabase verification
+  if (isSupabaseConfigured) {
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (user && !error) {
+        // Query trusted role & profile directly from Supabase Database (bypassing client claims)
+        const { data: profile } = await supabaseAdmin
+          .from('profiles')
+          .select('id, username, email, role, auth_provider')
+          .eq('id', user.id)
+          .single();
+
+        const role = profile?.role || 'student';
+        const username = profile?.username || user.user_metadata?.username || user.email?.split('@')[0] || 'user';
+        const email = user.email || profile?.email || '';
+
+        // Synchronize canonical Supabase UUID to SQLite for existing foreign keys
+        syncSupabaseUserToSqlite({
+          id: user.id,
+          username,
+          email,
+          role,
+          auth_provider: profile?.auth_provider || 'supabase',
+        });
+
+        req.user = {
+          id: user.id,
+          username,
+          email,
+          role,
+        };
+        next();
+        return;
+      }
+    } catch (err) {
+      // Supabase verification error, proceed to fallback check
+    }
+  }
+
+  // 2. Fallback Verification: Local JWT token (supports local offline test suite)
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
-    req.user = decoded;
-    next();
+    if (decoded && decoded.id) {
+      // Lookup trusted role from local database
+      const dbUser = queryOne<{ id: string; username: string; email: string; role: string }>(
+        'SELECT id, username, email, role FROM users WHERE id = ?',
+        [decoded.id]
+      );
+      if (dbUser) {
+        req.user = {
+          id: dbUser.id,
+          username: dbUser.username,
+          email: dbUser.email,
+          role: dbUser.role,
+        };
+      } else {
+        req.user = {
+          id: decoded.id,
+          username: decoded.username || 'user',
+          email: decoded.email || '',
+          role: decoded.role || 'student',
+        };
+      }
+    }
   } catch {
-    next();
+    // Invalid token, leave req.user undefined
   }
+
+  next();
 }
 
 export function requireAuth(req: AuthRequest, res: Response, next: NextFunction): void {

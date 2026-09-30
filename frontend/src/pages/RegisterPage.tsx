@@ -1,30 +1,69 @@
 import React, { useState } from 'react';
-import { Navigate, useLocation, Link } from 'react-router-dom';
-import { Terminal, ArrowRight, Loader2, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Navigate, Link } from 'react-router-dom';
+import { Terminal, ArrowRight, Loader2, Lock, User, Mail, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-export const LoginPage: React.FC = () => {
-  const { user, login, loginWithGoogle } = useAuth();
-  const location = useLocation();
-  const [identifier, setIdentifier] = useState('');
+export const RegisterPage: React.FC = () => {
+  const { user, register, loginWithGoogle } = useAuth();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const from = location.state?.from;
-  const destination = typeof from === 'string' && from.startsWith('/') && !from.startsWith('//') && from !== '/login' ? from : '/';
+  if (user) return <Navigate to="/" replace />;
 
-  if (user) return <Navigate to={destination} replace />;
+  const validate = (): string | null => {
+    const cleanUsername = username.trim();
+    const cleanEmail = email.trim();
 
-  const submit = async (event: React.FormEvent) => {
+    if (!cleanUsername || !cleanEmail || !password || !confirmPassword) {
+      return 'All fields are required.';
+    }
+
+    if (cleanUsername.length < 3 || cleanUsername.length > 30) {
+      return 'Username must be between 3 and 30 characters.';
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(cleanUsername)) {
+      return 'Username can only contain letters, numbers, and underscores.';
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      return 'Please enter a valid email address.';
+    }
+
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters.';
+    }
+
+    if (password !== confirmPassword) {
+      return 'Passwords do not match.';
+    }
+
+    return null;
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError('');
+    setSuccessMessage('');
+
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setBusy(true);
     try {
-      await login(identifier.trim(), password);
+      await register(username.trim(), email.trim(), password);
+      setSuccessMessage('Account created successfully! Redirecting...');
     } catch (err: any) {
-      setError(err?.message || 'Invalid credentials. Please verify your details.');
+      setError(err?.message || 'Failed to create account. Please try again.');
     } finally {
       setBusy(false);
     }
@@ -34,9 +73,6 @@ export const LoginPage: React.FC = () => {
     setError('');
     setBusy(true);
     try {
-      if (from && destination !== '/') {
-        sessionStorage.setItem('oauth_return_to', destination);
-      }
       await loginWithGoogle();
     } catch (err: any) {
       setError(err?.message || 'Failed to initialize Google sign-in.');
@@ -62,26 +98,26 @@ export const LoginPage: React.FC = () => {
             </div>
 
             <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight tracking-tight">
-              A blank editor.<br />
+              Join the arena.<br />
               <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-                A new challenge.
+                Benchmark your skills.
               </span>
             </h1>
 
             <p className="text-slate-400 mt-4 text-sm leading-relaxed">
-              Step into an industry-grade coding arena. Write, run, and benchmark your code in C, C++, Java, and Python with automated hidden test evaluation.
+              Create your account to solve challenging algorithmic problems, submit solutions, and track your progress across C, C++, Java, and Python.
             </p>
           </div>
 
           <div className="space-y-4 pt-6 border-t border-dark-700/60">
             <div className="grid grid-cols-2 gap-4">
               <div className="p-3 rounded-xl bg-dark-850/60 border border-dark-700/60">
-                <strong className="block text-2xl font-bold text-white">109</strong>
-                <span className="text-xs text-slate-400">Curated Problems</span>
+                <strong className="block text-2xl font-bold text-white">100% Free</strong>
+                <span className="text-xs text-slate-400">Cloud Evaluation</span>
               </div>
               <div className="p-3 rounded-xl bg-dark-850/60 border border-dark-700/60">
-                <strong className="block text-2xl font-bold text-white">4</strong>
-                <span className="text-xs text-slate-400">Core Compilers</span>
+                <strong className="block text-2xl font-bold text-white">Real-Time</strong>
+                <span className="text-xs text-slate-400">Hidden Test Cases</span>
               </div>
             </div>
 
@@ -98,8 +134,8 @@ export const LoginPage: React.FC = () => {
         <section className="p-8 md:p-12 flex flex-col justify-between">
           <div>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-white tracking-tight">Welcome Back</h2>
-              <p className="text-xs text-slate-400 mt-1">Sign in with your email or username to access your workspace.</p>
+              <h2 className="text-2xl font-bold text-white tracking-tight">Create Account</h2>
+              <p className="text-xs text-slate-400 mt-1">Sign up with your credentials or continue with Google.</p>
             </div>
 
             {error && (
@@ -109,49 +145,67 @@ export const LoginPage: React.FC = () => {
               </div>
             )}
 
-            <form onSubmit={submit} className="space-y-4">
+            {successMessage && (
+              <div role="status" className="mb-5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300 flex items-center space-x-2 animate-slide-down">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>{successMessage}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
-                <label htmlFor="identifier" className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  Email or Username
+                <label htmlFor="reg-username" className="block text-xs font-semibold text-slate-300 mb-1">
+                  Username
                 </label>
                 <div className="relative">
                   <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
-                    id="identifier"
+                    id="reg-username"
                     autoComplete="username"
                     autoFocus
                     required
-                    value={identifier}
-                    onChange={e => setIdentifier(e.target.value)}
-                    placeholder="name@example.com or username"
-                    className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                    placeholder="alphanumeric, e.g. dev_pro"
+                    className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label htmlFor="password" className="block text-xs font-semibold text-slate-300">
-                    Password
-                  </label>
-                  <Link
-                    to="/forgot-password"
-                    className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
-                  >
-                    Forgot password?
-                  </Link>
+                <label htmlFor="reg-email" className="block text-xs font-semibold text-slate-300 mb-1">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <input
+                    id="reg-email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                  />
                 </div>
+              </div>
+
+              <div>
+                <label htmlFor="reg-password" className="block text-xs font-semibold text-slate-300 mb-1">
+                  Password
+                </label>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
-                    id="password"
+                    id="reg-password"
                     type={showPassword ? 'text' : 'password'}
-                    autoComplete="current-password"
+                    autoComplete="new-password"
                     required
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-10 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                    placeholder="At least 6 characters"
+                    className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-10 py-2 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
                   />
                   <button
                     type="button"
@@ -164,18 +218,37 @@ export const LoginPage: React.FC = () => {
                 </div>
               </div>
 
+              <div>
+                <label htmlFor="reg-confirm-password" className="block text-xs font-semibold text-slate-300 mb-1">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <input
+                    id="reg-confirm-password"
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="new-password"
+                    required
+                    value={confirmPassword}
+                    onChange={e => setConfirmPassword(e.target.value)}
+                    placeholder="Repeat password"
+                    className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                  />
+                </div>
+              </div>
+
               <button
                 type="submit"
                 disabled={busy}
-                className="w-full mt-2 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-50 px-4 py-2.5 text-sm text-white font-semibold shadow-lg shadow-indigo-600/25 transition-all active:scale-[0.99]"
+                className="w-full mt-3 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-50 px-4 py-2.5 text-sm text-white font-semibold shadow-lg shadow-indigo-600/25 transition-all active:scale-[0.99]"
               >
                 {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-                <span>{busy ? 'Authenticating…' : 'Sign in'}</span>
+                <span>{busy ? 'Creating Account…' : 'Sign Up'}</span>
               </button>
             </form>
 
             {/* Divider */}
-            <div className="relative my-6">
+            <div className="relative my-5">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-dark-700" />
               </div>
@@ -216,13 +289,13 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {/* Footer Navigation */}
-          <div className="mt-8 pt-5 border-t border-dark-700/60 text-center text-xs text-slate-400">
-            Don't have an account?{' '}
+          <div className="mt-6 pt-4 border-t border-dark-700/60 text-center text-xs text-slate-400">
+            Already have an account?{' '}
             <Link
-              to="/register"
+              to="/login"
               className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
             >
-              Create account
+              Sign in
             </Link>
           </div>
         </section>

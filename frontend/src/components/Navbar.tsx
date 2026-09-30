@@ -89,15 +89,28 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Section: Quick Switcher & User Profile */}
+        {/* Right Section: User Profile & Actions */}
         <div className="flex items-center space-x-3">
           {/* User status */}
           {user ? (
             <div className="flex items-center space-x-2.5 pl-2 border-l border-dark-700">
               <div className="flex items-center space-x-2 bg-dark-850 border border-dark-700 px-3 py-1.5 rounded-lg">
-                <div className={`w-2 h-2 rounded-full ${user.role === 'admin' ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`} />
+                {user.avatar_url ? (
+                  <img
+                    src={user.avatar_url}
+                    alt={user.username}
+                    referrerPolicy="no-referrer"
+                    className="w-5 h-5 rounded-full object-cover border border-dark-600"
+                  />
+                ) : (
+                  <div className={`w-2 h-2 rounded-full ${user.role === 'admin' ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`} />
+                )}
                 <span className="text-xs font-semibold text-slate-200">{user.username}</span>
-                <span className="text-[10px] text-slate-400 uppercase font-mono">({user.role})</span>
+                <span className={`text-[10px] uppercase font-mono px-1.5 py-0.5 rounded ${
+                  user.role === 'admin' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'text-slate-400'
+                }`}>
+                  {user.role}
+                </span>
               </div>
               <button
                 onClick={logout}

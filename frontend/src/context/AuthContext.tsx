@@ -1,69 +1,326 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { api, getAuthToken, setAuthToken, removeAuthToken } from '../api/client.js';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import type { User as SupabaseUser, Session } from '@supabase/supabase-js';
+import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
+import { api, setAuthToken, removeAuthToken, getAuthToken } from '../api/client.js';
 
-export interface User {
+export interface UserProfile {
   id: string;
   username: string;
   email: string;
+  full_name?: string | null;
+  avatar_url?: string | null;
   role: 'student' | 'admin';
+  auth_provider?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
+// User interface backwards-compatible with existing components
+export interface User extends UserProfile {}
+
 interface AuthContextType {
-  user: User | null;
+  user: UserProfile | null;
+  profile: UserProfile | null;
+  session: Session | null;
   loading: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (identifier: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  loginWithGoogle: () => Promise<void>;
+  logout: () => Promise<void>;
   isAdmin: boolean;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const token = getAuthToken();
-    if (token) {
-      api.getMe()
-        .then((res) => setUser(res.user))
-        .catch(() => {
-          removeAuthToken();
-          setUser(null);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+  const loadProfile = useCallback(async (sbUser: SupabaseUser | null): Promise<UserProfile | null> => {
+    if (!sbUser) return null;
+
+    try {
+      // 1. Try backend /api/auth/me which validates token, verifies role, and syncs to SQLite for judge
+      const res = await api.getMe();
+      if (res?.user) {
+        return {
+          id: res.user.id || sbUser.id,
+          username: res.user.username || sbUser.user_metadata?.username || sbUser.email?.split('@')[0] || 'user',
+          email: res.user.email || sbUser.email || '',
+          full_name: res.user.full_name || sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || null,
+          avatar_url: res.user.avatar_url || sbUser.user_metadata?.avatar_url || sbUser.user_metadata?.picture || null,
+          role: res.user.role === 'admin' ? 'admin' : 'student',
+          auth_provider: res.user.auth_provider || sbUser.app_metadata?.provider || 'supabase',
+        };
+      }
+    } catch {
+      // Backend request error or offline fallback - query Supabase profiles directly
+      if (isSupabaseConfigured) {
+        try {
+          const { data } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', sbUser.id)
+            .maybeSingle();
+
+          if (data) {
+            return {
+              id: data.id,
+              username: data.username || sbUser.user_metadata?.username || sbUser.email?.split('@')[0] || 'user',
+              email: data.email || sbUser.email || '',
+              full_name: data.full_name || sbUser.user_metadata?.full_name || null,
+              avatar_url: data.avatar_url || sbUser.user_metadata?.avatar_url || null,
+              role: data.role === 'admin' ? 'admin' : 'student',
+              auth_provider: data.auth_provider || sbUser.app_metadata?.provider || 'supabase',
+              created_at: data.created_at,
+              updated_at: data.updated_at,
+            };
+          }
+        } catch {
+          // ignore
+        }
+      }
     }
+
+    // 2. Fallback to Supabase metadata if database record hasn't loaded yet
+    const meta = sbUser.user_metadata || {};
+    return {
+      id: sbUser.id,
+      username: meta.username || sbUser.email?.split('@')[0] || 'user',
+      email: sbUser.email || '',
+      full_name: meta.full_name || meta.name || null,
+      avatar_url: meta.avatar_url || meta.picture || null,
+      role: (meta.role === 'admin' ? 'admin' : 'student') as 'student' | 'admin',
+      auth_provider: sbUser.app_metadata?.provider || 'email',
+    };
   }, []);
 
-  const login = async (username: string, password: string) => {
-    const res = await api.login({ username, password });
-    setAuthToken(res.token);
-    setUser(res.user);
+  const refreshProfile = useCallback(async () => {
+    if (session?.user) {
+      const p = await loadProfile(session.user);
+      setProfile(p);
+      setUser(p);
+    } else if (!isSupabaseConfigured && getAuthToken()) {
+      try {
+        const res = await api.getMe();
+        if (res.user) {
+          setProfile(res.user);
+          setUser(res.user);
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }, [session, loadProfile]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const initAuth = async () => {
+      try {
+        if (isSupabaseConfigured) {
+          const { data: { session: activeSession } } = await supabase.auth.getSession();
+          if (activeSession && isMounted) {
+            setSession(activeSession);
+            setAuthToken(activeSession.access_token);
+            const p = await loadProfile(activeSession.user);
+            if (isMounted) {
+              setProfile(p);
+              setUser(p);
+            }
+          }
+        } else {
+          // Local/offline test token support
+          const token = getAuthToken();
+          if (token) {
+            const res = await api.getMe();
+            if (isMounted && res.user) {
+              setProfile(res.user);
+              setUser(res.user);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Auth initialization warning:', err);
+        if (isMounted) {
+          removeAuthToken();
+          setUser(null);
+          setProfile(null);
+          setSession(null);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    initAuth();
+
+    let subscription: { unsubscribe: () => void } | null = null;
+    if (isSupabaseConfigured) {
+      const { data } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+        if (!isMounted) return;
+        if (event === 'SIGNED_OUT' || !newSession) {
+          setSession(null);
+          setUser(null);
+          setProfile(null);
+          removeAuthToken();
+          setLoading(false);
+        } else if (newSession) {
+          setSession(newSession);
+          setAuthToken(newSession.access_token);
+          const p = await loadProfile(newSession.user);
+          if (isMounted) {
+            setProfile(p);
+            setUser(p);
+            setLoading(false);
+          }
+        }
+      });
+      subscription = data.subscription;
+    }
+
+    return () => {
+      isMounted = false;
+      subscription?.unsubscribe();
+    };
+  }, [loadProfile]);
+
+  const login = async (identifier: string, password: string) => {
+    const cleanId = identifier.trim();
+
+    if (isSupabaseConfigured) {
+      if (cleanId.includes('@')) {
+        // Direct Supabase email login
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: cleanId.toLowerCase(),
+          password,
+        });
+
+        if (error) {
+          throw new Error(error.message || 'Invalid credentials');
+        }
+
+        if (data.session) {
+          setSession(data.session);
+          setAuthToken(data.session.access_token);
+          const p = await loadProfile(data.session.user);
+          setProfile(p);
+          setUser(p);
+        }
+      } else {
+        // Secure username resolution via backend without exposing user emails
+        const res = await api.loginUsername({ username: cleanId, password });
+        if (res.session) {
+          await supabase.auth.setSession(res.session);
+          setSession(res.session);
+        }
+        if (res.token) {
+          setAuthToken(res.token);
+        }
+        if (res.user) {
+          setProfile(res.user);
+          setUser(res.user);
+        }
+      }
+    } else {
+      // Local fallback for offline/development test runner
+      const res = await api.login({ username: cleanId, password });
+      if (res.token) {
+        setAuthToken(res.token);
+      }
+      setProfile(res.user);
+      setUser(res.user);
+    }
   };
 
   const register = async (username: string, email: string, password: string) => {
-    const res = await api.register({ username, email, password });
-    setAuthToken(res.token);
-    setUser(res.user);
+    const cleanUsername = username.trim();
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (isSupabaseConfigured) {
+      const { data, error } = await supabase.auth.signUp({
+        email: cleanEmail,
+        password,
+        options: {
+          data: {
+            username: cleanUsername,
+            full_name: cleanUsername,
+          },
+        },
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Registration failed');
+      }
+
+      if (data.session) {
+        setSession(data.session);
+        setAuthToken(data.session.access_token);
+        const p = await loadProfile(data.session.user);
+        setProfile(p);
+        setUser(p);
+      }
+    } else {
+      // Local fallback for offline/test runner
+      const res = await api.register({ username: cleanUsername, email: cleanEmail, password });
+      if (res.token) {
+        setAuthToken(res.token);
+      }
+      setProfile(res.user);
+      setUser(res.user);
+    }
   };
 
-  const logout = () => {
-    removeAuthToken();
-    setUser(null);
+  const loginWithGoogle = async () => {
+    if (!isSupabaseConfigured) {
+      throw new Error('Supabase is not configured. Please provide VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+    }
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) {
+      throw new Error(error.message || 'Google sign-in failed');
+    }
+  };
+
+  const logout = async () => {
+    try {
+      if (isSupabaseConfigured) {
+        await supabase.auth.signOut();
+      }
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      removeAuthToken();
+      setSession(null);
+      setUser(null);
+      setProfile(null);
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        profile,
+        session,
         loading,
         login,
         register,
+        loginWithGoogle,
         logout,
-        isAdmin: user?.role === 'admin',
+        isAdmin: (profile?.role === 'admin' || user?.role === 'admin'),
+        refreshProfile,
       }}
     >
       {children}

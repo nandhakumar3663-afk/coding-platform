@@ -12,7 +12,16 @@ database/*.db-shm
 
 # Environment
 .env
-.env.local
+.env.*
+*.env
+*.env.*
+frontend/.env
+frontend/.env.*
+backend/.env
+backend/.env.*
+!.env.example
+!frontend/.env.example
+!backend/.env.example
 
 # OS
 .DS_Store

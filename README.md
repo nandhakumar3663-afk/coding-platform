@@ -51,16 +51,99 @@ npm start
 For detailed setup, Docker deployment, and connecting to the backend judge, see [docs/deploy-vercel.md](docs/deploy-vercel.md).
 
 
-## Login
+## Supabase & Google Authentication Setup
 
-| Username | Password | Role |
-|---|---|---|
-| user | 123 | Student |
-| admin | 3663 | Administrator |
+AlgoSphere uses **Supabase Auth** and **Supabase PostgreSQL** for cloud authentication, supporting:
+- Email/password registration (`/register`) with strict validation
+- Email or Username login (`/login`)
+- "Continue with Google" OAuth sign-in (`/auth/callback`)
+- Secure password recovery (`/forgot-password` and `/reset-password`)
+- Persistent sessions across browser refreshes
+- Student and Administrator role enforcement via PostgreSQL Row Level Security (RLS)
 
-Sign in through `/login`. There is no automatic login or one-click role switching. Admin routes require an admin token on the backend as well as the frontend. Logging out removes the stored token. Registration, if used through the existing API, always creates a student.
+### 1. Create a Supabase Project
+1. Go to [supabase.com](https://supabase.com) and create a free project.
+2. Note your project's **Project URL**, **anon/public API key**, and **service_role secret key** (found in Project Settings -> API).
 
-Running `npm run seed` deliberately restores these two default accounts and their passwords, including on an existing database. Passwords are bcrypt-hashed. Set a private `JWT_SECRET` in `backend/.env` to preserve sessions across server restarts; otherwise the server creates a random process-local signing key. Never commit `.env`.
+### 2. Run Database Migration
+1. In your Supabase Dashboard, open the **SQL Editor**.
+2. Open and run the contents of [`database/supabase-auth.sql`](database/supabase-auth.sql).
+3. This creates:
+   - The `profiles` table referencing `auth.users(id)`
+   - Row Level Security (RLS) policies allowing users to view and update their own profiles
+   - Security triggers preventing client-side role escalation (every new account is strictly created with `role = 'student'`)
+   - Automatic profile generation triggers for both Email and Google OAuth signups (including collision-safe username generation)
+
+### 3. Enable Supabase Authentication Providers
+1. In Supabase Dashboard, navigate to **Authentication** -> **Providers**.
+2. **Email Provider:**
+   - Ensure **Email** is enabled.
+   - Configure email confirmations according to your preference (enabled by default).
+3. **Google Provider:**
+   - Enable the **Google** provider.
+   - Keep this tab open; you will paste your Google **Client ID** and **Client Secret** here in step 4.
+   - Note the **Callback URL (for OAuth)** shown by Supabase (typically `https://<YOUR-PROJECT-REF>.supabase.co/auth/v1/callback`).
+
+### 4. Create & Configure Google Cloud OAuth
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new Google Cloud Project (or select an existing one).
+3. Configure the **OAuth consent screen**:
+   - User Type: **External**
+   - App Name: `AlgoSphere Judge` (or your app name)
+   - User support email and developer contact email: your email
+   - Scopes: `.../auth/userinfo.email`, `.../auth/userinfo.profile`, `openid`
+4. Create OAuth Credentials:
+   - Go to **Credentials** -> **Create Credentials** -> **OAuth client ID**.
+   - Application type: **Web application**.
+   - Name: `AlgoSphere Web Client`.
+   - **Authorized redirect URIs**: Add the exact Callback URL from Supabase (e.g. `https://<YOUR-PROJECT-REF>.supabase.co/auth/v1/callback`).
+5. Copy your **Client ID** and **Client Secret**, return to your Supabase Dashboard under **Authentication -> Providers -> Google**, paste them, and click **Save**.
+
+### 5. Configure Supabase Redirect URLs
+In Supabase Dashboard, navigate to **Authentication** -> **URL Configuration**:
+1. **Site URL:** Set to `http://localhost:5173` (for local development) or your production domain (e.g. `https://<YOUR-APP>.vercel.app`).
+2. **Redirect URLs:** Add both:
+   - `http://localhost:5173/**`
+   - `https://<YOUR-APP>.vercel.app/**`
+
+### 6. Environment Variables Configuration
+
+#### Frontend (`frontend/.env`)
+Create `frontend/.env` (see [`frontend/.env.example`](frontend/.env.example)):
+```env
+VITE_API_URL=http://localhost:4000
+VITE_SUPABASE_URL=https://<YOUR-PROJECT-REF>.supabase.co
+VITE_SUPABASE_ANON_KEY=<YOUR-SUPABASE-ANON-KEY>
+```
+> **Security Warning:** Never expose the service role key to the frontend. Only use `VITE_SUPABASE_ANON_KEY`.
+
+#### Backend (`backend/.env`)
+Create `backend/.env` (see [`backend/.env.example`](backend/.env.example)):
+```env
+PORT=4000
+SUPABASE_URL=https://<YOUR-PROJECT-REF>.supabase.co
+SUPABASE_ANON_KEY=<YOUR-SUPABASE-ANON-KEY>
+SUPABASE_SERVICE_ROLE_KEY=<YOUR-SUPABASE-SERVICE-ROLE-KEY>
+JWT_SECRET=<RANDOM-32-CHAR-SECRET>
+```
+
+#### Vercel Environment Variables
+In your Vercel Project Dashboard (Settings -> Environment Variables):
+- `VITE_API_URL`: Your backend API URL (e.g. `https://<YOUR-BACKEND>.onrender.com`)
+- `VITE_SUPABASE_URL`: `https://<YOUR-PROJECT-REF>.supabase.co`
+- `VITE_SUPABASE_ANON_KEY`: `<YOUR-SUPABASE-ANON-KEY>`
+
+### 7. Promoting an Account to Administrator
+All new accounts are strictly assigned the `student` role by database trigger. To promote an account to administrator, execute the following SQL in your Supabase SQL Editor:
+
+```sql
+UPDATE profiles
+SET role = 'admin'
+WHERE email = 'YOUR_EMAIL@EXAMPLE.COM';
+```
+*(Replace `YOUR_EMAIL@EXAMPLE.COM` with your registered email address).*
+
+Admin accounts gain access to `/admin` (problem authoring, test case management, and test regeneration). Unauthorized users are redirected away.
 
 ## Editor and judge
 

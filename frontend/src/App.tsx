@@ -6,8 +6,11 @@ import { ProblemList } from './pages/ProblemList';
 import { ProblemPage } from './pages/ProblemPage';
 import { Dashboard } from './pages/Dashboard';
 import { AdminPanel } from './pages/AdminPanel';
-
 import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
+import { AuthCallback } from './pages/AuthCallback';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
 
 const ProtectedRoute: React.FC<{ admin?: boolean }> = ({ admin }) => {
   const { user, loading, isAdmin } = useAuth();
@@ -26,9 +29,13 @@ const App: React.FC = () => {
           <Navbar />
           <main className="flex-1">
             <Routes>
-              <Route path="/login" element={<LoginPage />} />
               <Route path="/" element={<ProblemList />} />
               <Route path="/problem/:slug" element={<ProblemPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
               </Route>

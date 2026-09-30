@@ -1,5 +1,19 @@
+import { supabase } from '../lib/supabase.js';
+
 const RAW_API_URL = (import.meta.env.VITE_API_URL as string | undefined) || '';
 const BASE_URL = RAW_API_URL ? `${RAW_API_URL.replace(/\/$/, '')}/api` : '/api';
+
+export async function getAccessToken(): Promise<string | null> {
+  try {
+    const { data } = await supabase.auth.getSession();
+    if (data?.session?.access_token) {
+      return data.session.access_token;
+    }
+  } catch {
+    // fallback to stored token
+  }
+  return localStorage.getItem('algo_token');
+}
 
 export function getAuthToken(): string | null {
   return localStorage.getItem('algo_token');
@@ -14,7 +28,7 @@ export function removeAuthToken(): void {
 }
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const token = getAuthToken();
+  const token = await getAccessToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
@@ -41,13 +55,19 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 export const api = {
   // Auth
   login: (credentials: { username: string; password: string }) =>
-    request<{ user: any; token: string }>('/auth/login', {
+    request<{ user: any; token: string; session?: any }>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    }),
+
+  loginUsername: (credentials: { username: string; password: string }) =>
+    request<{ user: any; token: string; session?: any }>('/auth/login-username', {
       method: 'POST',
       body: JSON.stringify(credentials),
     }),
 
   register: (userData: { username: string; email: string; password: string }) =>
-    request<{ user: any; token: string }>('/auth/register', {
+    request<{ user: any; token: string; session?: any }>('/auth/register', {
       method: 'POST',
       body: JSON.stringify(userData),
     }),

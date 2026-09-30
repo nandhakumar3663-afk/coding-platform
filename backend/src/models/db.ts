@@ -27,8 +27,9 @@ if (fs.existsSync(schemaPath)) {
       id TEXT PRIMARY KEY,
       username TEXT UNIQUE NOT NULL,
       email TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL,
+      password_hash TEXT,
       role TEXT DEFAULT 'student',
+      auth_provider TEXT DEFAULT 'supabase',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
     CREATE TABLE IF NOT EXISTS problems (
@@ -117,6 +118,13 @@ if (fs.existsSync(schemaPath)) {
     );
   `;
   db.exec(fallbackSchema);
+}
+
+// Safely ensure auth_provider column exists on existing databases
+try {
+  db.exec("ALTER TABLE users ADD COLUMN auth_provider TEXT DEFAULT 'supabase';");
+} catch {
+  // column already exists
 }
 
 // Database helper functions

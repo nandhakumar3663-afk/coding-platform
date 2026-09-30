@@ -4,8 +4,9 @@ CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
   email TEXT UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL,
+  password_hash TEXT,
   role TEXT DEFAULT 'student',
+  auth_provider TEXT DEFAULT 'supabase',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
