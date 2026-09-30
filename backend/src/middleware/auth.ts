@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { randomBytes } from 'node:crypto';
-import { supabase, supabaseAdmin, isSupabaseConfigured, isSupabaseAdminConfigured } from '../lib/supabase.js';
+import { supabase, createUserScopedSupabaseClient, isSupabaseConfigured } from '../lib/supabase.js';
 import { syncSupabaseUserToSqlite } from '../models/userSync.js';
 import { queryOne } from '../models/db.js';
 
@@ -46,14 +46,9 @@ export async function authenticate(req: AuthRequest, res: Response, next: NextFu
     try {
       const { data: { user }, error } = await supabase.auth.getUser(token);
       if (user && !error) {
-        if (!isSupabaseAdminConfigured) {
-          console.error('Supabase is configured but SUPABASE_SERVICE_ROLE_KEY is missing; refusing authenticated request.');
-          next();
-          return;
-        }
-
-        // Query trusted role & profile directly from Supabase Database (bypassing client claims)
-        const { data: profile, error: profileError } = await supabaseAdmin
+        // Read the authenticated user's own trusted profile through RLS.
+        const userClient = createUserScopedSupabaseClient(token);
+        const { data: profile, error: profileError } = await userClient
           .from('profiles')
           .select('id, username, email, role, auth_provider')
           .eq('id', user.id)
