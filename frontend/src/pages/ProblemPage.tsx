@@ -2,11 +2,13 @@ import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { api } from '../api/client';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../context/AuthContext';
 import {
   Play, Send, RotateCcw, ChevronDown, Clock, HardDrive, CheckCircle2,
   XCircle, AlertTriangle, Loader2, FileCode2, BookOpen, Tag, Lightbulb,
   Terminal, ChevronLeft, ChevronRight, Shuffle, Search, X, Check,
-  Layers, ArrowLeft
+  Layers, ArrowLeft, Save
 } from 'lucide-react';
 
 const LANG_OPTIONS = [
@@ -34,6 +36,7 @@ const diffBadge: Record<string, string> = {
 export const ProblemPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [problem, setProblem] = useState<any>(null);
   const [loadError, setLoadError] = useState('');
@@ -46,6 +49,9 @@ export const ProblemPage: React.FC = () => {
   const [resultTab, setResultTab] = useState<'result' | 'custom'>('result');
   const [customInput, setCustomInput] = useState('');
   const [panelSplit, setPanelSplit] = useState(45); // percentage for left panel
+  const [savingCode, setSavingCode] = useState(false);
+  const [draftState, setDraftState] = useState<'idle' | 'loading' | 'dirty' | 'saved' | 'error'>('idle');
+  const [draftMessage, setDraftMessage] = useState('');
 
   // Top Questions Navigation State
   const [allProblems, setAllProblems] = useState<any[]>([]);
@@ -80,6 +86,53 @@ export const ProblemPage: React.FC = () => {
     }
     return () => { cancelled = true; };
   }, [slug]);
+
+  // Load the signed-in user's saved draft for this problem + language.
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!slug) return;
+
+    if (!user) {
+      setDraftState('idle');
+      setDraftMessage('');
+      return;
+    }
+
+    setDraftState('loading');
+    setDraftMessage('Loading saved code...');
+
+    supabase
+      .from('saved_code')
+      .select('code, updated_at')
+      .eq('user_id', user.id)
+      .eq('problem_slug', slug)
+      .eq('language', language)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled) return;
+
+        if (error) {
+          setDraftState('error');
+          setDraftMessage('Could not load saved code');
+          return;
+        }
+
+        if (data) {
+          setCode(data.code || '');
+          setDraftState('saved');
+          setDraftMessage('Saved code restored');
+        } else {
+          setCode('');
+          setDraftState('idle');
+          setDraftMessage('');
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, language, user?.id]);
 
   // Auto-scroll active question pill into view in the top bar
   useEffect(() => {
@@ -126,7 +179,54 @@ export const ProblemPage: React.FC = () => {
     setResult(null);
   }, []);
 
-  const handleCodeChange = (value: string | undefined) => setCode(value || '');
+  const handleCodeChange = (value: string | undefined) => {
+    setCode(value || '');
+    if (draftState !== 'loading') {
+      setDraftState('dirty');
+      setDraftMessage(user ? 'Unsaved changes' : 'Sign in to save');
+    }
+  };
+
+  const handleSaveCode = async () => {
+    if (!slug) return;
+
+    if (!user) {
+      navigate('/login', { state: { from: `/problem/${slug}` } });
+      return;
+    }
+
+    setSavingCode(true);
+    setDraftState('loading');
+    setDraftMessage('Saving...');
+
+    try {
+      const { error } = await supabase
+        .from('saved_code')
+        .upsert(
+          {
+            user_id: user.id,
+            problem_slug: slug,
+            language,
+            code,
+            updated_at: new Date().toISOString(),
+          },
+          {
+            onConflict: 'user_id,problem_slug,language',
+          }
+        );
+
+      if (error) throw error;
+
+      setDraftState('saved');
+      setDraftMessage('Saved');
+    } catch (err) {
+      console.error('Save code failed:', err);
+      setDraftState('error');
+      setDraftMessage('Save failed');
+    } finally {
+      setSavingCode(false);
+    }
+  };
 
   const handleRun = async () => {
     if (!slug) return;
@@ -514,6 +614,28 @@ export const ProblemPage: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center space-x-2">
+              {draftMessage && (
+                <span className={`hidden sm:inline text-[11px] ${
+                  draftState === 'saved'
+                    ? 'text-emerald-400'
+                    : draftState === 'error'
+                    ? 'text-rose-400'
+                    : draftState === 'dirty'
+                    ? 'text-amber-400'
+                    : 'text-slate-500'
+                }`}>
+                  {draftMessage}
+                </span>
+              )}
+              <button
+                onClick={handleSaveCode}
+                disabled={savingCode || draftState === 'loading'}
+                className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-xs text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 transition-all disabled:opacity-50"
+                title={user ? 'Save code for this problem and language' : 'Sign in to save your code'}
+              >
+                {savingCode ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                <span className="hidden sm:inline">{savingCode ? 'Saving...' : 'Save'}</span>
+              </button>
               <button
                 onClick={handleReset}
                 className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-dark-850 border border-dark-700 text-xs text-slate-400 hover:text-slate-200 hover:border-dark-600 transition-all"
