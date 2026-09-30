@@ -60,10 +60,11 @@ export abstract class BaseRunner {
       let timedOut = false;
       let memoryUsedKb = 0;
 
-      // Ensure PATH includes the micromamba env bin
+      // Ensure PATH includes the micromamba env bin if present
+      const mambaPath = fs.existsSync('/home/nandha/tools/env/bin') ? '/home/nandha/tools/env/bin:' : '';
       const env = {
         ...process.env,
-        PATH: `/home/nandha/tools/env/bin:${process.env.PATH || ''}`,
+        PATH: `${mambaPath}${process.env.PATH || ''}`,
       };
 
       const child = spawn(command, args, {
