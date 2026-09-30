@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Database
+database/*.db
+database/*.db-wal
+database/*.db-shm
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary
+*.tmp
+/tmp/
+
+# PDF source (large binary)
+*.pdf
+
+# Extracted text
+pdf_text.txt
+
+# micromamba tools (local install, not portable)
+# /home/nandha/tools/
