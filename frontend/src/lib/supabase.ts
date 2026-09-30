@@ -1,19 +1,22 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL as string | undefined) || '';
-const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined) || '';
+const DEFAULT_SUPABASE_URL = 'https://dzrmxbiewdjexljinnsv.supabase.co';
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_DigKsra1Km8UKJpckUFpqQ_FSF4YIIO';
 
-export const isSupabaseConfigured: boolean = Boolean(
-  supabaseUrl &&
-  supabaseAnonKey &&
-  !supabaseUrl.includes('your-project') &&
-  !supabaseAnonKey.includes('your-anon-key')
-);
+const supabaseUrl =
+  (import.meta.env.VITE_SUPABASE_URL as string | undefined) ||
+  DEFAULT_SUPABASE_URL;
 
-// Fallback safe client initialization to prevent unhandled frontend crashes
+const supabasePublicKey =
+  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined) ||
+  (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined) ||
+  DEFAULT_SUPABASE_PUBLISHABLE_KEY;
+
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabasePublicKey);
+
 export const supabase: SupabaseClient = createClient(
-  isSupabaseConfigured ? supabaseUrl : 'https://placeholder.supabase.co',
-  isSupabaseConfigured ? supabaseAnonKey : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder',
+  supabaseUrl,
+  supabasePublicKey,
   {
     auth: {
       persistSession: true,
