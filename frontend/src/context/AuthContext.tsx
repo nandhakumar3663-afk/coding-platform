@@ -195,38 +195,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const cleanId = identifier.trim();
 
     if (isSupabaseConfigured) {
-      if (cleanId.includes('@')) {
-        // Direct Supabase email login
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: cleanId.toLowerCase(),
-          password,
-        });
+      if (!cleanId.includes('@')) {
+        throw new Error('Use your email address, or continue with Google.');
+      }
 
-        if (error) {
-          throw new Error(error.message || 'Invalid credentials');
-        }
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: cleanId.toLowerCase(),
+        password,
+      });
 
-        if (data.session) {
-          setSession(data.session);
-          setAuthToken(data.session.access_token);
-          const p = await loadProfile(data.session.user);
-          setProfile(p);
-          setUser(p);
-        }
-      } else {
-        // Secure username resolution via backend without exposing user emails
-        const res = await api.loginUsername({ username: cleanId, password });
-        if (res.session) {
-          await supabase.auth.setSession(res.session);
-          setSession(res.session);
-        }
-        if (res.token) {
-          setAuthToken(res.token);
-        }
-        if (res.user) {
-          setProfile(res.user);
-          setUser(res.user);
-        }
+      if (error) {
+        throw new Error(error.message || 'Invalid credentials');
+      }
+
+      if (data.session) {
+        setSession(data.session);
+        setAuthToken(data.session.access_token);
+        const p = await loadProfile(data.session.user);
+        setProfile(p);
+        setUser(p);
       }
     } else {
       // Local fallback for offline/development test runner
