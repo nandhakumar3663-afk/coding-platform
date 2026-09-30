@@ -87,3 +87,31 @@
   border-radius: 0.5rem;
 }
 
+/* Keep compiler actions reachable on phones, tablets, and desktop. */
+.compiler-shell { min-height: calc(100dvh - 4rem); }
+.problem-description { width: 100%; max-height: 38dvh; flex-shrink: 0; }
+.compiler-editor { min-height: 660px; }
+.editor-toolbar { box-shadow: 0 1px 16px rgb(0 0 0 / 12%); }
+@media (min-width: 1024px) {
+  .compiler-shell { height: calc(100dvh - 4rem); min-height: 600px; overflow: hidden; }
+  .compiler-panels { overflow: hidden; }
+  .problem-description { width: 43%; max-height: none; min-width: 300px; }
+  .compiler-editor { min-height: 0; }
+}
+.stat-card { transition: transform 180ms ease, border-color 180ms ease; }
+.stat-card:hover { transform: translateY(-3px); border-color: rgb(129 140 248 / 45%); }
+.problem-row { transition: background-color 160ms ease, box-shadow 160ms ease; }
+.problem-row:hover { box-shadow: inset 3px 0 #818cf8; }
+.save-button:not(:disabled):active { transform: scale(.96); }
+:where(button, a, select, input, textarea):focus-visible {
+  outline: 2px solid #818cf8;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -36,7 +36,7 @@ export const ProblemList: React.FC = () => {
       setProblems(res.problems);
       setLoading(false);
     }).catch(() => setLoading(false));
-  }, [user]);
+  }, [user?.id]);
 
   const allTags = useMemo(() => {
     const tags = new Set<string>();
@@ -66,34 +66,39 @@ export const ProblemList: React.FC = () => {
   }), [problems]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
+      <header className="mb-7 rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 via-dark-900 to-dark-950 p-6 sm:p-8">
+        <p className="text-xs font-semibold uppercase tracking-widest text-indigo-300 mb-3">Your practice workspace</p>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Build confidence. One problem at a time.</h1>
+        <p className="mt-3 text-sm text-slate-400 max-w-xl">Choose a challenge, test your approach, and save your progress as you learn.</p>
+      </header>
       {/* Header Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
-        <div className="bg-dark-900 border border-dark-700 rounded-xl p-4">
+        <div className="stat-card bg-dark-900 border border-dark-700 rounded-xl p-4">
           <div className="flex items-center space-x-2 text-slate-400 text-xs font-medium mb-1">
             <BarChart3 className="w-3.5 h-3.5" /><span>Total</span>
           </div>
           <div className="text-2xl font-bold text-white">{counts.total}</div>
         </div>
-        <div className="bg-dark-900 border border-dark-700 rounded-xl p-4">
+        <div className="stat-card bg-dark-900 border border-dark-700 rounded-xl p-4">
           <div className="flex items-center space-x-2 text-emerald-400 text-xs font-medium mb-1">
             <Zap className="w-3.5 h-3.5" /><span>Easy</span>
           </div>
           <div className="text-2xl font-bold text-emerald-400">{counts.easy}</div>
         </div>
-        <div className="bg-dark-900 border border-dark-700 rounded-xl p-4">
+        <div className="stat-card bg-dark-900 border border-dark-700 rounded-xl p-4">
           <div className="flex items-center space-x-2 text-amber-400 text-xs font-medium mb-1">
             <Flame className="w-3.5 h-3.5" /><span>Medium</span>
           </div>
           <div className="text-2xl font-bold text-amber-400">{counts.medium}</div>
         </div>
-        <div className="bg-dark-900 border border-dark-700 rounded-xl p-4">
+        <div className="stat-card bg-dark-900 border border-dark-700 rounded-xl p-4">
           <div className="flex items-center space-x-2 text-rose-400 text-xs font-medium mb-1">
             <Trophy className="w-3.5 h-3.5" /><span>Hard</span>
           </div>
           <div className="text-2xl font-bold text-rose-400">{counts.hard}</div>
         </div>
-        <div className="bg-dark-900 border border-dark-700 rounded-xl p-4 col-span-2 md:col-span-1">
+        <div className="stat-card bg-dark-900 border border-dark-700 rounded-xl p-4 col-span-2 md:col-span-1">
           <div className="flex items-center space-x-2 text-indigo-400 text-xs font-medium mb-1">
             <CheckCircle2 className="w-3.5 h-3.5" /><span>Solved</span>
           </div>
@@ -147,9 +152,9 @@ export const ProblemList: React.FC = () => {
         <div className="grid grid-cols-12 gap-2 px-4 py-3 bg-dark-850 border-b border-dark-700 text-xs font-semibold text-slate-400 uppercase tracking-wider">
           <div className="col-span-1">Status</div>
           <div className="col-span-1">#</div>
-          <div className="col-span-5">Title</div>
-          <div className="col-span-2">Difficulty</div>
-          <div className="col-span-3">Tags</div>
+          <div className="col-span-7 sm:col-span-5">Title</div>
+          <div className="col-span-3 sm:col-span-2">Difficulty</div>
+          <div className="hidden sm:block col-span-3">Tags</div>
         </div>
 
         {loading ? (
@@ -163,22 +168,22 @@ export const ProblemList: React.FC = () => {
             <Link
               key={p.id}
               to={`/problem/${p.slug}`}
-              className={`grid grid-cols-12 gap-2 px-4 py-3.5 items-center hover:bg-dark-850 transition-colors group border-b border-dark-800 last:border-b-0 ${
+              className={`problem-row grid grid-cols-12 gap-2 px-4 py-3.5 items-center hover:bg-dark-850 transition-colors group border-b border-dark-800 last:border-b-0 ${
                 idx % 2 === 0 ? '' : 'bg-dark-950/30'
               }`}
             >
               <div className="col-span-1">{statusIcon(p.user_status)}</div>
               <div className="col-span-1 text-slate-400 text-sm font-mono">{p.problem_number}</div>
-              <div className="col-span-5 text-sm font-medium text-slate-200 group-hover:text-indigo-400 transition-colors flex items-center space-x-2">
+              <div className="col-span-7 sm:col-span-5 text-sm font-medium text-slate-200 group-hover:text-indigo-400 transition-colors flex items-center space-x-2">
                 <span>{p.title}</span>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-indigo-400 opacity-0 group-hover:opacity-100 transition-all" />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-3 sm:col-span-2">
                 <span className={`inline-flex px-2.5 py-0.5 rounded-md text-xs font-semibold border ${diffColor[p.difficulty] || 'text-slate-400'}`}>
                   {p.difficulty}
                 </span>
               </div>
-              <div className="col-span-3 flex flex-wrap gap-1">
+              <div className="hidden sm:flex col-span-3 flex-wrap gap-1">
                 {p.tags?.slice(0, 3).map((t: any) => (
                   <span key={t.id} className="px-2 py-0.5 rounded-md bg-dark-800 border border-dark-700 text-[10px] text-slate-400 font-medium">
                     {t.name}

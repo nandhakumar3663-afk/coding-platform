@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { ProblemList } from './pages/ProblemList';
-import { ProblemPage } from './pages/ProblemPage';
-import { Dashboard } from './pages/Dashboard';
-import { AdminPanel } from './pages/AdminPanel';
+const ProblemPage = lazy(() => import('./pages/ProblemPage').then(module => ({ default: module.ProblemPage })));
+const Dashboard = lazy(() => import('./pages/Dashboard').then(module => ({ default: module.Dashboard })));
+const AdminPanel = lazy(() => import('./pages/AdminPanel').then(module => ({ default: module.AdminPanel })));
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { AuthCallback } from './pages/AuthCallback';
@@ -28,6 +28,7 @@ const App: React.FC = () => {
         <div className="min-h-screen bg-dark-950 flex flex-col">
           <Navbar />
           <main className="flex-1">
+            <Suspense fallback={<div role="status" className="p-8 text-slate-400 animate-fade-in">Loading workspace…</div>}>
             <Routes>
               <Route path="/" element={<ProblemList />} />
               <Route path="/problem/:slug" element={<ProblemPage />} />
@@ -44,6 +45,7 @@ const App: React.FC = () => {
               </Route>
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+            </Suspense>
           </main>
         </div>
       </BrowserRouter>

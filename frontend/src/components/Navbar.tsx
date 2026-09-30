@@ -29,7 +29,7 @@ export const Navbar: React.FC = () => {
       <nav className="h-16 border-b border-dark-700 bg-dark-900/90 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-8 flex items-center justify-between">
         {/* Brand */}
         <div className="flex items-center space-x-8">
-          <Link to="/" className="flex items-center space-x-3 group">
+          <Link to="/" className="flex items-center space-x-2 group">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 p-[1px] shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-all">
               <div className="w-full h-full bg-dark-900 rounded-[11px] flex items-center justify-center">
                 <Terminal className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
@@ -40,7 +40,7 @@ export const Navbar: React.FC = () => {
                 <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
                   AlgoSphere
                 </span>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                <span className="hidden sm:inline text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
                   Judge
                 </span>
               </div>
@@ -105,8 +105,8 @@ export const Navbar: React.FC = () => {
                 ) : (
                   <div className={`w-2 h-2 rounded-full ${user.role === 'admin' ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`} />
                 )}
-                <span className="text-xs font-semibold text-slate-200">{user.username}</span>
-                <span className={`text-[10px] uppercase font-mono px-1.5 py-0.5 rounded ${
+                <span className="text-xs font-semibold text-slate-200 max-w-[70px] sm:max-w-[140px] truncate">{user.username}</span>
+                <span className={`hidden lg:inline text-[10px] uppercase font-mono px-1.5 py-0.5 rounded ${
                   user.role === 'admin' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'text-slate-400'
                 }`}>
                   {user.role}
