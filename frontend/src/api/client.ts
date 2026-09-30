@@ -1,4 +1,5 @@
-const BASE_URL = '/api';
+const RAW_API_URL = (import.meta.env.VITE_API_URL as string | undefined) || '';
+const BASE_URL = RAW_API_URL ? `${RAW_API_URL.replace(/\/$/, '')}/api` : '/api';
 
 export function getAuthToken(): string | null {
   return localStorage.getItem('algo_token');

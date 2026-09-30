@@ -39,6 +39,18 @@ npm run build
 npm start
 ```
 
+## Deploy to Vercel
+
+### 1-Click Deploy (Frontend)
+1. Go to [vercel.com/new](https://vercel.com/new) and import `nandhakumar3663-afk/coding-platform`.
+2. Vercel automatically detects the configuration from `vercel.json`.
+3. In **Environment Variables**, optionally set:
+   - `VITE_API_URL` = `https://your-backend-api.onrender.com` (your deployed backend URL)
+4. Click **Deploy**.
+
+For detailed setup, Docker deployment, and connecting to the backend judge, see [docs/deploy-vercel.md](docs/deploy-vercel.md).
+
+
 ## Login
 
 | Username | Password | Role |

@@ -1,0 +1,7 @@
+node_modules
+frontend
+.git
+.DS_Store
+database/*.db
+database/*.db-wal
+database/*.db-shm
