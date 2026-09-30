@@ -8,7 +8,9 @@ import { pathToFileURL } from 'node:url';
 export async function seedDatabase() {
   const accounts = await Promise.all([
     { username: 'user', password: '123', role: 'student' },
+    { username: 'student', password: 'student123', role: 'student' },
     { username: 'admin', password: '3663', role: 'admin' },
+    { username: 'admin123', password: 'admin123', role: 'admin' },
   ].map(async account => ({ ...account, hash: await bcrypt.hash(account.password, 10) })));
 
   db.exec('BEGIN IMMEDIATE');

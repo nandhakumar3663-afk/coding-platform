@@ -48,7 +48,7 @@ export const ProblemList: React.FC = () => {
     return problems.filter(p => {
       if (difficulty !== 'All' && p.difficulty !== difficulty) return false;
       if (search && !p.title.toLowerCase().includes(search.toLowerCase()) &&
-          !String(p.problem_number).includes(search) && !p.category.toLowerCase().includes(search.toLowerCase())) return false;
+          !String(p.problem_number).includes(search) && !(p.category || '').toLowerCase().includes(search.toLowerCase())) return false;
       if (statusFilter === 'Solved' && p.user_status !== 'solved') return false;
       if (statusFilter === 'Attempted' && p.user_status !== 'attempted') return false;
       if (statusFilter === 'Unsolved' && p.user_status) return false;

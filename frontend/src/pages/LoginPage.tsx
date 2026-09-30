@@ -38,6 +38,26 @@ export const LoginPage: React.FC = () => {
           {error && <p role="alert" className="rounded-lg bg-rose-500/10 p-3 text-sm text-rose-300">{error}</p>}
           <button disabled={busy} className="w-full flex items-center justify-center gap-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 px-4 py-3 text-white font-semibold">{busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}{busy ? 'Signing in…' : 'Sign in'}</button>
         </form>
+
+        <div className="mt-8 pt-6 border-t border-dark-700">
+          <p className="text-xs text-slate-400 mb-3 font-medium uppercase tracking-wider">Quick Demo Login</p>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => { setUsername('user'); setPassword('123'); }}
+              className="flex-1 py-2 px-3 rounded-lg bg-dark-850 hover:bg-dark-800 border border-dark-700 text-xs text-emerald-400 font-medium transition-colors text-center"
+            >
+              Student (user / 123)
+            </button>
+            <button
+              type="button"
+              onClick={() => { setUsername('admin'); setPassword('3663'); }}
+              className="flex-1 py-2 px-3 rounded-lg bg-dark-850 hover:bg-dark-800 border border-dark-700 text-xs text-amber-400 font-medium transition-colors text-center"
+            >
+              Admin (admin / 3663)
+            </button>
+          </div>
+        </div>
       </section>
     </div>
   </div>;

@@ -27,12 +27,14 @@ const App: React.FC = () => {
           <main className="flex-1">
             <Routes>
               <Route path="/login" element={<LoginPage />} />
-              <Route element={<ProtectedRoute />}>
               <Route path="/" element={<ProblemList />} />
               <Route path="/problem/:slug" element={<ProblemPage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/dashboard" element={<Dashboard />} />
               </Route>
-              <Route element={<ProtectedRoute admin />}><Route path="/admin" element={<AdminPanel />} /></Route>
+              <Route element={<ProtectedRoute admin />}>
+                <Route path="/admin" element={<AdminPanel />} />
+              </Route>
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
