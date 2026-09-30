@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { api } from '../api/client';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import {
   Play, Send, RotateCcw, ChevronDown, Clock, HardDrive, CheckCircle2,
@@ -36,7 +36,7 @@ const diffBadge: Record<string, string> = {
 export const ProblemPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
   const [problem, setProblem] = useState<any>(null);
   const [loadError, setLoadError] = useState('');
@@ -48,7 +48,8 @@ export const ProblemPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'description' | 'submissions'>('description');
   const [resultTab, setResultTab] = useState<'result' | 'custom'>('result');
   const [customInput, setCustomInput] = useState('');
-  const [panelSplit, setPanelSplit] = useState(45); // percentage for left panel
+  const draftRevision = useRef(0);
+  const saveInFlight = useRef(false);
   const [savingCode, setSavingCode] = useState(false);
   const [draftState, setDraftState] = useState<'idle' | 'loading' | 'dirty' | 'saved' | 'error'>('idle');
   const [draftMessage, setDraftMessage] = useState('');
@@ -90,8 +91,11 @@ export const ProblemPage: React.FC = () => {
   // Load the signed-in user's saved draft for this problem + language.
   useEffect(() => {
     let cancelled = false;
+    const revision = ++draftRevision.current;
+    setCode('');
+    setSavingCode(false);
 
-    if (!slug) return;
+    if (!slug || authLoading) return;
 
     if (!user) {
       setDraftState('idle');
@@ -99,18 +103,24 @@ export const ProblemPage: React.FC = () => {
       return;
     }
 
+    if (!isSupabaseConfigured) {
+      setDraftState('error');
+      setDraftMessage('Cloud saving is not configured.');
+      return;
+    }
+
     setDraftState('loading');
     setDraftMessage('Loading saved code...');
 
-    supabase
+    Promise.resolve(supabase
       .from('saved_code')
       .select('code, updated_at')
       .eq('user_id', user.id)
       .eq('problem_slug', slug)
       .eq('language', language)
-      .maybeSingle()
+      .maybeSingle())
       .then(({ data, error }) => {
-        if (cancelled) return;
+        if (cancelled || revision !== draftRevision.current) return;
 
         if (error) {
           setDraftState('error');
@@ -127,12 +137,16 @@ export const ProblemPage: React.FC = () => {
           setDraftState('idle');
           setDraftMessage('');
         }
+      }).catch(() => {
+        if (cancelled || revision !== draftRevision.current) return;
+        setDraftState('error');
+        setDraftMessage('Could not load saved code. Check your connection.');
       });
 
     return () => {
       cancelled = true;
     };
-  }, [slug, language, user?.id]);
+  }, [slug, language, user?.id, authLoading]);
 
   // Auto-scroll active question pill into view in the top bar
   useEffect(() => {
@@ -180,21 +194,27 @@ export const ProblemPage: React.FC = () => {
   }, []);
 
   const handleCodeChange = (value: string | undefined) => {
+    draftRevision.current++;
     setCode(value || '');
-    if (draftState !== 'loading') {
-      setDraftState('dirty');
-      setDraftMessage(user ? 'Unsaved changes' : 'Sign in to save');
-    }
+    setDraftState('dirty');
+    setDraftMessage(user ? 'Unsaved changes' : 'Sign in to save');
   };
 
   const handleSaveCode = async () => {
-    if (!slug) return;
+    if (!slug || saveInFlight.current || authLoading) return;
 
     if (!user) {
       navigate('/login', { state: { from: `/problem/${slug}` } });
       return;
     }
 
+    if (!isSupabaseConfigured) {
+      setDraftState('error');
+      setDraftMessage('Cloud saving is not configured.');
+      return;
+    }
+    const revision = draftRevision.current;
+    saveInFlight.current = true;
     setSavingCode(true);
     setDraftState('loading');
     setDraftMessage('Saving...');
@@ -217,13 +237,18 @@ export const ProblemPage: React.FC = () => {
 
       if (error) throw error;
 
-      setDraftState('saved');
-      setDraftMessage('Saved');
+      if (revision === draftRevision.current) {
+        setDraftState('saved');
+        setDraftMessage('Saved to your account');
+      }
     } catch (err) {
       console.error('Save code failed:', err);
-      setDraftState('error');
-      setDraftMessage('Save failed');
+      if (revision === draftRevision.current) {
+        setDraftState('error');
+        setDraftMessage('Save failed. Check your connection and try again.');
+      }
     } finally {
+      saveInFlight.current = false;
       setSavingCode(false);
     }
   };
@@ -265,7 +290,7 @@ export const ProblemPage: React.FC = () => {
 
   const handleReset = () => {
     if (problem) {
-      setCode('');
+      handleCodeChange('');
       setResult(null);
     }
   };
@@ -284,12 +309,12 @@ export const ProblemPage: React.FC = () => {
   const diffClass = problem.difficulty === 'Easy' ? 'text-emerald-400' : problem.difficulty === 'Medium' ? 'text-amber-400' : 'text-rose-400';
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden bg-dark-950 relative">
+    <div className="compiler-shell flex flex-col bg-dark-950 relative">
       {/* ======================================================== */}
       {/* TOP SECTION: QUESTION NAVIGATOR & QUICK ACCESS CAROUSEL */}
       {/* ======================================================== */}
       <section className="shrink-0 border-b border-dark-700/80 bg-dark-900/95 backdrop-blur-md px-3 py-1.5 z-30 shadow-md shadow-black/20">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Left Controls: Catalog link + Prev/Next + Question Selector */}
           <div className="flex items-center space-x-1.5 shrink-0">
             <Link
@@ -325,7 +350,7 @@ export const ProblemPage: React.FC = () => {
             >
               <Layers className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
               <span className="font-mono text-indigo-300">#{problem.problem_number}</span>
-              <span className="truncate max-w-[130px] sm:max-w-[200px] text-slate-200">{problem.title}</span>
+              <span className="truncate max-w-[80px] sm:max-w-[200px] text-slate-200">{problem.title}</span>
               <span className={`text-[10px] px-1.5 py-0.2 rounded border ${diffBadge[problem.difficulty] || 'text-slate-400'}`}>
                 {problem.difficulty}
               </span>
@@ -470,11 +495,10 @@ export const ProblemPage: React.FC = () => {
       {/* ======================================================== */}
       {/* MAIN TWO-PANE CONTENT: PROBLEM VIEW + MONACO EDITOR */}
       {/* ======================================================== */}
-      <div className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden">
+      <div className="compiler-panels flex-1 flex flex-col lg:flex-row min-h-0">
         {/* Left Panel — Problem Description */}
         <div
-          className="lg:border-r border-dark-700/80 overflow-y-auto bg-dark-950"
-          style={{ width: `${panelSplit}%`, minWidth: 320 }}
+          className="problem-description lg:border-r border-dark-700/80 overflow-y-auto bg-dark-950"
         >
           <div className="p-6">
             {/* Title & Meta */}
@@ -593,9 +617,9 @@ export const ProblemPage: React.FC = () => {
         </div>
 
         {/* Right Panel — Code Editor + Results */}
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div className="compiler-editor flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Editor Toolbar */}
-          <div className="flex items-center justify-between px-4 py-2 bg-dark-900 border-b border-dark-700/80">
+          <div className="editor-toolbar flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-dark-900 border-b border-dark-700/80 shrink-0">
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-1.5">
                 <FileCode2 className="w-4 h-4 text-indigo-400" />
@@ -614,27 +638,15 @@ export const ProblemPage: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              {draftMessage && (
-                <span className={`hidden sm:inline text-[11px] ${
-                  draftState === 'saved'
-                    ? 'text-emerald-400'
-                    : draftState === 'error'
-                    ? 'text-rose-400'
-                    : draftState === 'dirty'
-                    ? 'text-amber-400'
-                    : 'text-slate-500'
-                }`}>
-                  {draftMessage}
-                </span>
-              )}
               <button
                 onClick={handleSaveCode}
-                disabled={savingCode || draftState === 'loading'}
-                className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-xs text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 transition-all disabled:opacity-50"
+                disabled={authLoading || savingCode || draftState === 'loading'}
+                aria-label={savingCode ? 'Saving code' : 'Save code'}
+                className="save-button flex shrink-0 items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 border border-indigo-400/40 text-xs font-semibold text-white hover:bg-indigo-500 transition-all disabled:opacity-50 disabled:cursor-wait"
                 title={user ? 'Save code for this problem and language' : 'Sign in to save your code'}
               >
                 {savingCode ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-                <span className="hidden sm:inline">{savingCode ? 'Saving...' : 'Save'}</span>
+                <span>{savingCode ? 'Saving...' : 'Save'}</span>
               </button>
               <button
                 onClick={handleReset}
@@ -646,6 +658,10 @@ export const ProblemPage: React.FC = () => {
             </div>
           </div>
 
+          <div role="status" aria-live="polite" className={`px-4 py-2 text-xs border-b border-dark-800 shrink-0 ${draftState === 'error' ? 'text-rose-300' : draftState === 'saved' ? 'text-emerald-300' : 'text-slate-400'}`}>
+            {authLoading ? 'Checking your session…' : draftMessage || (user ? 'Save your progress for this question and language.' : 'Sign in to save your progress.')}
+          </div>
+
           {/* Monaco Editor */}
           <div className="flex-1 min-h-0">
             <Editor
@@ -655,6 +671,7 @@ export const ProblemPage: React.FC = () => {
               value={code}
               onChange={handleCodeChange}
               options={{
+                readOnly: draftState === 'loading' && !savingCode,
                 fontSize: 14,
                 fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
                 minimap: { enabled: false },
@@ -674,7 +691,7 @@ export const ProblemPage: React.FC = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between px-4 py-2.5 bg-dark-900 border-t border-dark-700/80">
+          <div className="flex flex-wrap gap-2 shrink-0 items-center justify-between px-4 py-2.5 bg-dark-900 border-t border-dark-700/80">
             <div className="flex items-center space-x-2">
               {/* Custom Input Toggle */}
               <button
@@ -723,7 +740,7 @@ export const ProblemPage: React.FC = () => {
             )}
 
             {resultTab === 'result' && result && (
-              <div className="p-4 space-y-3">
+              <div className="p-4 space-y-3 animate-fade-in">
                 {result.type === 'error' ? (
                   <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs">{result.message}</div>
                 ) : (

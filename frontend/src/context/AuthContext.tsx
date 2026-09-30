@@ -47,7 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.getMe();
       if (res?.user) {
         return {
-          id: res.user.id || sbUser.id,
+          id: sbUser.id,
           username: res.user.username || sbUser.user_metadata?.username || sbUser.email?.split('@')[0] || 'user',
           email: res.user.email || sbUser.email || '',
           full_name: res.user.full_name || sbUser.user_metadata?.full_name || sbUser.user_metadata?.name || null,
@@ -120,73 +120,79 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     let isMounted = true;
 
-    const initAuth = async () => {
-      try {
-        if (isSupabaseConfigured) {
-          const { data: { session: activeSession } } = await supabase.auth.getSession();
-          if (activeSession && isMounted) {
-            setSession(activeSession);
-            setAuthToken(activeSession.access_token);
-            const p = await loadProfile(activeSession.user);
-            if (isMounted) {
-              setProfile(p);
-              setUser(p);
-            }
-          }
-        } else {
-          // Local/offline test token support
-          const token = getAuthToken();
-          if (token) {
+    let revision = 0;
+    let profileTimer: ReturnType<typeof setTimeout> | undefined;
+
+    // Auth callbacks must remain synchronous: getSession/profile requests inside
+    // the callback can wait on the same Supabase auth lock indefinitely.
+    const applySession = (activeSession: Session | null) => {
+      const currentRevision = ++revision;
+      clearTimeout(profileTimer);
+      setSession(activeSession);
+      if (!activeSession) {
+        removeAuthToken();
+        setUser(null);
+        setProfile(null);
+        setLoading(false);
+        return;
+      }
+      setAuthToken(activeSession.access_token);
+      const sbUser = activeSession.user;
+      const fallback: UserProfile = {
+        id: sbUser.id,
+        username: sbUser.user_metadata?.username || sbUser.email?.split('@')[0] || 'user',
+        email: sbUser.email || '',
+        avatar_url: sbUser.user_metadata?.avatar_url || null,
+        role: 'student',
+      };
+      setUser(previous => previous?.id === sbUser.id ? previous : fallback);
+      setProfile(previous => previous?.id === sbUser.id ? previous : fallback);
+      profileTimer = setTimeout(async () => {
+        const p = await loadProfile(sbUser);
+        if (isMounted && currentRevision === revision) {
+          setProfile(p);
+          setUser(p);
+          setLoading(false);
+        }
+      }, 0);
+    };
+
+    let subscription: { unsubscribe: () => void } | null = null;
+    if (isSupabaseConfigured) {
+      const { data } = supabase.auth.onAuthStateChange((_event, newSession) => {
+        if (isMounted) applySession(newSession);
+      });
+      subscription = data.subscription;
+      const initialRevision = revision;
+      supabase.auth.getSession().then(({ data: { session: activeSession }, error }) => {
+        if (isMounted && initialRevision === revision) {
+          applySession(error ? null : activeSession);
+        }
+      }).catch(() => {
+        if (isMounted && initialRevision === revision) applySession(null);
+      });
+    } else {
+      (async () => {
+        try {
+          if (getAuthToken()) {
             const res = await api.getMe();
-            if (isMounted && res.user) {
+            if (isMounted) {
               setProfile(res.user);
               setUser(res.user);
             }
           }
-        }
-      } catch (err) {
-        console.warn('Auth initialization warning:', err);
-        if (isMounted) {
+        } catch {
           removeAuthToken();
-          setUser(null);
-          setProfile(null);
-          setSession(null);
+        } finally {
+          if (isMounted) setLoading(false);
         }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    initAuth();
-
-    let subscription: { unsubscribe: () => void } | null = null;
-    if (isSupabaseConfigured) {
-      const { data } = supabase.auth.onAuthStateChange(async (event, newSession) => {
-        if (!isMounted) return;
-        if (event === 'SIGNED_OUT' || !newSession) {
-          setSession(null);
-          setUser(null);
-          setProfile(null);
-          removeAuthToken();
-          setLoading(false);
-        } else if (newSession) {
-          setSession(newSession);
-          setAuthToken(newSession.access_token);
-          const p = await loadProfile(newSession.user);
-          if (isMounted) {
-            setProfile(p);
-            setUser(p);
-            setLoading(false);
-          }
-        }
-      });
-      subscription = data.subscription;
+      })();
     }
 
     return () => {
       isMounted = false;
+      clearTimeout(profileTimer);
+      revision++;
       subscription?.unsubscribe();
     };
   }, [loadProfile]);
