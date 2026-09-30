@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { randomBytes } from 'node:crypto';
-import { supabase, supabaseAdmin, isSupabaseConfigured } from '../lib/supabase.js';
+import { supabase, supabaseAdmin, isSupabaseConfigured, isSupabaseAdminConfigured } from '../lib/supabase.js';
 import { syncSupabaseUserToSqlite } from '../models/userSync.js';
 import { queryOne } from '../models/db.js';
 
@@ -46,14 +46,26 @@ export async function authenticate(req: AuthRequest, res: Response, next: NextFu
     try {
       const { data: { user }, error } = await supabase.auth.getUser(token);
       if (user && !error) {
+        if (!isSupabaseAdminConfigured) {
+          console.error('Supabase is configured but SUPABASE_SERVICE_ROLE_KEY is missing; refusing authenticated request.');
+          next();
+          return;
+        }
+
         // Query trusted role & profile directly from Supabase Database (bypassing client claims)
-        const { data: profile } = await supabaseAdmin
+        const { data: profile, error: profileError } = await supabaseAdmin
           .from('profiles')
           .select('id, username, email, role, auth_provider')
           .eq('id', user.id)
           .single();
 
-        const role = profile?.role || 'student';
+        if (profileError || !profile) {
+          console.error('Authenticated Supabase user has no trusted profile:', profileError?.message);
+          next();
+          return;
+        }
+
+        const role = profile.role === 'admin' ? 'admin' : 'student';
         const username = profile?.username || user.user_metadata?.username || user.email?.split('@')[0] || 'user';
         const email = user.email || profile?.email || '';
 
@@ -76,11 +88,15 @@ export async function authenticate(req: AuthRequest, res: Response, next: NextFu
         return;
       }
     } catch (err) {
-      // Supabase verification error, proceed to fallback check
+      console.error('Supabase token verification failed:', err);
     }
+
+    // When Supabase is configured, never accept legacy local JWTs.
+    next();
+    return;
   }
 
-  // 2. Fallback Verification: Local JWT token (supports local offline test suite)
+  // 2. Local-only fallback (used only when Supabase is not configured, e.g. offline tests)
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any;
     if (decoded && decoded.id) {
