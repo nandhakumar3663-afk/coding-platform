@@ -81,7 +81,7 @@ export async function judgeSubmission(
         errorMessage = proc.stderr || `Process exited with code ${proc.exitCode}`;
         if (!firstFailedVerdict) firstFailedVerdict = 'Runtime Error';
       } else {
-        const isMatch = compareOutputs(proc.stdout, tc.expectedOutput);
+        const isMatch = tc.testType === 'custom' || compareOutputs(proc.stdout, tc.expectedOutput);
         if (isMatch) {
           status = 'PASS';
           passedCount++;

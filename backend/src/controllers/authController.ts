@@ -7,7 +7,7 @@ import { generateToken, AuthRequest } from '../middleware/auth.js';
 export async function register(req: Request, res: Response): Promise<void> {
   const { username, email, password } = req.body;
 
-  if (!username || !email || !password) {
+  if (typeof username !== 'string' || !username.trim() || typeof email !== 'string' || !email.trim() || typeof password !== 'string' || !password) {
     res.status(400).json({ error: 'Username, email, and password are required' });
     return;
   }
@@ -35,7 +35,7 @@ export async function register(req: Request, res: Response): Promise<void> {
 export async function login(req: Request, res: Response): Promise<void> {
   const { username, password } = req.body;
 
-  if (!username || !password) {
+  if (typeof username !== 'string' || !username.trim() || typeof password !== 'string' || !password) {
     res.status(400).json({ error: 'Username/email and password are required' });
     return;
   }

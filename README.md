@@ -1,240 +1,82 @@
-# AlgoSphere — Online Coding & Judge Platform
+# AlgoSphere — coding practice platform
 
-A full-stack, production-style online coding platform similar to LeetCode/HackerRank.  
-Students can browse problems, write code in an online Monaco editor, select from 4 languages, run against sample tests, and submit for automated judging against hidden test cases — with real compilation and execution.
+React + Monaco frontend, Express + SQLite backend, and a native-code judge supporting C, C++, Java and Python.
 
----
+## PDF exercise catalog
 
-## Architecture
+- **Level 2:** all 57 questions from `level 2 qp.pdf`.
+- **Level 3:** all 52 questions from `ARRAYS LEVEL 3 with ans.pdf`.
+- **109 problems, 776 tests, 667 hidden tests.** Each problem has a checked example, an input/output contract, constraints, a Python reference solution and at least five hidden cases.
+- Use the topic filter to select **Level 2** or **Level 3**. Each description retains its PDF question number.
+- See [the complete mapping and source corrections](docs/pdf-catalog.md). Some PDF answers contain inconsistent wording or unsafe C code; clarified behavior is displayed in the problem itself.
 
-```
-coding-platform/
-├── frontend/          React + Vite + TypeScript + Tailwind + Monaco Editor
-├── backend/           Express.js + TypeScript + SQLite (Node 22 native)
-├── database/          Schema and seed data
-│   ├── schema/        SQL schema definitions
-│   └── seeds/         (seed data applied via backend/src/seed.ts)
-└── runner/            Language runners & Dockerfiles (future containerization)
-```
+## Run locally
 
-### Execution Flow
-
-```
-User writes code → Select language → Click Submit
-       ↓
-  Backend receives code
-       ↓
-  Compile (gcc/g++/javac) or syntax-check (python)
-       ↓
-  Run against all 5 hidden test cases
-       ↓
-  Compare stdout with trusted expected output
-       ↓
-  Return verdict: Accepted / Wrong Answer / CE / RE / TLE
-```
-
-### Test Case Generation
-
-Every problem has a trusted Python reference solution. Test cases are generated automatically:
-
-1. **Generate** structured inputs (basic, valid, edge, large, special)
-2. **Execute** the reference solution on each input
-3. **Capture** the output as the expected answer
-4. **Store** input + expected output in the database
-5. **Verify** the reference solution passes all generated cases
-
----
-
-## Tech Stack
-
-| Layer      | Technology                                   |
-|------------|----------------------------------------------|
-| Frontend   | React 18, Vite 6, TypeScript, Tailwind CSS 3 |
-| Editor     | Monaco Editor (@monaco-editor/react)         |
-| Backend    | Node.js 22, Express.js, TypeScript            |
-| Database   | SQLite (Node 22 native `node:sqlite`)         |
-| Auth       | JWT (jsonwebtoken) + bcryptjs                 |
-| Compilers  | GCC 16, G++ 16, OpenJDK 25, Python 3.14     |
-| Toolchain  | micromamba (conda-forge)                      |
-
----
-
-## Installation
-
-### Prerequisites
-
-- Node.js >= 22
-- Python 3
-- Internet connection (for micromamba compiler install)
-
-### 1. Install compilers via micromamba (automated during initial setup)
-
-```bash
-# Already installed at /home/nandha/tools/env/bin/
-# Contains: gcc, g++, javac, java
-```
-
-### 2. Install backend dependencies
+Prerequisites: Node.js **22.13+** (native `node:sqlite`), npm, Python 3, GCC, G++, and a **JDK** providing both `javac` and `java` on PATH. A JRE alone cannot compile Java submissions.
 
 ```bash
 cd backend
 npm install
-```
-
-### 3. Initialize database and seed 12 problems with auto-generated test cases
-
-```bash
-cd backend
 npm run seed
-```
-
-### 4. Start backend server (port 4000)
-
-```bash
-cd backend
 npm run dev
 ```
 
-### 5. Install frontend dependencies
+In another terminal:
 
 ```bash
 cd frontend
 npm install
-```
-
-### 6. Start frontend dev server (port 5173)
-
-```bash
-cd frontend
 npm run dev
 ```
 
-### 7. Open in browser
+Open `http://localhost:5173`. The frontend proxies `/api` to port 4000.
 
+For compiled backend execution:
+
+```bash
+cd backend
+npm run build
+npm start
 ```
-http://localhost:5173
+
+## Login
+
+| Username | Password | Role |
+|---|---|---|
+| user | 123 | Student |
+| admin | 3663 | Administrator |
+
+Sign in through `/login`. There is no automatic login or one-click role switching. Admin routes require an admin token on the backend as well as the frontend. Logging out removes the stored token. Registration, if used through the existing API, always creates a student.
+
+Running `npm run seed` deliberately restores these two default accounts and their passwords, including on an existing database. Passwords are bcrypt-hashed. Set a private `JWT_SECRET` in `backend/.env` to preserve sessions across server restarts; otherwise the server creates a random process-local signing key. Never commit `.env`.
+
+## Editor and judge
+
+The editor starts **empty** when opening a question, changing languages, or pressing Reset. No starter code or old local-storage drafts are inserted. Write a full stdin/stdout program; Java programs should use `Main`. Empty submissions are rejected.
+
+- **Run:** execute visible sample cases, or execute custom input without judging it against an empty expected answer.
+- **Submit:** execute all visible and hidden cases and update your progress.
+- Hidden inputs, expected outputs, actual outputs and stderr are masked in submission responses and history. Students cannot open another student's submission. Admins can inspect and regenerate tests through the admin panel.
+- Whitespace at line ends is ignored; meaningful line breaks and output tokens are checked.
+
+## Catalog maintenance and verification
+
+```bash
+# From repository root: rebuild deterministic catalog and verify 109 anchor examples
+python3 scripts/build_catalog.py
+
+# Build and exercise every reference through the real Python judge,
+# plus API login/authorization, hidden-data masking, reseeding, C/C++, CE and TLE
+npm test --prefix backend
+npm run build --prefix frontend
 ```
 
----
+The test suite uses a temporary database, not your practice database. Seeding updates catalog rows in place, preserving problem IDs, submissions and progress. The old Reverse problem moves from platform #12 to #49. Custom questions are retained and moved above #109 if their numbers conflict. Reference and test files are backend-only; Vite never imports them.
 
-## Demo Accounts
+Admin regeneration for PDF questions uses their curated inputs rather than the legacy generic input fallback. Admin-created questions continue to use the original generator.
 
-| Username | Password     | Role    |
-|----------|-------------|---------|
-| student  | student123  | Student |
-| admin    | admin123    | Admin   |
+## Deployment boundary
 
-The UI includes a quick role-switcher in the navbar.
+This repository's existing judge runs programs as native child processes on the backend host. Temporary directories and timeouts are **not a security sandbox**. Memory usage is not measured (reported as zero), and the advertised memory limit is not generally enforced. Use this setup for trusted local/classroom practice; untrusted public execution requires an isolated judge service with filesystem, network, process and resource restrictions.
 
----
-
-## Database Schema
-
-Tables: `users`, `problems`, `problem_examples`, `test_cases`, `tags`, `problem_tags`, `submissions`, `submission_results`, `user_progress`
-
-All schema is defined in `database/schema/schema.sql`.
-
----
-
-## API Endpoints
-
-### Auth
-- `POST /api/auth/register` — Register new user
-- `POST /api/auth/login` — Login
-- `GET /api/auth/me` — Get current user
-
-### Problems
-- `GET /api/problems` — List all problems (supports `?difficulty=&tag=&status=&search=`)
-- `GET /api/problems/:slug` — Get problem details
-- `POST /api/problems/:slug/run` — Run code against sample tests
-- `POST /api/problems/:slug/submit` — Submit code against all tests
-
-### Submissions
-- `GET /api/submissions` — List submissions
-- `GET /api/submissions/:id` — Get submission details
-
-### User
-- `GET /api/user/progress` — Dashboard stats
-
-### Admin
-- `GET /api/admin/problems` — List all problems with stats
-- `POST /api/admin/problems` — Create problem
-- `PUT /api/admin/problems/:id` — Update problem
-- `DELETE /api/admin/problems/:id` — Delete problem
-- `POST /api/admin/problems/:id/generate-tests` — Regenerate test cases
-- `GET /api/admin/problems/:id/test-cases` — View test cases
-- `PATCH /api/admin/test-cases/:testCaseId/toggle` — Toggle visibility
-- `GET /api/admin/stats` — System statistics
-
----
-
-## Supported Languages
-
-| Language | Compile Command                    | Execute Command   |
-|----------|-----------------------------------|--------------------|
-| C        | `gcc solution.c -O2 -o solution -lm` | `./solution`    |
-| C++      | `g++ solution.cpp -O2 -std=c++17 -o solution` | `./solution` |
-| Java     | `javac Main.java`                 | `java Main`        |
-| Python   | `python3 -m py_compile solution.py` (syntax) | `python3 solution.py` |
-
----
-
-## Adding New Problems
-
-### Via Admin Panel
-
-1. Switch to Admin view in the navbar
-2. Problems are managed from the Admin Panel page
-
-### Via Seed Script
-
-Add problem definitions to `backend/src/seed.ts` with:
-- Title, slug, description, constraints
-- Starter code for all 4 languages
-- Reference solution (Python)
-- Tags and difficulty
-
-Run `npm run seed` to generate test cases automatically.
-
----
-
-## Security Considerations
-
-- Passwords are hashed with bcryptjs (10 rounds)
-- JWT tokens expire in 7 days
-- Reference solutions are never exposed to students via API
-- Hidden test cases show only "[Hidden]" to prevent cheating
-- Code execution has timeouts (2.5s default) to prevent infinite loops
-- Each submission runs in an isolated temp directory that is cleaned up
-
----
-
-## Verdict Types
-
-| Verdict              | Description                                     |
-|---------------------|-------------------------------------------------|
-| Accepted            | All test cases passed                            |
-| Wrong Answer        | Output doesn't match expected                   |
-| Compilation Error   | Code failed to compile                           |
-| Runtime Error       | Program crashed during execution                 |
-| Time Limit Exceeded | Program exceeded the time limit                  |
-| Memory Limit Exceeded | Program exceeded memory limit                  |
-
----
-
-## Sample Problems (12 seeded)
-
-1. Fibonacci Series (Easy)
-2. Smallest 5 Primes Greater Than N (Easy)
-3. Prime or Composite Number (Easy)
-4. Series Sum Calculator (Medium)
-5. Divisor Sum and Equality Checker (Medium)
-6. Abundant Number (Easy)
-7. Count Leap and Non-Leap Years (Medium)
-8. Geometric Series Sum Calculator (Easy)
-9. Sum of Squares of N Natural Numbers (Easy)
-10. Harmonic Series Sum (Easy)
-11. Digits Count (Easy)
-12. Reverse the Digits (Easy)
-
-Each problem has 5 auto-generated test cases verified against the trusted reference solution.
+Hidden means hidden from the student UI/API. Test definitions and reference solutions are visible to anyone with repository access, and native submissions are not isolated from host files. These limitations must be addressed before promising secret tests on a public deployment. The requested default passwords are intended for the demo setup.

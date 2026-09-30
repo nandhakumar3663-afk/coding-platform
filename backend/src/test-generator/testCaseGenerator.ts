@@ -1,3 +1,5 @@
+import { catalogBySlug } from '../catalog/index.js';
+import { db } from '../models/db.js';
 import { generateTestInputsForProblem, GeneratedInput } from './inputGenerator.js';
 import { runReferenceSolution } from './referenceRunner.js';
 import { execute, queryAll } from '../models/db.js';
@@ -28,7 +30,8 @@ export async function generateAndStoreTestCases(
   constraints?: string,
   sampleInputs: string[] = []
 ): Promise<GenerationSummary> {
-  const generatedInputs = generateTestInputsForProblem(slug, constraints, sampleInputs);
+  const definition = catalogBySlug.get(slug);
+  const generatedInputs = definition ? definition.tests.map(t => ({ input: t.input, type: t.test_type })) : generateTestInputsForProblem(slug, constraints, sampleInputs);
   const results: GeneratedTestCaseResult[] = [];
 
   for (let i = 0; i < generatedInputs.length; i++) {
@@ -45,7 +48,7 @@ export async function generateAndStoreTestCases(
 
     const testCaseId = uuidv4();
     // Test Case 1 is visible sample, test cases 2 to 5 are hidden!
-    const isHidden = i === 0 ? false : true;
+    const isHidden = definition ? definition.tests[i].is_hidden : i !== 0;
 
     results.push({
       id: testCaseId,
@@ -59,6 +62,8 @@ export async function generateAndStoreTestCases(
     });
   }
 
+  db.exec('BEGIN IMMEDIATE');
+  try {
   // Clear existing test cases for this problem
   execute('DELETE FROM test_cases WHERE problem_id = ?', [problemId]);
 
@@ -78,6 +83,9 @@ export async function generateAndStoreTestCases(
       ]
     );
   }
+
+  db.exec('COMMIT');
+  } catch (error) { db.exec('ROLLBACK'); throw error; }
 
   return {
     success: true,

@@ -144,8 +144,8 @@ export async function runCode(req: AuthRequest, res: Response): Promise<void> {
   const { slug } = req.params;
   const { language, code, customInput } = req.body;
 
-  if (!language || !code) {
-    res.status(400).json({ error: 'Language and code are required' });
+  if (!['c','cpp','java','python'].includes(language) || typeof code !== 'string' || !code.trim()) {
+    res.status(400).json({ error: 'A supported language and non-empty code are required' });
     return;
   }
 
@@ -182,18 +182,8 @@ export async function runCode(req: AuthRequest, res: Response): Promise<void> {
     }));
 
     if (testCasesToRun.length === 0) {
-      // Fallback: take at least first test case
-      testCasesToRun = queryAll(
-        `SELECT id, order_num as testCaseNumber, input, expected_output as expectedOutput, is_hidden as isHidden, test_type as testType
-         FROM test_cases
-         WHERE problem_id = ?
-         ORDER BY order_num ASC
-         LIMIT 2`,
-        [problem.id]
-      ).map((tc: any) => ({
-        ...tc,
-        isHidden: false,
-      }));
+      res.status(400).json({ error: 'No visible sample tests are available. Use custom input.' });
+      return;
     }
   }
 
@@ -215,8 +205,8 @@ export async function submitCode(req: AuthRequest, res: Response): Promise<void>
   const { language, code } = req.body;
   const userId = req.user?.id;
 
-  if (!language || !code) {
-    res.status(400).json({ error: 'Language and code are required' });
+  if (!['c','cpp','java','python'].includes(language) || typeof code !== 'string' || !code.trim()) {
+    res.status(400).json({ error: 'A supported language and non-empty code are required' });
     return;
   }
 
@@ -237,6 +227,11 @@ export async function submitCode(req: AuthRequest, res: Response): Promise<void>
     ...tc,
     isHidden: tc.isHidden === 1,
   }));
+
+  if (!testCases.length) {
+    res.status(400).json({ error: 'No test cases are configured for this problem' });
+    return;
+  }
 
   const judgeResult = await judgeSubmission(
     language as SupportedLanguage,
@@ -294,12 +289,12 @@ export async function submitCode(req: AuthRequest, res: Response): Promise<void>
         tr.testCaseId || null,
         tr.testCaseNumber,
         tr.status,
-        tr.inputPreview,
+        tr.isHidden ? '[Hidden]' : tr.inputPreview,
         tr.isHidden ? '[Hidden]' : tr.expectedOutput,
-        tr.isHidden && tr.status === 'PASS' ? '[Hidden Output Passed]' : tr.actualOutput,
+        tr.isHidden ? '[Hidden]' : tr.actualOutput,
         tr.executionTimeMs,
         tr.memoryUsedKb,
-        tr.errorMessage || null,
+        tr.isHidden ? (tr.errorMessage ? 'Hidden test execution failed' : null) : tr.errorMessage || null,
       ]
     );
   }
@@ -339,9 +334,9 @@ export async function submitCode(req: AuthRequest, res: Response): Promise<void>
       isHidden: tc.isHidden,
       inputPreview: tc.isHidden ? '[Hidden Test Case]' : tc.inputPreview,
       expectedOutput: tc.isHidden ? '[Hidden]' : tc.expectedOutput,
-      actualOutput: tc.isHidden && tc.status === 'PASS' ? '[Hidden Passed]' : tc.actualOutput,
+      actualOutput: tc.isHidden ? '[Hidden]' : tc.actualOutput,
       executionTimeMs: tc.executionTimeMs,
-      errorMessage: tc.errorMessage,
+      errorMessage: tc.isHidden ? (tc.errorMessage ? 'Hidden test execution failed' : undefined) : tc.errorMessage,
     })),
   });
 }

@@ -82,6 +82,7 @@ export abstract class BaseRunner {
       }, timeout);
 
       if (child.stdin) {
+        child.stdin.on('error', () => { /* A program may exit without reading stdin. */ });
         child.stdin.setDefaultEncoding('utf-8');
         if (input) {
           child.stdin.write(input);
@@ -115,7 +116,7 @@ export abstract class BaseRunner {
         const executionTimeMs = Number((endTime - startTime) / BigInt(1_000_000));
 
         // Basic memory estimate
-        memoryUsedKb = Math.floor(Math.random() * 500) + 1200;
+        memoryUsedKb = 0;
 
         resolve({
           stdout: stdoutData,

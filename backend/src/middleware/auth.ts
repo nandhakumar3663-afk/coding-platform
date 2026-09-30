@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import 'dotenv/config';
+import { randomBytes } from 'node:crypto';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'coding-platform-super-secret-key-2026';
+const JWT_SECRET = process.env.JWT_SECRET || randomBytes(48).toString('hex');
 
 export interface AuthRequest extends Request {
   user?: {

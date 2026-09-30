@@ -14,7 +14,6 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
-  loginAs: (role: 'student' | 'admin') => Promise<void>;
   isAdmin: boolean;
 }
 
@@ -35,8 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         })
         .finally(() => setLoading(false));
     } else {
-      // Default to demo student for immediate convenience
-      loginAs('student').finally(() => setLoading(false));
+      setLoading(false);
     }
   }, []);
 
@@ -57,18 +55,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
-  const loginAs = async (role: 'student' | 'admin') => {
-    try {
-      const username = role;
-      const password = role === 'admin' ? 'admin123' : 'student123';
-      const res = await api.login({ username, password });
-      setAuthToken(res.token);
-      setUser(res.user);
-    } catch {
-      // ignore
-    }
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -77,7 +63,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         register,
         logout,
-        loginAs,
         isAdmin: user?.role === 'admin',
       }}
     >

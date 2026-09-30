@@ -54,11 +54,17 @@ export function getSubmissionById(req: AuthRequest, res: Response): void {
     return;
   }
 
+  if (submission.user_id !== req.user?.id && req.user?.role !== 'admin') {
+    res.status(403).json({ error: 'This submission belongs to another user' });
+    return;
+  }
+
   const results = queryAll(
     `SELECT 
       sr.id, sr.test_case_number, sr.status, sr.input_preview, sr.expected_output,
-      sr.actual_output, sr.execution_time_ms, sr.memory_used_kb, sr.error_message
+      sr.actual_output, sr.execution_time_ms, sr.memory_used_kb, sr.error_message, COALESCE(tc.is_hidden, 1) as is_hidden
      FROM submission_results sr
+     LEFT JOIN test_cases tc ON tc.id = sr.test_case_id
      WHERE sr.submission_id = ?
      ORDER BY sr.test_case_number ASC`,
     [id]
@@ -67,7 +73,7 @@ export function getSubmissionById(req: AuthRequest, res: Response): void {
   res.json({
     submission: {
       ...submission,
-      results,
+      results: results.map(row => row.is_hidden ? { ...row, input_preview: '[Hidden]', expected_output: '[Hidden]', actual_output: '[Hidden]', error_message: row.error_message ? 'Hidden test execution failed' : null } : row),
     },
   });
 }

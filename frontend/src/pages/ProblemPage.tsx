@@ -15,13 +15,6 @@ const LANG_OPTIONS = [
   { value: 'java', label: 'Java', monacoLang: 'java' },
 ];
 
-const STARTER_KEYS: Record<string, string> = {
-  c: 'starter_c',
-  cpp: 'starter_cpp',
-  java: 'starter_java',
-  python: 'starter_python',
-};
-
 const verdictStyle: Record<string, string> = {
   Accepted: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
   'Wrong Answer': 'text-rose-400 bg-rose-500/10 border-rose-500/30',
@@ -34,6 +27,7 @@ const verdictStyle: Record<string, string> = {
 export const ProblemPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [problem, setProblem] = useState<any>(null);
+  const [loadError, setLoadError] = useState('');
   const [language, setLanguage] = useState('python');
   const [code, setCode] = useState('');
   const [running, setRunning] = useState(false);
@@ -45,33 +39,29 @@ export const ProblemPage: React.FC = () => {
   const [panelSplit, setPanelSplit] = useState(45); // percentage for left panel
 
   useEffect(() => {
+    let cancelled = false;
+    setProblem(null);
+    setCode('');
+    setResult(null);
+    setCustomInput('');
+    setLoadError('');
     if (slug) {
       api.getProblemBySlug(slug).then(res => {
-        setProblem(res.problem);
-        const starter = res.problem[STARTER_KEYS[language]] || '';
-        setCode(starter);
+        if (!cancelled) setProblem(res.problem);
+      }).catch(error => {
+        if (!cancelled) setLoadError(error.message || 'Unable to load this question.');
       });
     }
+    return () => { cancelled = true; };
   }, [slug]);
 
   const switchLanguage = useCallback((lang: string) => {
     setLanguage(lang);
-    if (problem) {
-      const saved = localStorage.getItem(`code_${slug}_${lang}`);
-      if (saved) {
-        setCode(saved);
-      } else {
-        setCode(problem[STARTER_KEYS[lang]] || '');
-      }
-    }
-  }, [problem, slug]);
+    setCode('');
+    setResult(null);
+  }, []);
 
-  // Save code to localStorage on change
-  const handleCodeChange = (value: string | undefined) => {
-    const v = value || '';
-    setCode(v);
-    localStorage.setItem(`code_${slug}_${language}`, v);
-  };
+  const handleCodeChange = (value: string | undefined) => setCode(value || '');
 
   const handleRun = async () => {
     if (!slug) return;
@@ -81,7 +71,7 @@ export const ProblemPage: React.FC = () => {
     try {
       const input = customInput.trim() ? customInput : undefined;
       const res = await api.runCode(slug, { language, code, customInput: input });
-      setResult({ type: 'run', ...res.result });
+      setResult({ type: 'run', ...res.result, verdict: input !== undefined && res.result.verdict === 'Accepted' ? 'Executed' : res.result.verdict });
     } catch (err: any) {
       setResult({ type: 'error', message: err.message });
     } finally {
@@ -106,11 +96,12 @@ export const ProblemPage: React.FC = () => {
 
   const handleReset = () => {
     if (problem) {
-      setCode(problem[STARTER_KEYS[language]] || '');
-      localStorage.removeItem(`code_${slug}_${language}`);
+      setCode('');
       setResult(null);
     }
   };
+
+  if (loadError) return <p role="alert" className="p-8 text-rose-300">{loadError}</p>;
 
   if (!problem) {
     return (
@@ -266,7 +257,7 @@ export const ProblemPage: React.FC = () => {
             <button
               onClick={handleReset}
               className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-dark-850 border border-dark-700 text-xs text-slate-400 hover:text-slate-200 hover:border-dark-600 transition-all"
-              title="Reset to starter code"
+              title="Clear editor"
             >
               <RotateCcw className="w-3.5 h-3.5" /><span className="hidden sm:inline">Reset</span>
             </button>
@@ -318,7 +309,7 @@ export const ProblemPage: React.FC = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={handleRun}
-              disabled={running || submitting}
+              disabled={running || submitting || !code.trim()}
               className="flex items-center space-x-1.5 px-5 py-2 rounded-lg bg-dark-800 border border-dark-600 text-slate-200 text-xs font-semibold hover:bg-dark-700 transition-all disabled:opacity-50"
             >
               {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 text-emerald-400" />}
@@ -326,7 +317,7 @@ export const ProblemPage: React.FC = () => {
             </button>
             <button
               onClick={handleSubmit}
-              disabled={running || submitting}
+              disabled={running || submitting || !code.trim()}
               className="flex items-center space-x-1.5 px-5 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white text-xs font-semibold shadow-lg shadow-emerald-600/20 transition-all disabled:opacity-50"
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
@@ -406,7 +397,7 @@ export const ProblemPage: React.FC = () => {
                             </div>
                             <span className="text-[11px] text-slate-500">{tc.executionTimeMs}ms</span>
                           </div>
-                          {!tc.isHidden && tc.status !== 'PASS' && (
+                          {!tc.isHidden && (
                             <div className="grid grid-cols-2 gap-2 mt-2 text-xs font-mono">
                               <div>
                                 <div className="text-[10px] text-slate-500 mb-0.5">Expected</div>

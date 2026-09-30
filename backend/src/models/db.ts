@@ -1,13 +1,14 @@
 import { DatabaseSync } from 'node:sqlite';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'node:url';
 
-const DB_DIR = path.resolve(process.cwd(), '../database');
+const DB_DIR = fileURLToPath(new URL('../../../database/', import.meta.url));
 if (!fs.existsSync(DB_DIR)) {
   fs.mkdirSync(DB_DIR, { recursive: true });
 }
 
-const DB_PATH = path.resolve(DB_DIR, 'platform.db');
+const DB_PATH = process.env.DATABASE_PATH || path.resolve(DB_DIR, 'platform.db');
 export const db = new DatabaseSync(DB_PATH);
 
 // Enable WAL mode & foreign keys for high performance and integrity

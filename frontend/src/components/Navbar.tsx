@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 import { 
@@ -12,12 +12,10 @@ import {
   LogIn,
   Sparkles
 } from 'lucide-react';
-import { AuthModal } from './AuthModal.js';
 
 export const Navbar: React.FC = () => {
-  const { user, logout, loginAs, isAdmin } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const location = useLocation();
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const isActive = (path: string) => {
     if (path === '/' && (location.pathname === '/' || location.pathname.startsWith('/problems'))) {
@@ -93,31 +91,6 @@ export const Navbar: React.FC = () => {
 
         {/* Right Section: Quick Switcher & User Profile */}
         <div className="flex items-center space-x-3">
-          {/* Quick Role Switcher Pill */}
-          <div className="hidden sm:flex items-center p-1 bg-dark-950 border border-dark-700 rounded-lg text-xs font-medium">
-            <button
-              onClick={() => loginAs('student')}
-              className={`px-2.5 py-1 rounded-md transition-all ${
-                user?.role === 'student'
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Student View
-            </button>
-            <button
-              onClick={() => loginAs('admin')}
-              className={`px-2.5 py-1 rounded-md transition-all flex items-center space-x-1 ${
-                user?.role === 'admin'
-                  ? 'bg-amber-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Admin View</span>
-            </button>
-          </div>
-
           {/* User status */}
           {user ? (
             <div className="flex items-center space-x-2.5 pl-2 border-l border-dark-700">
@@ -135,18 +108,17 @@ export const Navbar: React.FC = () => {
               </button>
             </div>
           ) : (
-            <button
-              onClick={() => setShowAuthModal(true)}
+            <Link
+              to="/login"
               className="flex items-center space-x-1.5 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all"
             >
               <LogIn className="w-4 h-4" />
               <span>Sign In</span>
-            </button>
+            </Link>
           )}
         </div>
       </nav>
 
-      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </>
   );
 };
