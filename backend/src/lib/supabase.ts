@@ -12,7 +12,12 @@ const supabasePublicKey =
   process.env.SUPABASE_ANON_KEY ||
   DEFAULT_SUPABASE_PUBLISHABLE_KEY;
 
-export const isSupabaseConfigured: boolean = Boolean(supabaseUrl && supabasePublicKey);
+const forceLocalAuth =
+  process.env.ALGO_LOCAL_AUTH === '1' ||
+  process.env.NODE_ENV === 'test' ||
+  Boolean(process.env.NODE_TEST_CONTEXT);
+
+export const isSupabaseConfigured: boolean = !forceLocalAuth && Boolean(supabaseUrl && supabasePublicKey);
 
 export const supabase: SupabaseClient = createClient(
   supabaseUrl,
