@@ -5,18 +5,27 @@ dotenv.config();
 
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || supabaseAnonKey;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 export const isSupabaseConfigured: boolean = Boolean(
   supabaseUrl &&
-  (supabaseAnonKey || supabaseServiceKey) &&
-  !supabaseUrl.includes('your-project')
+  supabaseAnonKey &&
+  !supabaseUrl.includes('your-project') &&
+  !supabaseAnonKey.includes('your-anon-key')
 );
 
-// Standard Supabase client
+export const isSupabaseAdminConfigured: boolean = Boolean(
+  supabaseUrl &&
+  supabaseServiceKey &&
+  !supabaseUrl.includes('your-project') &&
+  !supabaseServiceKey.includes('your-service-role-key')
+);
+
+// Standard server client for user-token verification and password auth.
+// No sessions are persisted on the backend.
 export const supabase: SupabaseClient = createClient(
   isSupabaseConfigured ? supabaseUrl : 'https://placeholder.supabase.co',
-  isSupabaseConfigured ? (supabaseAnonKey || 'placeholder-anon') : 'placeholder-anon',
+  isSupabaseConfigured ? supabaseAnonKey : 'placeholder-anon',
   {
     auth: {
       persistSession: false,
@@ -25,10 +34,11 @@ export const supabase: SupabaseClient = createClient(
   }
 );
 
-// Privileged Supabase Admin client using service role key (Never exposed to frontend)
+// Privileged client. The service-role key is never allowed to fall back to the
+// anon key; privileged operations fail closed if the service key is missing.
 export const supabaseAdmin: SupabaseClient = createClient(
-  isSupabaseConfigured ? supabaseUrl : 'https://placeholder.supabase.co',
-  isSupabaseConfigured ? (supabaseServiceKey || 'placeholder-service') : 'placeholder-service',
+  isSupabaseAdminConfigured ? supabaseUrl : 'https://placeholder.supabase.co',
+  isSupabaseAdminConfigured ? supabaseServiceKey : 'placeholder-service',
   {
     auth: {
       persistSession: false,

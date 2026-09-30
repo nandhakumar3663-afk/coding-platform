@@ -93,7 +93,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email: sbUser.email || '',
       full_name: meta.full_name || meta.name || null,
       avatar_url: meta.avatar_url || meta.picture || null,
-      role: (meta.role === 'admin' ? 'admin' : 'student') as 'student' | 'admin',
+      // Never trust user-controlled auth metadata for authorization.
+      role: 'student',
       auth_provider: sbUser.app_metadata?.provider || 'email',
     };
   }, []);

@@ -30,11 +30,13 @@ DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
 DROP POLICY IF EXISTS "Users can update own profile fields" ON public.profiles;
 DROP POLICY IF EXISTS "Service role has full access" ON public.profiles;
 
--- RLS Policy: Authenticated users can read any profile (needed for leaderboards/usernames)
-CREATE POLICY "Public profiles are viewable by authenticated users"
+-- RLS Policy: users can read only their own complete profile.
+-- Public/leaderboard profile data should be exposed through a dedicated view or backend endpoint
+-- so private fields such as email are never disclosed.
+CREATE POLICY "Users can view own profile"
   ON public.profiles FOR SELECT
   TO authenticated
-  USING (true);
+  USING (auth.uid() = id);
 
 -- RLS Policy: Users can update their own profile (username, full_name, avatar_url)
 CREATE POLICY "Users can update own profile fields"
@@ -43,26 +45,33 @@ CREATE POLICY "Users can update own profile fields"
   USING (auth.uid() = id)
   WITH CHECK (auth.uid() = id);
 
--- 3. Enforce Role Protection: Normal users CANNOT elevate themselves to 'admin'
-CREATE OR REPLACE FUNCTION public.protect_profile_role()
-RETURNS TRIGGER AS $$
+-- 3. Protect server-owned profile fields.
+-- Do not use current_user here: this function is SECURITY DEFINER, so current_user would
+-- refer to the function owner rather than the caller. auth.role() reflects the caller JWT.
+CREATE OR REPLACE FUNCTION public.protect_profile_fields()
+RETURNS TRIGGER AS $
 BEGIN
-  -- If role is changing, only allow service_role / postgres to make this change
-  IF (NEW.role IS DISTINCT FROM OLD.role) THEN
-    IF current_user NOT IN ('postgres', 'service_role', 'supabase_admin') THEN
-      NEW.role := OLD.role; -- Silently preserve existing role or raise exception
+  IF auth.role() = 'authenticated' THEN
+    IF NEW.role IS DISTINCT FROM OLD.role
+       OR NEW.email IS DISTINCT FROM OLD.email
+       OR NEW.auth_provider IS DISTINCT FROM OLD.auth_provider
+       OR NEW.id IS DISTINCT FROM OLD.id THEN
+      RAISE EXCEPTION 'Protected profile fields cannot be modified by users';
     END IF;
   END IF;
+
   NEW.updated_at := timezone('utc'::text, now());
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$ LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, auth;
 
 DROP TRIGGER IF EXISTS tr_protect_profile_role ON public.profiles;
-CREATE TRIGGER tr_protect_profile_role
+DROP TRIGGER IF EXISTS tr_protect_profile_fields ON public.profiles;
+CREATE TRIGGER tr_protect_profile_fields
   BEFORE UPDATE ON public.profiles
   FOR EACH ROW
-  EXECUTE FUNCTION public.protect_profile_role();
+  EXECUTE FUNCTION public.protect_profile_fields();
 
 -- 4. Trigger to automatically provision a profile on auth.users sign-up
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -148,7 +157,8 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$ LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, auth;
 
 -- Bind trigger to auth.users
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
