@@ -2,7 +2,9 @@ import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { api } from '../api/client';
-import { supabase } from '../lib/supabase';
+import { useBrowserDraft } from '../hooks/useBrowserDraft';
+import { useTheme } from '../context/ThemeContext';
+import { problemLevel, levelBadge } from '../lib/levels';
 import { useAuth } from '../context/AuthContext';
 import {
   Play, Send, RotateCcw, ChevronDown, Clock, HardDrive, CheckCircle2,
@@ -27,12 +29,6 @@ const verdictStyle: Record<string, string> = {
   'Memory Limit Exceeded': 'text-purple-400 bg-purple-500/10 border-purple-500/30',
 };
 
-const diffBadge: Record<string, string> = {
-  Easy: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
-  Medium: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
-  Hard: 'text-rose-400 bg-rose-500/10 border-rose-500/30',
-};
-
 export const ProblemPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -41,7 +37,12 @@ export const ProblemPage: React.FC = () => {
   const [problem, setProblem] = useState<any>(null);
   const [loadError, setLoadError] = useState('');
   const [language, setLanguage] = useState('python');
-  const [code, setCode] = useState('');
+  const { theme } = useTheme();
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const draft = useBrowserDraft(user?.id, slug || '', language);
+  const code = draft.code;
+  const draftState = draft.saved ? 'saved' : 'error';
+  const draftMessage = draft.saved ? (code ? 'Saved in this browser' : 'Browser autosave on') : 'Browser save failed — copy your code';
   const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<any>(null);
@@ -49,30 +50,27 @@ export const ProblemPage: React.FC = () => {
   const [resultTab, setResultTab] = useState<'result' | 'custom'>('result');
   const [customInput, setCustomInput] = useState('');
   const [panelSplit, setPanelSplit] = useState(45); // percentage for left panel
-  const [savingCode, setSavingCode] = useState(false);
-  const [draftState, setDraftState] = useState<'idle' | 'loading' | 'dirty' | 'saved' | 'error'>('idle');
-  const [draftMessage, setDraftMessage] = useState('');
-
   // Top Questions Navigation State
   const [allProblems, setAllProblems] = useState<any[]>([]);
   const [showPicker, setShowPicker] = useState(false);
   const [pickerSearch, setPickerSearch] = useState('');
-  const [pickerFilter, setPickerFilter] = useState<'all' | 'level2' | 'level3' | 'Easy' | 'Medium' | 'Hard'>('all');
+  const [pickerFilter, setPickerFilter] = useState<'all' | 'Level 2' | 'Level 3'>('all');
   const activePillRef = useRef<HTMLAnchorElement>(null);
   const pillsContainerRef = useRef<HTMLDivElement>(null);
 
   // Fetch complete catalog for top navigation
   useEffect(() => {
+    let active = true;
     api.getProblems().then(res => {
-      setAllProblems(res.problems || []);
+      if (active) setAllProblems(res.problems || []);
     }).catch(() => {});
-  }, []);
+    return () => { active = false; };
+  }, [user?.id]);
 
   // Fetch current problem details on slug change
   useEffect(() => {
     let cancelled = false;
     setProblem(null);
-    setCode('');
     setResult(null);
     setCustomInput('');
     setLoadError('');
@@ -85,59 +83,12 @@ export const ProblemPage: React.FC = () => {
       });
     }
     return () => { cancelled = true; };
-  }, [slug]);
-
-  // Load the signed-in user's saved draft for this problem + language.
-  useEffect(() => {
-    let cancelled = false;
-
-    if (!slug) return;
-
-    if (!user) {
-      setDraftState('idle');
-      setDraftMessage('');
-      return;
-    }
-
-    setDraftState('loading');
-    setDraftMessage('Loading saved code...');
-
-    supabase
-      .from('saved_code')
-      .select('code, updated_at')
-      .eq('user_id', user.id)
-      .eq('problem_slug', slug)
-      .eq('language', language)
-      .maybeSingle()
-      .then(({ data, error }) => {
-        if (cancelled) return;
-
-        if (error) {
-          setDraftState('error');
-          setDraftMessage('Could not load saved code');
-          return;
-        }
-
-        if (data) {
-          setCode(data.code || '');
-          setDraftState('saved');
-          setDraftMessage('Saved code restored');
-        } else {
-          setCode('');
-          setDraftState('idle');
-          setDraftMessage('');
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [slug, language, user?.id]);
+  }, [slug, user?.id]);
 
   // Auto-scroll active question pill into view in the top bar
   useEffect(() => {
     if (activePillRef.current) {
-      activePillRef.current.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      activePillRef.current.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
     }
   }, [slug, allProblems]);
 
@@ -159,9 +110,7 @@ export const ProblemPage: React.FC = () => {
   // Filtered list for the question drawer/picker
   const filteredPickerProblems = useMemo(() => {
     return allProblems.filter(p => {
-      if (pickerFilter === 'level2' && p.problem_number > 57) return false;
-      if (pickerFilter === 'level3' && p.problem_number <= 57) return false;
-      if (['Easy', 'Medium', 'Hard'].includes(pickerFilter) && p.difficulty !== pickerFilter) return false;
+      if (pickerFilter !== 'all' && problemLevel(p) !== pickerFilter) return false;
       if (pickerSearch) {
         const query = pickerSearch.toLowerCase();
         const matchesTitle = p.title.toLowerCase().includes(query);
@@ -175,58 +124,11 @@ export const ProblemPage: React.FC = () => {
 
   const switchLanguage = useCallback((lang: string) => {
     setLanguage(lang);
-    setCode('');
     setResult(null);
   }, []);
 
-  const handleCodeChange = (value: string | undefined) => {
-    setCode(value || '');
-    if (draftState !== 'loading') {
-      setDraftState('dirty');
-      setDraftMessage(user ? 'Unsaved changes' : 'Sign in to save');
-    }
-  };
-
-  const handleSaveCode = async () => {
-    if (!slug) return;
-
-    if (!user) {
-      navigate('/login', { state: { from: `/problem/${slug}` } });
-      return;
-    }
-
-    setSavingCode(true);
-    setDraftState('loading');
-    setDraftMessage('Saving...');
-
-    try {
-      const { error } = await supabase
-        .from('saved_code')
-        .upsert(
-          {
-            user_id: user.id,
-            problem_slug: slug,
-            language,
-            code,
-            updated_at: new Date().toISOString(),
-          },
-          {
-            onConflict: 'user_id,problem_slug,language',
-          }
-        );
-
-      if (error) throw error;
-
-      setDraftState('saved');
-      setDraftMessage('Saved');
-    } catch (err) {
-      console.error('Save code failed:', err);
-      setDraftState('error');
-      setDraftMessage('Save failed');
-    } finally {
-      setSavingCode(false);
-    }
-  };
+  const handleCodeChange = (value: string | undefined) => draft.update(value || '');
+  const handleSaveCode = () => draft.save();
 
   const handleRun = async () => {
     if (!slug) return;
@@ -265,7 +167,7 @@ export const ProblemPage: React.FC = () => {
 
   const handleReset = () => {
     if (problem) {
-      setCode('');
+      draft.update('');
       setResult(null);
     }
   };
@@ -281,20 +183,20 @@ export const ProblemPage: React.FC = () => {
   }
 
   const monacoLang = LANG_OPTIONS.find(l => l.value === language)?.monacoLang || 'python';
-  const diffClass = problem.difficulty === 'Easy' ? 'text-emerald-400' : problem.difficulty === 'Medium' ? 'text-amber-400' : 'text-rose-400';
+  const diffClass = levelBadge[problemLevel(problem)];
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col overflow-hidden bg-dark-950 relative">
+    <div className="problem-workspace flex flex-col bg-dark-950 relative animate-fade-in">
       {/* ======================================================== */}
       {/* TOP SECTION: QUESTION NAVIGATOR & QUICK ACCESS CAROUSEL */}
       {/* ======================================================== */}
       <section className="shrink-0 border-b border-dark-700/80 bg-dark-900/95 backdrop-blur-md px-3 py-1.5 z-30 shadow-md shadow-black/20">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           {/* Left Controls: Catalog link + Prev/Next + Question Selector */}
-          <div className="flex items-center space-x-1.5 shrink-0">
+          <div className="flex items-center space-x-1.5 min-w-0">
             <Link
               to="/"
-              className="p-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 text-slate-400 hover:text-white border border-dark-700/60 transition-colors"
+              className="p-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 text-slate-400 hover:text-strong border border-dark-700/60 transition-colors"
               title="Back to all problems"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -303,7 +205,7 @@ export const ProblemPage: React.FC = () => {
             <button
               onClick={() => prevProblem && navigate(`/problem/${prevProblem.slug}`)}
               disabled={!prevProblem}
-              className="p-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 text-slate-400 hover:text-white border border-dark-700/60 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="p-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 text-slate-400 hover:text-strong border border-dark-700/60 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               title={prevProblem ? `Previous: #${prevProblem.problem_number} ${prevProblem.title}` : 'First problem'}
             >
               <ChevronLeft className="w-4 h-4" />
@@ -312,7 +214,7 @@ export const ProblemPage: React.FC = () => {
             <button
               onClick={() => nextProblem && navigate(`/problem/${nextProblem.slug}`)}
               disabled={!nextProblem}
-              className="p-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 text-slate-400 hover:text-white border border-dark-700/60 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="p-1.5 rounded-lg bg-dark-850 hover:bg-dark-800 text-slate-400 hover:text-strong border border-dark-700/60 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               title={nextProblem ? `Next: #${nextProblem.problem_number} ${nextProblem.title}` : 'Last problem'}
             >
               <ChevronRight className="w-4 h-4" />
@@ -321,13 +223,13 @@ export const ProblemPage: React.FC = () => {
             {/* Question Selector Trigger Button */}
             <button
               onClick={() => setShowPicker(!showPicker)}
-              className="flex items-center space-x-2 px-3 py-1 rounded-lg bg-dark-850 hover:bg-dark-800 border border-dark-700 text-xs font-semibold text-white transition-all group"
+              className="flex min-w-0 items-center space-x-2 px-3 py-1 rounded-lg bg-dark-850 hover:bg-dark-800 border border-dark-700 text-xs font-semibold text-strong transition-all group"
             >
               <Layers className="w-3.5 h-3.5 text-indigo-400 group-hover:scale-110 transition-transform" />
               <span className="font-mono text-indigo-300">#{problem.problem_number}</span>
               <span className="truncate max-w-[130px] sm:max-w-[200px] text-slate-200">{problem.title}</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded border ${diffBadge[problem.difficulty] || 'text-slate-400'}`}>
-                {problem.difficulty}
+              <span className={`text-[10px] px-1.5 py-0.2 rounded border ${levelBadge[problemLevel(problem)] || 'text-slate-400'}`}>
+                {problemLevel(problem)}
               </span>
               <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${showPicker ? 'rotate-180' : ''}`} />
             </button>
@@ -346,7 +248,7 @@ export const ProblemPage: React.FC = () => {
                   key={p.id}
                   ref={isCurrent ? activePillRef : null}
                   to={`/problem/${p.slug}`}
-                  title={`#${p.problem_number}: ${p.title} (${p.difficulty})`}
+                  title={`#${p.problem_number}: ${p.title} (${problemLevel(p)})`}
                   className={`shrink-0 px-2 py-0.5 rounded-md text-[11px] font-mono font-medium transition-all flex items-center space-x-1 ${
                     isCurrent
                       ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 scale-105 border border-indigo-400'
@@ -385,13 +287,13 @@ export const ProblemPage: React.FC = () => {
             {/* Header + Search */}
             <div className="p-3 border-b border-dark-700 bg-dark-850 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-white flex items-center space-x-1.5">
+                <span className="text-xs font-bold text-strong flex items-center space-x-1.5">
                   <Layers className="w-4 h-4 text-indigo-400" />
                   <span>Question Catalog ({allProblems.length})</span>
                 </span>
                 <button
                   onClick={() => setShowPicker(false)}
-                  className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-dark-800 transition-colors"
+                  className="p-1 rounded-md text-slate-400 hover:text-strong hover:bg-dark-800 transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -405,13 +307,13 @@ export const ProblemPage: React.FC = () => {
                   placeholder="Search questions by title, number, or topic..."
                   value={pickerSearch}
                   onChange={e => setPickerSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-1.5 bg-dark-950 border border-dark-700 rounded-lg text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  className="w-full pl-9 pr-3 py-1.5 bg-dark-950 border border-dark-700 rounded-lg text-xs text-strong placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                 />
               </div>
 
               {/* Filter Tabs */}
               <div className="flex gap-1 overflow-x-auto no-scrollbar pt-1">
-                {(['all', 'level2', 'level3', 'Easy', 'Medium', 'Hard'] as const).map(tab => (
+                {(['all', 'Level 2', 'Level 3'] as const).map(tab => (
                   <button
                     key={tab}
                     onClick={() => setPickerFilter(tab)}
@@ -421,7 +323,7 @@ export const ProblemPage: React.FC = () => {
                         : 'bg-dark-950 text-slate-400 hover:text-slate-200 border border-dark-700/60'
                     }`}
                   >
-                    {tab === 'all' ? 'All (109)' : tab === 'level2' ? 'Level 2 (1-57)' : tab === 'level3' ? 'Level 3 Arrays (58-109)' : tab}
+                    {tab === 'all' ? `All (${allProblems.length})` : `${tab} (${allProblems.filter(p => problemLevel(p) === tab).length})`}
                   </button>
                 ))}
               </div>
@@ -454,8 +356,8 @@ export const ProblemPage: React.FC = () => {
                       </div>
                       <div className="flex items-center space-x-1.5 shrink-0">
                         {isSolved && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
-                        <span className={`text-[10px] px-1.5 py-0.2 rounded border ${diffBadge[p.difficulty] || 'text-slate-400'}`}>
-                          {p.difficulty}
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded border ${levelBadge[problemLevel(p)] || 'text-slate-400'}`}>
+                          {problemLevel(p)}
                         </span>
                       </div>
                     </button>
@@ -470,11 +372,11 @@ export const ProblemPage: React.FC = () => {
       {/* ======================================================== */}
       {/* MAIN TWO-PANE CONTENT: PROBLEM VIEW + MONACO EDITOR */}
       {/* ======================================================== */}
-      <div className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden">
+      <div className="problem-panels flex-1 flex flex-col lg:flex-row min-h-0">
         {/* Left Panel — Problem Description */}
         <div
-          className="lg:border-r border-dark-700/80 overflow-y-auto bg-dark-950"
-          style={{ width: `${panelSplit}%`, minWidth: 320 }}
+          className="problem-description lg:border-r border-dark-700/80 overflow-y-auto bg-dark-950"
+          style={{ "--description-width": `${panelSplit}%` } as React.CSSProperties}
         >
           <div className="p-6">
             {/* Title & Meta */}
@@ -482,9 +384,9 @@ export const ProblemPage: React.FC = () => {
               <div className="flex items-center space-x-3 mb-2">
                 <span className="text-sm font-mono text-slate-500">#{problem.problem_number}</span>
                 <span className={`px-2.5 py-0.5 rounded-md text-xs font-semibold border ${
-                  verdictStyle[problem.difficulty] || 'border-dark-700'
+                  levelBadge[problemLevel(problem)] || 'border-dark-700'
                 } ${diffClass}`}>
-                  {problem.difficulty}
+                  {problemLevel(problem)}
                 </span>
                 {problem.category && (
                   <span className="text-xs text-slate-400 bg-dark-850 border border-dark-700/60 px-2 py-0.5 rounded-md">
@@ -492,7 +394,7 @@ export const ProblemPage: React.FC = () => {
                   </span>
                 )}
               </div>
-              <h1 className="text-xl font-bold text-white leading-tight">{problem.title}</h1>
+              <h1 className="text-xl font-bold text-strong leading-tight">{problem.title}</h1>
             </div>
 
             {/* Tags */}
@@ -593,9 +495,9 @@ export const ProblemPage: React.FC = () => {
         </div>
 
         {/* Right Panel — Code Editor + Results */}
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div className="problem-editor flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Editor Toolbar */}
-          <div className="flex items-center justify-between px-4 py-2 bg-dark-900 border-b border-dark-700/80">
+          <div className="flex flex-wrap gap-2 items-center justify-between px-3 py-2 bg-dark-900 border-b border-dark-700/80">
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-1.5">
                 <FileCode2 className="w-4 h-4 text-indigo-400" />
@@ -615,13 +517,11 @@ export const ProblemPage: React.FC = () => {
             </div>
             <div className="flex items-center space-x-2">
               {draftMessage && (
-                <span className={`hidden sm:inline text-[11px] ${
+                <span role="status" className={`text-[11px] ${
                   draftState === 'saved'
                     ? 'text-emerald-400'
                     : draftState === 'error'
                     ? 'text-rose-400'
-                    : draftState === 'dirty'
-                    ? 'text-amber-400'
                     : 'text-slate-500'
                 }`}>
                   {draftMessage}
@@ -629,12 +529,11 @@ export const ProblemPage: React.FC = () => {
               )}
               <button
                 onClick={handleSaveCode}
-                disabled={savingCode || draftState === 'loading'}
                 className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-xs text-indigo-300 hover:bg-indigo-500/20 hover:text-indigo-200 transition-all disabled:opacity-50"
-                title={user ? 'Save code for this problem and language' : 'Sign in to save your code'}
+                title="Save this account’s code in this browser"
               >
-                {savingCode ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-                <span className="hidden sm:inline">{savingCode ? 'Saving...' : 'Save'}</span>
+                <Save className="w-3.5 h-3.5" />
+                <span>Save</span>
               </button>
               <button
                 onClick={handleReset}
@@ -646,12 +545,15 @@ export const ProblemPage: React.FC = () => {
             </div>
           </div>
 
+          <p className="px-3 py-1.5 bg-dark-900 border-b border-dark-700 text-[10px] text-slate-500">
+            {user ? `Drafts for ${user.username}` : 'Guest drafts'} · Separate saves per question and language · Browser only
+          </p>
           {/* Monaco Editor */}
           <div className="flex-1 min-h-0">
             <Editor
               height="100%"
               language={monacoLang}
-              theme="vs-dark"
+              theme={theme === 'dark' ? 'vs-dark' : 'light'}
               value={code}
               onChange={handleCodeChange}
               options={{
@@ -663,9 +565,9 @@ export const ProblemPage: React.FC = () => {
                 padding: { top: 12 },
                 lineNumbers: 'on',
                 renderLineHighlight: 'all',
-                cursorBlinking: 'smooth',
-                cursorSmoothCaretAnimation: 'on',
-                smoothScrolling: true,
+                cursorBlinking: reducedMotion ? 'solid' : 'smooth',
+                cursorSmoothCaretAnimation: reducedMotion ? 'off' : 'on',
+                smoothScrolling: !reducedMotion,
                 wordWrap: 'on',
                 tabSize: 4,
                 formatOnPaste: true,
@@ -674,7 +576,7 @@ export const ProblemPage: React.FC = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between px-4 py-2.5 bg-dark-900 border-t border-dark-700/80">
+          <div className="flex flex-wrap gap-2 items-center justify-between px-3 py-2.5 bg-dark-900 border-t border-dark-700/80">
             <div className="flex items-center space-x-2">
               {/* Custom Input Toggle */}
               <button

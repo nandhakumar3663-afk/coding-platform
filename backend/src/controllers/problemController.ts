@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { levelMetadata } from '../catalog/levels.js';
 import { queryAll, queryOne, execute } from '../models/db.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { judgeSubmission } from '../judges/judgeService.js';
@@ -55,6 +56,7 @@ export async function getProblems(req: AuthRequest, res: Response): Promise<void
       [p.id]
     );
     p.tags = tags;
+    Object.assign(p, levelMetadata(p));
   }
 
   // Filter by tag in memory if specified
@@ -132,6 +134,7 @@ export async function getProblemBySlug(req: AuthRequest, res: Response): Promise
   res.json({
     problem: {
       ...problem,
+      ...levelMetadata(problem),
       examples,
       tags,
       sampleTestCases,

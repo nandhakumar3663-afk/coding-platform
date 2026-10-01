@@ -108,6 +108,7 @@ export const api = {
     }),
 
   // User
+  getLeaderboard: (offset = 0) => request<{ entries: any[]; totalUsers: number; currentUser: any }>(`/user/leaderboard?limit=50&offset=${offset}`),
   getUserProgress: () => request<{ stats: any }>('/user/progress'),
 
   // Submissions

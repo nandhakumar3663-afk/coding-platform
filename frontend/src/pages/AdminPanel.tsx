@@ -1,3 +1,4 @@
+import { problemLevel, levelBadge } from '../lib/levels';
 import React, { useEffect, useState } from 'react';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
@@ -89,7 +90,7 @@ export const AdminPanel: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center space-x-2">
+          <h1 className="text-2xl font-bold text-strong flex items-center space-x-2">
             <ShieldCheck className="w-6 h-6 text-amber-400" /><span>Admin Panel</span>
           </h1>
           <p className="text-sm text-slate-400 mt-1">Manage problems, generate test cases, view analytics</p>
@@ -109,7 +110,7 @@ export const AdminPanel: React.FC = () => {
               <div className={`flex items-center space-x-2 ${card.color} text-xs font-medium mb-1`}>
                 <card.icon className="w-4 h-4" /><span>{card.label}</span>
               </div>
-              <div className="text-2xl font-bold text-white">{card.value}</div>
+              <div className="text-2xl font-bold text-strong">{card.value}</div>
             </div>
           ))}
         </div>
@@ -142,10 +143,8 @@ export const AdminPanel: React.FC = () => {
                   <span className="text-xs font-mono text-slate-500 w-6 shrink-0">#{p.problem_number}</span>
                   <span className="text-sm text-slate-200 truncate">{p.title}</span>
                   <span className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-semibold border ${
-                    p.difficulty === 'Easy' ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' :
-                    p.difficulty === 'Medium' ? 'text-amber-400 border-amber-500/30 bg-amber-500/10' :
-                    'text-rose-400 border-rose-500/30 bg-rose-500/10'
-                  }`}>{p.difficulty}</span>
+                    levelBadge[problemLevel(p)]
+                  }`}>{problemLevel(p)}</span>
                 </div>
                 <div className="flex items-center space-x-2 shrink-0">
                   <span className="text-[10px] text-slate-500 font-mono">{p.test_case_count} TC</span>

@@ -44,7 +44,7 @@ export const ForgotPasswordPage: React.FC = () => {
           <div className="inline-flex p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 mb-3">
             <Mail className="h-6 w-6" />
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Reset Password</h1>
+          <h1 className="text-2xl font-bold text-strong tracking-tight">Reset Password</h1>
           <p className="text-xs text-slate-400 mt-1">
             Enter your registered email and we'll send you instructions to reset your password.
           </p>
@@ -61,9 +61,9 @@ export const ForgotPasswordPage: React.FC = () => {
             <div className="inline-flex p-3 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mb-3">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h2 className="text-base font-semibold text-white mb-2">Check your email</h2>
+            <h2 className="text-base font-semibold text-strong mb-2">Check your email</h2>
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-              If an account with <strong className="text-white">{email}</strong> exists, we have sent a secure link to reset your password.
+              If an account with <strong className="text-strong">{email}</strong> exists, we have sent a secure link to reset your password.
             </p>
             <Link
               to="/login"
@@ -89,7 +89,7 @@ export const ForgotPasswordPage: React.FC = () => {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                  className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-4 py-2.5 text-sm text-strong placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
                 />
               </div>
             </div>

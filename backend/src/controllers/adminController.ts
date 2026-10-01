@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { levelMetadata } from '../catalog/levels.js';
 import { queryAll, queryOne, execute } from '../models/db.js';
 import { generateAndStoreTestCases } from '../test-generator/testCaseGenerator.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,6 +15,7 @@ export function getAdminProblems(req: Request, res: Response): void {
   `);
 
   for (const p of problems) {
+    Object.assign(p, levelMetadata(p));
     p.tags = queryAll(
       `SELECT t.id, t.name, t.slug 
        FROM tags t 

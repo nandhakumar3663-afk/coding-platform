@@ -61,7 +61,7 @@ export const LoginPage: React.FC = () => {
               <span className="text-xs uppercase tracking-widest font-bold text-indigo-300">AlgoSphere Judge</span>
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-strong leading-tight tracking-tight">
               A blank editor.<br />
               <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
                 A new challenge.
@@ -76,11 +76,11 @@ export const LoginPage: React.FC = () => {
           <div className="space-y-4 pt-6 border-t border-dark-700/60">
             <div className="grid grid-cols-2 gap-4">
               <div className="p-3 rounded-xl bg-dark-850/60 border border-dark-700/60">
-                <strong className="block text-2xl font-bold text-white">109</strong>
+                <strong className="block text-2xl font-bold text-strong">109</strong>
                 <span className="text-xs text-slate-400">Curated Problems</span>
               </div>
               <div className="p-3 rounded-xl bg-dark-850/60 border border-dark-700/60">
-                <strong className="block text-2xl font-bold text-white">4</strong>
+                <strong className="block text-2xl font-bold text-strong">4</strong>
                 <span className="text-xs text-slate-400">Core Compilers</span>
               </div>
             </div>
@@ -98,7 +98,7 @@ export const LoginPage: React.FC = () => {
         <section className="p-8 md:p-12 flex flex-col justify-between">
           <div>
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-white tracking-tight">Welcome Back</h2>
+              <h2 className="text-2xl font-bold text-strong tracking-tight">Welcome Back</h2>
               <p className="text-xs text-slate-400 mt-1">Sign in with your email or continue with Google.</p>
             </div>
 
@@ -124,7 +124,7 @@ export const LoginPage: React.FC = () => {
                     value={identifier}
                     onChange={e => setIdentifier(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                    className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-4 py-2.5 text-sm text-strong placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
                   />
                 </div>
               </div>
@@ -151,7 +151,7 @@ export const LoginPage: React.FC = () => {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-10 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
+                    className="w-full rounded-xl bg-dark-950/80 border border-dark-700/80 pl-10 pr-10 py-2.5 text-sm text-strong placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all"
                   />
                   <button
                     type="button"

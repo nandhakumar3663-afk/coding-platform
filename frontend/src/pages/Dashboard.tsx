@@ -7,14 +7,14 @@ import {
 } from 'lucide-react';
 
 const diffBg: Record<string, string> = {
-  easy: 'from-emerald-600 to-emerald-500',
-  medium: 'from-amber-600 to-amber-500',
-  hard: 'from-rose-600 to-rose-500',
+  'Level 2': 'from-emerald-600 to-emerald-500',
+  'Level 3': 'from-amber-600 to-amber-500',
+  Practice: 'from-rose-600 to-rose-500',
 };
 const diffTrack: Record<string, string> = {
-  easy: 'bg-emerald-500/20',
-  medium: 'bg-amber-500/20',
-  hard: 'bg-rose-500/20',
+  'Level 2': 'bg-emerald-500/20',
+  'Level 3': 'bg-amber-500/20',
+  Practice: 'bg-rose-500/20',
 };
 
 export const Dashboard: React.FC = () => {
@@ -57,40 +57,40 @@ export const Dashboard: React.FC = () => {
   const solvedPct = Math.round((totalSolved / totalProblems) * 100);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-strong">Dashboard</h1>
         <p className="text-sm text-slate-400 mt-1">Welcome back, <span className="text-indigo-400 font-semibold">{user.username}</span></p>
       </div>
 
       {/* Top row stat cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 stagger-cards">
         <div className="bg-dark-900 border border-dark-700 rounded-xl p-5 hover:border-dark-600 transition-colors">
           <div className="flex items-center space-x-2 text-indigo-400 text-xs font-medium mb-2">
             <Target className="w-4 h-4" /><span>Solved</span>
           </div>
-          <div className="text-3xl font-bold text-white">{totalSolved}</div>
+          <div className="text-3xl font-bold text-strong">{totalSolved}</div>
           <div className="text-xs text-slate-500 mt-1">of {totalProblems} total</div>
         </div>
         <div className="bg-dark-900 border border-dark-700 rounded-xl p-5 hover:border-dark-600 transition-colors">
           <div className="flex items-center space-x-2 text-cyan-400 text-xs font-medium mb-2">
             <Activity className="w-4 h-4" /><span>Attempted</span>
           </div>
-          <div className="text-3xl font-bold text-white">{stats.totalAttempted}</div>
+          <div className="text-3xl font-bold text-strong">{stats.totalAttempted}</div>
           <div className="text-xs text-slate-500 mt-1">still in progress</div>
         </div>
         <div className="bg-dark-900 border border-dark-700 rounded-xl p-5 hover:border-dark-600 transition-colors">
           <div className="flex items-center space-x-2 text-emerald-400 text-xs font-medium mb-2">
             <TrendingUp className="w-4 h-4" /><span>Accuracy</span>
           </div>
-          <div className="text-3xl font-bold text-white">{stats.accuracy}%</div>
+          <div className="text-3xl font-bold text-strong">{stats.accuracy}%</div>
           <div className="text-xs text-slate-500 mt-1">acceptance rate</div>
         </div>
         <div className="bg-dark-900 border border-dark-700 rounded-xl p-5 hover:border-dark-600 transition-colors">
           <div className="flex items-center space-x-2 text-purple-400 text-xs font-medium mb-2">
             <Code2 className="w-4 h-4" /><span>Submissions</span>
           </div>
-          <div className="text-3xl font-bold text-white">{stats.totalSubmissions}</div>
+          <div className="text-3xl font-bold text-strong">{stats.totalSubmissions}</div>
           <div className="text-xs text-slate-500 mt-1">total attempts</div>
         </div>
       </div>
@@ -99,19 +99,19 @@ export const Dashboard: React.FC = () => {
         {/* Progress by difficulty */}
         <div className="lg:col-span-2 bg-dark-900 border border-dark-700 rounded-xl p-6">
           <h2 className="text-sm font-semibold text-slate-300 mb-5 flex items-center space-x-2">
-            <BarChart3 className="w-4 h-4 text-indigo-400" /><span>Progress by Difficulty</span>
+            <BarChart3 className="w-4 h-4 text-indigo-400" /><span>Progress by Level</span>
           </h2>
           <div className="space-y-5">
-            {(['easy', 'medium', 'hard'] as const).map(key => {
-              const d = stats.difficulty[key];
+            {Object.keys(stats.levels || {}).map(key => {
+              const d = stats.levels[key];
               const pct = d.total > 0 ? Math.round((d.solved / d.total) * 100) : 0;
-              const label = key.charAt(0).toUpperCase() + key.slice(1);
-              const Icon = key === 'easy' ? Zap : key === 'medium' ? Flame : Trophy;
+              const label = key;
+              const Icon = key === 'Level 2' ? Zap : key === 'Level 3' ? Flame : Trophy;
               return (
                 <div key={key}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
-                      <Icon className={`w-4 h-4 ${key === 'easy' ? 'text-emerald-400' : key === 'medium' ? 'text-amber-400' : 'text-rose-400'}`} />
+                      <Icon className={`w-4 h-4 ${key === 'Level 2' ? 'text-emerald-400' : key === 'Level 3' ? 'text-amber-400' : 'text-rose-400'}`} />
                       <span className="text-sm font-medium text-slate-300">{label}</span>
                     </div>
                     <span className="text-sm font-mono text-slate-400">{d.solved} / {d.total}</span>
@@ -146,7 +146,7 @@ export const Dashboard: React.FC = () => {
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold text-white">{solvedPct}%</span>
+                <span className="text-2xl font-bold text-strong">{solvedPct}%</span>
                 <span className="text-[10px] text-slate-500 uppercase tracking-wider">Complete</span>
               </div>
             </div>
