@@ -158,3 +158,65 @@ test('admin regeneration uses curated array inputs and preserves hidden visibili
   assert.equal(result.data.testCases.filter(t => t.isHidden).length, p.tests.length - 1);
   assert.deepEqual(result.data.testCases.map(t => t.expectedOutput), p.tests.map(t => t.expected_output));
 });
+
+test('level metadata reflects the PDF catalog and dashboard groups by source level', async () => {
+  const { data } = await request('/problems', student.token);
+  assert.equal(data.problems.filter(p => p.level === 'Level 2').length, 57);
+  assert.equal(data.problems.filter(p => p.level === 'Level 3').length, 52);
+  const firstArray = data.problems.find(p => p.level === 'Level 3');
+  assert.equal(firstArray.level_question_number, 1);
+  const details = await request('/problems/' + firstArray.slug, student.token);
+  assert.equal(details.data.problem.level, 'Level 3');
+  const progress = await request('/user/progress', student.token);
+  assert.equal(progress.data.stats.levels['Level 2'].total, 57);
+  assert.equal(progress.data.stats.levels['Level 3'].total, 52);
+});
+
+test('global leaderboard scores unique published solves, shares tied ranks, paginates, and excludes private fields', async () => {
+  await request(`/problems/${catalog[0].slug}/submit`, student.token, { language: 'python', code: catalog[0].reference_solution });
+  const ids = ['leaderboard-alice', 'leaderboard-bob', 'leaderboard-carol'];
+  const l2 = queryOne('SELECT id FROM problems WHERE slug=?', [catalog.find(p => p.source === 'Level 2').slug]).id;
+  const l3 = queryOne('SELECT id FROM problems WHERE slug=?', [catalog.find(p => p.source === 'Level 3').slug]).id;
+  const hidden = queryOne('SELECT id FROM problems WHERE slug=?', [catalog.find(p => p.source === 'Level 3' && p.source_number === 2).slug]).id;
+  try {
+    for (const id of ids) execute('INSERT INTO users (id, username, email, role) VALUES (?, ?, ?, ?)', [id, id, id + '@test.local', 'student']);
+    for (const id of ids.slice(0, 2)) for (const problem of [l2, l3]) execute("INSERT INTO user_progress (user_id, problem_id, status) VALUES (?, ?, 'solved')", [id, problem]);
+    execute("INSERT INTO user_progress (user_id, problem_id, status) VALUES (?, ?, 'solved')", [ids[2], l2]);
+    execute("INSERT INTO user_progress (user_id, problem_id, status) VALUES (?, ?, 'attempted')", [ids[2], l3]);
+    execute('UPDATE problems SET is_published=0 WHERE id=?', [hidden]);
+    execute("INSERT INTO user_progress (user_id, problem_id, status) VALUES (?, ?, 'solved')", [ids[0], hidden]);
+    const result = await request('/user/leaderboard', student.token);
+    assert.equal(result.status, 200);
+    const alice = result.data.entries.find(e => e.user_id === ids[0]);
+    const bob = result.data.entries.find(e => e.user_id === ids[1]);
+    const carol = result.data.entries.find(e => e.user_id === ids[2]);
+    assert.equal(alice.points, 30);
+    assert.equal(alice.solved, 2);
+    assert.equal(alice.level2_solved, 1);
+    assert.equal(alice.level3_solved, 1);
+    assert.equal(alice.rank, bob.rank);
+    assert.equal(carol.points, 10);
+    assert.ok(carol.rank > alice.rank);
+    assert.equal(result.data.currentUser.user_id, student.user.id);
+    assert.equal(result.data.entries.some(e => e.user_id === admin.user.id), false);
+    for (const entry of result.data.entries) {
+      assert.equal(entry.email, undefined);
+      assert.equal(entry.password_hash, undefined);
+      assert.equal(entry.code, undefined);
+    }
+    const publicResult = await request('/user/leaderboard');
+    assert.equal(publicResult.status, 200);
+    assert.equal(publicResult.data.currentUser, null);
+    const paged = await request('/user/leaderboard?limit=1&offset=1');
+    assert.deepEqual(paged.data.entries, publicResult.data.entries.slice(1, 2));
+    for (const query of ['limit=0', 'limit=101', 'limit=oops', 'offset=-1', 'offset=1.5']) assert.equal((await request('/user/leaderboard?' + query)).status, 400);
+    // Re-submitting an already accepted problem cannot add points.
+    const scoreBefore = result.data.currentUser.points;
+    const p = catalog[0];
+    await request(`/problems/${p.slug}/submit`, student.token, { language: 'python', code: p.reference_solution });
+    assert.equal((await request('/user/leaderboard', student.token)).data.currentUser.points, scoreBefore);
+  } finally {
+    execute('UPDATE problems SET is_published=1 WHERE id=?', [hidden]);
+    for (const id of ids) execute('DELETE FROM users WHERE id=?', [id]);
+  }
+});

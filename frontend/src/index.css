@@ -87,3 +87,70 @@
   border-radius: 0.5rem;
 }
 
+
+/* Semantic palettes let existing utility classes work in both themes. */
+:root {
+  color-scheme: dark;
+  --dark-950: 10 13 20; --dark-900: 15 20 31; --dark-850: 19 26 41;
+  --dark-800: 24 32 51; --dark-700: 35 45 69; --dark-600: 51 65 85;
+  --text-strong: 248 250 252;
+  --slate-50: 248 250 252; --slate-100: 241 245 249; --slate-200: 226 232 240;
+  --slate-300: 203 213 225; --slate-400: 148 163 184; --slate-500: 100 116 139;
+  --slate-600: 71 85 105; --slate-700: 51 65 85; --slate-800: 30 41 59; --slate-900: 15 23 42; --slate-950: 2 6 23;
+  --indigo-200: 199 210 254; --indigo-300: 165 180 252; --indigo-400: 129 140 248;
+  --cyan-200: 165 243 252; --cyan-300: 103 232 249; --cyan-400: 34 211 238;
+  --emerald-200: 167 243 208; --emerald-300: 110 231 183; --emerald-400: 52 211 153;
+  --amber-200: 253 230 138; --amber-300: 252 211 77; --amber-400: 251 191 36;
+  --rose-200: 254 205 211; --rose-300: 253 164 175; --rose-400: 251 113 133;
+  --orange-200: 254 215 170; --orange-300: 253 186 116; --orange-400: 251 146 60;
+  --yellow-200: 254 240 138; --yellow-300: 253 224 71; --yellow-400: 250 204 21;
+  --purple-200: 233 213 255; --purple-300: 216 180 254; --purple-400: 192 132 252;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+  --dark-950: 246 248 252; --dark-900: 255 255 255; --dark-850: 241 245 249;
+  --dark-800: 235 240 248; --dark-700: 218 226 237; --dark-600: 180 194 212;
+  --text-strong: 15 23 42;
+  --slate-50: 15 23 42; --slate-100: 15 23 42; --slate-200: 30 41 59;
+  --slate-300: 51 65 85; --slate-400: 71 85 105; --slate-500: 91 107 129;
+  --slate-600: 100 116 139; --slate-700: 148 163 184; --slate-800: 203 213 225; --slate-900: 226 232 240; --slate-950: 248 250 252;
+  --indigo-200: 67 56 202; --indigo-300: 79 70 229; --indigo-400: 79 70 229;
+  --cyan-200: 14 116 144; --cyan-300: 14 116 144; --cyan-400: 14 116 144;
+  --emerald-200: 4 120 87; --emerald-300: 4 120 87; --emerald-400: 4 120 87;
+  --amber-200: 146 64 14; --amber-300: 146 64 14; --amber-400: 146 64 14;
+  --rose-200: 190 18 60; --rose-300: 190 18 60; --rose-400: 190 18 60;
+  --orange-200: 194 65 12; --orange-300: 194 65 12; --orange-400: 194 65 12;
+  --yellow-200: 133 77 14; --yellow-300: 133 77 14; --yellow-400: 133 77 14;
+  --purple-200: 126 34 206; --purple-300: 126 34 206; --purple-400: 126 34 206;
+}
+::-webkit-scrollbar-track { background: rgb(var(--dark-900)); }
+::-webkit-scrollbar-thumb { background: rgb(var(--dark-600)); }
+button, a, input, select { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid rgb(var(--indigo-400));
+  outline-offset: 3px;
+}
+button:not(:disabled):active { transform: translateY(1px); }
+.stat-card { transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+.stat-card:hover { transform: translateY(-3px); border-color: rgb(var(--indigo-400) / 0.5); box-shadow: 0 8px 28px rgb(99 102 241 / 0.08); }
+.stagger-cards > * { animation: fadeIn 350ms ease both; }
+.stagger-cards > :nth-child(2) { animation-delay: 50ms; }
+.stagger-cards > :nth-child(3) { animation-delay: 100ms; }
+.stagger-cards > :nth-child(4) { animation-delay: 150ms; }
+.problem-row { display: grid; grid-template-columns: 36px 32px minmax(0, 1fr) 66px; gap: 8px; align-items: center; }
+.problem-workspace { min-height: calc(100dvh - 108px); }
+.problem-description { width: 100%; }
+.problem-editor { min-height: 620px; height: 70dvh; flex: none; }
+@media (min-width: 768px) {
+  .problem-row { grid-template-columns: 50px 45px minmax(0, 1fr) 90px 140px; gap: 12px; }
+}
+@media (min-width: 1024px) {
+  .problem-workspace { height: calc(100dvh - 65px); min-height: 0; overflow: hidden; }
+  .problem-panels { overflow: hidden; }
+  .problem-description { width: var(--description-width); min-width: 320px; }
+  .problem-editor { min-height: 0; height: auto; flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .stat-card:hover { transform: none; }
+}

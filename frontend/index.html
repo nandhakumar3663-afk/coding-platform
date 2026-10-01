@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AlgoVerse | Interactive Online Coding & Judge Platform</title>
     <meta name="description" content="Next-generation online code judge and competitive programming platform with automated test generation and support for C, C++, Java, and Python." />
+    <script>
+      try {
+        const saved = localStorage.getItem('algosphere:theme');
+        const theme = saved === 'light' || saved === 'dark' ? saved : (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      } catch { document.documentElement.dataset.theme = 'dark'; }
+    </script>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

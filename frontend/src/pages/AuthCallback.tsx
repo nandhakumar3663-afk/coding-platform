@@ -92,7 +92,7 @@ export const AuthCallback: React.FC = () => {
         {error ? (
           <div>
             <AlertCircle className="w-10 h-10 text-rose-500 mx-auto mb-3" />
-            <h2 className="text-lg font-bold text-white mb-2">Authentication Failed</h2>
+            <h2 className="text-lg font-bold text-strong mb-2">Authentication Failed</h2>
             <p className="text-xs text-rose-300 mb-6">{error}</p>
             <button
               onClick={() => navigate('/login', { replace: true })}
@@ -104,7 +104,7 @@ export const AuthCallback: React.FC = () => {
         ) : (
           <div className="flex flex-col items-center">
             <Loader2 className="w-10 h-10 text-indigo-400 animate-spin mb-4" />
-            <h2 className="text-lg font-semibold text-white">Completing Sign In…</h2>
+            <h2 className="text-lg font-semibold text-strong">Completing Sign In…</h2>
             <p className="text-xs text-slate-400 mt-1">Please wait while we verify your credentials.</p>
           </div>
         )}
