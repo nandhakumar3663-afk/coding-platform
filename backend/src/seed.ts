@@ -11,9 +11,9 @@ export async function seedDatabase() {
     // IDs, submissions and progress are retained. Custom questions are never deleted.
     const slugs = new Set(catalog.map(p => p.slug));
     const rows = queryAll('SELECT id, slug, problem_number FROM problems');
-    let nextNumber = Math.max(109, ...rows.map(p => Number(p.problem_number))) + 1;
+    let nextNumber = Math.max(catalog.length, ...rows.map(p => Number(p.problem_number))) + 1;
     for (const row of rows) {
-      if (slugs.has(row.slug) || row.problem_number <= 109) {
+      if (slugs.has(row.slug) || row.problem_number <= catalog.length) {
         execute('UPDATE problems SET problem_number = ? WHERE id = ?', [nextNumber++, row.id]);
       }
     }
@@ -36,7 +36,7 @@ export async function seedDatabase() {
         let tag = queryOne('SELECT id FROM tags WHERE slug=?',[slug]);
         if (!tag) {
           tag={id:randomUUID()};
-          const name=slug.startsWith('level-')?slug.replace('level-','Level '):slug==='array'?'Array':'Loops';
+          const name=slug.startsWith('level-')?slug.replace('level-','Level '):slug.split('-').map((w: string)=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
           execute('INSERT INTO tags (id,name,slug) VALUES (?,?,?)',[tag.id,name,slug]);
         }
         execute('INSERT INTO problem_tags (problem_id,tag_id) VALUES (?,?)',[id,tag.id]);

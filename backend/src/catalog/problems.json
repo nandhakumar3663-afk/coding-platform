@@ -1,17 +1,2032 @@
 [
   {
-    "source": "Level 2",
+    "source": "Level 1",
     "source_number": 1,
     "problem_number": 1,
+    "title": "Positive, Negative, or Zero",
+    "slug": "level1-positive-negative-zero",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Core Conditions",
+    "tags": [
+      "level-1",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 1\n\nGiven an integer n, determine whether it is Positive, Negative, or Zero.",
+    "constraints": "-10^9 <= n <= 10^9",
+    "input_format": "A single integer n.",
+    "output_format": "Print Positive, Negative, or Zero.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nif n>0:print('Positive')\nelif n<0:print('Negative')\nelse:print('Zero')\n",
+    "examples": [
+      {
+        "input": "10",
+        "output": "Positive",
+        "explanation": "10 is greater than 0, so the output is Positive."
+      }
+    ],
+    "tests": [
+      {
+        "input": "10",
+        "expected_output": "Positive",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "-8",
+        "expected_output": "Negative",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "0",
+        "expected_output": "Zero",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "999",
+        "expected_output": "Positive",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "-100",
+        "expected_output": "Negative",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 2,
+    "problem_number": 2,
+    "title": "Divisible by 5",
+    "slug": "level1-divisible-by-5",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Core Conditions",
+    "tags": [
+      "level-1",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 2\n\nGiven an integer, determine whether it is divisible by 5.",
+    "constraints": "-10^9 <= n <= 10^9",
+    "input_format": "A single integer n.",
+    "output_format": "Print Divisible by 5 or Not divisible by 5.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nprint('Divisible by 5' if n%5==0 else 'Not divisible by 5')\n",
+    "examples": [
+      {
+        "input": "25",
+        "output": "Divisible by 5",
+        "explanation": "25 is divisible by 5."
+      }
+    ],
+    "tests": [
+      {
+        "input": "25",
+        "expected_output": "Divisible by 5",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "17",
+        "expected_output": "Not divisible by 5",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "0",
+        "expected_output": "Divisible by 5",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "105",
+        "expected_output": "Divisible by 5",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "-13",
+        "expected_output": "Not divisible by 5",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 3,
+    "problem_number": 3,
+    "title": "Largest of Two Numbers",
+    "slug": "level1-largest-of-two",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Core Conditions",
+    "tags": [
+      "level-1",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 3\n\nRead two integers and print the larger number. If both are equal, print Equal.",
+    "constraints": "-10^9 <= a, b <= 10^9",
+    "input_format": "Two integers a and b.",
+    "output_format": "Print the larger value, or Equal if both values are the same.",
+    "reference_solution": "import sys\ntokens=sys.stdin.read().split()\na,b=int(tokens[0]),int(tokens[1])\nif a>b:print(a)\nelif b>a:print(b)\nelse:print('Equal')\n",
+    "examples": [
+      {
+        "input": "10 20",
+        "output": "20",
+        "explanation": "20 is larger than 10."
+      }
+    ],
+    "tests": [
+      {
+        "input": "10 20",
+        "expected_output": "20",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "45 12",
+        "expected_output": "45",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "7 7",
+        "expected_output": "Equal",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "-5 -2",
+        "expected_output": "-2",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "100 99",
+        "expected_output": "100",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 4,
+    "problem_number": 4,
+    "title": "Voting Eligibility",
+    "slug": "level1-voting-eligibility",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Core Conditions",
+    "tags": [
+      "level-1",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 4\n\nGiven a person's age, determine whether they are eligible to vote. A person is eligible if the age is 18 or above.",
+    "constraints": "0 <= age <= 150",
+    "input_format": "A single integer age.",
+    "output_format": "Print Eligible or Not Eligible.",
+    "reference_solution": "import sys\nage=int(sys.stdin.read().strip())\nprint('Eligible' if age>=18 else 'Not Eligible')\n",
+    "examples": [
+      {
+        "input": "18",
+        "output": "Eligible",
+        "explanation": "18 is the minimum voting age."
+      }
+    ],
+    "tests": [
+      {
+        "input": "18",
+        "expected_output": "Eligible",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "17",
+        "expected_output": "Not Eligible",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "25",
+        "expected_output": "Eligible",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "10",
+        "expected_output": "Not Eligible",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "60",
+        "expected_output": "Eligible",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 5,
+    "problem_number": 5,
+    "title": "Divisible by Both 3 and 7",
+    "slug": "level1-divisible-by-3-and-7",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Core Conditions",
+    "tags": [
+      "level-1",
+      "conditions",
+      "logical-operators"
+    ],
+    "description": "Level 1 \u00b7 Question 5\n\nCheck whether a number is divisible by both 3 and 7.",
+    "constraints": "-10^9 <= n <= 10^9",
+    "input_format": "A single integer n.",
+    "output_format": "Print Yes if divisible by both 3 and 7; otherwise print No.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nprint('Yes' if n%3==0 and n%7==0 else 'No')\n",
+    "examples": [
+      {
+        "input": "21",
+        "output": "Yes",
+        "explanation": "21 is divisible by both 3 and 7."
+      }
+    ],
+    "tests": [
+      {
+        "input": "21",
+        "expected_output": "Yes",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "42",
+        "expected_output": "Yes",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "9",
+        "expected_output": "No",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "14",
+        "expected_output": "No",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "63",
+        "expected_output": "Yes",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 6,
+    "problem_number": 6,
+    "title": "Temperature Classification",
+    "slug": "level1-temperature-classification",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Core Conditions",
+    "tags": [
+      "level-1",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 6\n\nClassify a temperature in Celsius: below 15 -> Cold; 15 to 25 -> Moderate; 26 to 35 -> Warm; above 35 -> Hot.",
+    "constraints": "-50 <= temperature <= 60",
+    "input_format": "A single numeric temperature in Celsius.",
+    "output_format": "Print Cold, Moderate, Warm, or Hot.",
+    "reference_solution": "import sys\nt=int(sys.stdin.read().strip())\nif t<15:print('Cold')\nelif t<=25:print('Moderate')\nelif t<=35:print('Warm')\nelse:print('Hot')\n",
+    "examples": [
+      {
+        "input": "10",
+        "output": "Cold",
+        "explanation": "10 is below 15, so it is Cold."
+      }
+    ],
+    "tests": [
+      {
+        "input": "10",
+        "expected_output": "Cold",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "15",
+        "expected_output": "Moderate",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "24",
+        "expected_output": "Moderate",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "30",
+        "expected_output": "Warm",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "40",
+        "expected_output": "Hot",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 7,
+    "problem_number": 7,
+    "title": "Pass or Fail",
+    "slug": "level1-pass-or-fail",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Core Conditions",
+    "tags": [
+      "level-1",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 7\n\nGiven a student's mark, print Pass if the mark is at least 40; otherwise print Fail.",
+    "constraints": "0 <= mark <= 100",
+    "input_format": "A single integer mark.",
+    "output_format": "Print Pass or Fail.",
+    "reference_solution": "import sys\nm=int(sys.stdin.read().strip())\nprint('Pass' if m>=40 else 'Fail')\n",
+    "examples": [
+      {
+        "input": "40",
+        "output": "Pass",
+        "explanation": "40 meets the minimum passing mark."
+      }
+    ],
+    "tests": [
+      {
+        "input": "40",
+        "expected_output": "Pass",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "39",
+        "expected_output": "Fail",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "75",
+        "expected_output": "Pass",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "0",
+        "expected_output": "Fail",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "100",
+        "expected_output": "Pass",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 8,
+    "problem_number": 8,
+    "title": "Grade Calculator",
+    "slug": "level1-grade-calculator",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Core Conditions",
+    "tags": [
+      "level-1",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 8\n\nDetermine the grade based on marks: 90-100 -> A, 80-89 -> B, 70-79 -> C, 60-69 -> D, 40-59 -> E, below 40 -> F.",
+    "constraints": "0 <= mark <= 100",
+    "input_format": "A single integer mark from 0 to 100.",
+    "output_format": "Print the corresponding grade letter.",
+    "reference_solution": "import sys\nm=int(sys.stdin.read().strip())\nif m>=90:print('A')\nelif m>=80:print('B')\nelif m>=70:print('C')\nelif m>=60:print('D')\nelif m>=40:print('E')\nelse:print('F')\n",
+    "examples": [
+      {
+        "input": "95",
+        "output": "A",
+        "explanation": "95 falls in the 90-100 range, so the grade is A."
+      }
+    ],
+    "tests": [
+      {
+        "input": "95",
+        "expected_output": "A",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "84",
+        "expected_output": "B",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "72",
+        "expected_output": "C",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "60",
+        "expected_output": "D",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "35",
+        "expected_output": "F",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 9,
+    "problem_number": 9,
+    "title": "Last Digit of a Number",
+    "slug": "level1-last-digit",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Core Conditions",
+    "tags": [
+      "level-1",
+      "conditions",
+      "digit-manipulation"
+    ],
+    "description": "Level 1 \u00b7 Question 9\n\nPrint the last digit of a non-negative integer.",
+    "constraints": "0 <= n <= 10^9",
+    "input_format": "A single non-negative integer n.",
+    "output_format": "Print the last digit.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nprint(n%10)\n",
+    "examples": [
+      {
+        "input": "123",
+        "output": "3",
+        "explanation": "The last digit of 123 is 3."
+      }
+    ],
+    "tests": [
+      {
+        "input": "123",
+        "expected_output": "3",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "9876",
+        "expected_output": "6",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "50",
+        "expected_output": "0",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "7",
+        "expected_output": "7",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "10001",
+        "expected_output": "1",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 10,
+    "problem_number": 10,
+    "title": "Multiple of 10",
+    "slug": "level1-multiple-of-10",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Core Conditions",
+    "tags": [
+      "level-1",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 10\n\nDetermine whether an integer is a multiple of 10.",
+    "constraints": "-10^9 <= n <= 10^9",
+    "input_format": "A single integer n.",
+    "output_format": "Print Yes if n is a multiple of 10; otherwise print No.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nprint('Yes' if n%10==0 else 'No')\n",
+    "examples": [
+      {
+        "input": "100",
+        "output": "Yes",
+        "explanation": "100 is a multiple of 10."
+      }
+    ],
+    "tests": [
+      {
+        "input": "100",
+        "expected_output": "Yes",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "55",
+        "expected_output": "No",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "0",
+        "expected_output": "Yes",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "230",
+        "expected_output": "Yes",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "999",
+        "expected_output": "No",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 11,
+    "problem_number": 11,
+    "title": "Character Type",
+    "slug": "level1-character-type",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Character & Switch",
+    "tags": [
+      "level-1",
+      "characters",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 11\n\nGiven one character, classify it as Uppercase, Lowercase, Digit, or Special Character.",
+    "constraints": "Any single printable ASCII character.",
+    "input_format": "A single character.",
+    "output_format": "Print the character category.",
+    "reference_solution": "import sys\nc=sys.stdin.read().strip()\nif c.isupper():print('Uppercase')\nelif c.islower():print('Lowercase')\nelif c.isdigit():print('Digit')\nelse:print('Special Character')\n",
+    "examples": [
+      {
+        "input": "A",
+        "output": "Uppercase",
+        "explanation": "A is an uppercase letter."
+      }
+    ],
+    "tests": [
+      {
+        "input": "A",
+        "expected_output": "Uppercase",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "z",
+        "expected_output": "Lowercase",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "7",
+        "expected_output": "Digit",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "@",
+        "expected_output": "Special Character",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "m",
+        "expected_output": "Lowercase",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 12,
+    "problem_number": 12,
+    "title": "Simple Calculator",
+    "slug": "level1-simple-calculator",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Character & Switch",
+    "tags": [
+      "level-1",
+      "switch",
+      "arithmetic"
+    ],
+    "description": "Level 1 \u00b7 Question 12\n\nRead two integers and an operator (+, -, *, /) and perform the corresponding operation. Use integer division for /.",
+    "constraints": "-10^9 <= a, b <= 10^9. Operator is one of +, -, *, /.",
+    "input_format": "Two integers followed by one operator.",
+    "output_format": "Print the result of the operation.",
+    "reference_solution": "import sys\ntokens=sys.stdin.read().split()\na,b,op=int(tokens[0]),int(tokens[1]),tokens[2]\nif op=='+':print(a+b)\nelif op=='-':print(a-b)\nelif op=='*':print(a*b)\nelif op=='/':print(a//b)\n",
+    "examples": [
+      {
+        "input": "10 5 +",
+        "output": "15",
+        "explanation": "10 + 5 = 15."
+      }
+    ],
+    "tests": [
+      {
+        "input": "10 5 +",
+        "expected_output": "15",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "20 8 -",
+        "expected_output": "12",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "6 7 *",
+        "expected_output": "42",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "20 4 /",
+        "expected_output": "5",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "15 3 *",
+        "expected_output": "45",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 13,
+    "problem_number": 13,
+    "title": "Day of the Week",
+    "slug": "level1-day-of-the-week",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Character & Switch",
+    "tags": [
+      "level-1",
+      "switch"
+    ],
+    "description": "Level 1 \u00b7 Question 13\n\nGiven a number from 1 to 7, print the corresponding day: 1 = Monday, 2 = Tuesday, ..., 7 = Sunday. For any other number, print Invalid.",
+    "constraints": "Any integer.",
+    "input_format": "A single integer day number.",
+    "output_format": "Print the corresponding day name or Invalid.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\ndays={1:'Monday',2:'Tuesday',3:'Wednesday',4:'Thursday',5:'Friday',6:'Saturday',7:'Sunday'}\nprint(days.get(n,'Invalid'))\n",
+    "examples": [
+      {
+        "input": "1",
+        "output": "Monday",
+        "explanation": "1 corresponds to Monday."
+      }
+    ],
+    "tests": [
+      {
+        "input": "1",
+        "expected_output": "Monday",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "2",
+        "expected_output": "Tuesday",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "5",
+        "expected_output": "Friday",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "7",
+        "expected_output": "Sunday",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "8",
+        "expected_output": "Invalid",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 14,
+    "problem_number": 14,
+    "title": "Absolute Value",
+    "slug": "level1-absolute-value",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Character & Switch",
+    "tags": [
+      "level-1",
+      "arithmetic"
+    ],
+    "description": "Level 1 \u00b7 Question 14\n\nGiven an integer, print its absolute value.",
+    "constraints": "-10^9 <= n <= 10^9",
+    "input_format": "A single integer n.",
+    "output_format": "Print |n|.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nprint(abs(n))\n",
+    "examples": [
+      {
+        "input": "10",
+        "output": "10",
+        "explanation": "The absolute value of 10 is 10."
+      }
+    ],
+    "tests": [
+      {
+        "input": "10",
+        "expected_output": "10",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "-10",
+        "expected_output": "10",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "0",
+        "expected_output": "0",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "-99",
+        "expected_output": "99",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "125",
+        "expected_output": "125",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 15,
+    "problem_number": 15,
+    "title": "Triangle Validity",
+    "slug": "level1-triangle-validity",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Character & Switch",
+    "tags": [
+      "level-1",
+      "conditions",
+      "logical-operators"
+    ],
+    "description": "Level 1 \u00b7 Question 15\n\nGiven three angles, determine whether they can form a triangle. A triangle is valid if their sum is exactly 180 and all angles are greater than 0.",
+    "constraints": "0 <= angle <= 180 for each angle.",
+    "input_format": "Three integer angles.",
+    "output_format": "Print Valid Triangle or Invalid Triangle.",
+    "reference_solution": "import sys\ntokens=sys.stdin.read().split()\na,b,c=int(tokens[0]),int(tokens[1]),int(tokens[2])\nif a>0 and b>0 and c>0 and a+b+c==180:print('Valid Triangle')\nelse:print('Invalid Triangle')\n",
+    "examples": [
+      {
+        "input": "60 60 60",
+        "output": "Valid Triangle",
+        "explanation": "All angles are positive and sum to 180."
+      }
+    ],
+    "tests": [
+      {
+        "input": "60 60 60",
+        "expected_output": "Valid Triangle",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "90 60 30",
+        "expected_output": "Valid Triangle",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "100 50 20",
+        "expected_output": "Invalid Triangle",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "45 45 90",
+        "expected_output": "Valid Triangle",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "0 90 90",
+        "expected_output": "Invalid Triangle",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 16,
+    "problem_number": 16,
+    "title": "Triangle Type",
+    "slug": "level1-triangle-type",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Character & Switch",
+    "tags": [
+      "level-1",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 16\n\nGiven three side lengths of a valid triangle, classify it: all equal -> Equilateral, two equal -> Isosceles, all different -> Scalene.",
+    "constraints": "1 <= a, b, c <= 10^6",
+    "input_format": "Three positive integer side lengths.",
+    "output_format": "Print Equilateral, Isosceles, or Scalene.",
+    "reference_solution": "import sys\ntokens=sys.stdin.read().split()\na,b,c=int(tokens[0]),int(tokens[1]),int(tokens[2])\nif a==b==c:print('Equilateral')\nelif a==b or b==c or a==c:print('Isosceles')\nelse:print('Scalene')\n",
+    "examples": [
+      {
+        "input": "5 5 5",
+        "output": "Equilateral",
+        "explanation": "All three sides are equal."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5 5 5",
+        "expected_output": "Equilateral",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "5 5 8",
+        "expected_output": "Isosceles",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "3 4 5",
+        "expected_output": "Scalene",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "10 7 10",
+        "expected_output": "Isosceles",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "6 7 8",
+        "expected_output": "Scalene",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 17,
+    "problem_number": 17,
+    "title": "Electricity Bill",
+    "slug": "level1-electricity-bill",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Character & Switch",
+    "tags": [
+      "level-1",
+      "arithmetic",
+      "real-world-calculation"
+    ],
+    "description": "Level 1 \u00b7 Question 17\n\nCalculate the electricity bill using slabs: first 100 units -> Rs.2/unit; next 100 units -> Rs.3/unit; above 200 units -> Rs.5/unit.",
+    "constraints": "0 <= units <= 10^6",
+    "input_format": "A single non-negative integer representing units consumed.",
+    "output_format": "Print the total bill amount as an integer.",
+    "reference_solution": "import sys\nu=int(sys.stdin.read().strip())\nif u<=100:bill=u*2\nelif u<=200:bill=100*2+(u-100)*3\nelse:bill=100*2+100*3+(u-200)*5\nprint(bill)\n",
+    "examples": [
+      {
+        "input": "50",
+        "output": "100",
+        "explanation": "50 units at Rs.2/unit = Rs.100."
+      }
+    ],
+    "tests": [
+      {
+        "input": "50",
+        "expected_output": "100",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "100",
+        "expected_output": "200",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "150",
+        "expected_output": "350",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "200",
+        "expected_output": "500",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "250",
+        "expected_output": "750",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 18,
+    "problem_number": 18,
+    "title": "Employee Bonus",
+    "slug": "level1-employee-bonus",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Character & Switch",
+    "tags": [
+      "level-1",
+      "arithmetic",
+      "real-world-calculation"
+    ],
+    "description": "Level 1 \u00b7 Question 18\n\nCalculate bonus based on years of service: less than 3 years -> 0%; 3 to 5 years -> 5%; more than 5 years -> 10%.",
+    "constraints": "0 < salary <= 10^7, 0 <= years <= 50",
+    "input_format": "Salary followed by years of service.",
+    "output_format": "Print the bonus amount with exactly 2 decimal places.",
+    "reference_solution": "import sys\ntokens=sys.stdin.read().split()\nsal,yrs=float(tokens[0]),int(tokens[1])\nif yrs<3:bonus=0.0\nelif yrs<=5:bonus=sal*0.05\nelse:bonus=sal*0.10\nprint(f'{bonus:.2f}')\n",
+    "examples": [
+      {
+        "input": "10000 2",
+        "output": "0.00",
+        "explanation": "Less than 3 years of service, no bonus."
+      }
+    ],
+    "tests": [
+      {
+        "input": "10000 2",
+        "expected_output": "0.00",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "10000 3",
+        "expected_output": "500.00",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "20000 5",
+        "expected_output": "1000.00",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "30000 6",
+        "expected_output": "3000.00",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "50000 10",
+        "expected_output": "5000.00",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 19,
+    "problem_number": 19,
+    "title": "BMI Category",
+    "slug": "level1-bmi-category",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Character & Switch",
+    "tags": [
+      "level-1",
+      "conditions",
+      "real-world-calculation"
+    ],
+    "description": "Level 1 \u00b7 Question 19\n\nClassify BMI: below 18.5 -> Underweight; 18.5 to below 25 -> Normal; 25 to below 30 -> Overweight; 30 and above -> Obese.",
+    "constraints": "0 < BMI <= 100.0",
+    "input_format": "A single floating-point BMI value.",
+    "output_format": "Print Underweight, Normal, Overweight, or Obese.",
+    "reference_solution": "import sys\nbmi=float(sys.stdin.read().strip())\nif bmi<18.5:print('Underweight')\nelif bmi<25:print('Normal')\nelif bmi<30:print('Overweight')\nelse:print('Obese')\n",
+    "examples": [
+      {
+        "input": "17.5",
+        "output": "Underweight",
+        "explanation": "17.5 is below 18.5, so it is Underweight."
+      }
+    ],
+    "tests": [
+      {
+        "input": "17.5",
+        "expected_output": "Underweight",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "18.5",
+        "expected_output": "Normal",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "22.4",
+        "expected_output": "Normal",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "27.5",
+        "expected_output": "Overweight",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "31.2",
+        "expected_output": "Obese",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 20,
+    "problem_number": 20,
+    "title": "Admission Eligibility",
+    "slug": "level1-admission-eligibility",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Character & Switch",
+    "tags": [
+      "level-1",
+      "conditions",
+      "logical-operators"
+    ],
+    "description": "Level 1 \u00b7 Question 20\n\nA student is eligible if Maths >= 60, Physics >= 50, Chemistry >= 40, and the total of all three subjects is at least 180.",
+    "constraints": "0 <= each mark <= 100",
+    "input_format": "Three integers: Maths Physics Chemistry.",
+    "output_format": "Print Eligible or Not Eligible.",
+    "reference_solution": "import sys\ntokens=sys.stdin.read().split()\nm,p,c=int(tokens[0]),int(tokens[1]),int(tokens[2])\nif m>=60 and p>=50 and c>=40 and m+p+c>=180:print('Eligible')\nelse:print('Not Eligible')\n",
+    "examples": [
+      {
+        "input": "70 60 50",
+        "output": "Eligible",
+        "explanation": "All individual conditions and total >= 180 are satisfied."
+      }
+    ],
+    "tests": [
+      {
+        "input": "70 60 50",
+        "expected_output": "Eligible",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "60 50 70",
+        "expected_output": "Eligible",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "59 70 70",
+        "expected_output": "Not Eligible",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "80 40 80",
+        "expected_output": "Not Eligible",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "90 80 70",
+        "expected_output": "Eligible",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 21,
+    "problem_number": 21,
+    "title": "Print 1 to N",
+    "slug": "level1-print-1-to-n",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops"
+    ],
+    "description": "Level 1 \u00b7 Question 21\n\nGiven a positive integer n, print all integers from 1 to n.",
+    "constraints": "1 <= n <= 1000",
+    "input_format": "A single positive integer n.",
+    "output_format": "Print numbers from 1 through n separated by single spaces.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nprint(' '.join(str(i) for i in range(1,n+1)))\n",
+    "examples": [
+      {
+        "input": "1",
+        "output": "1",
+        "explanation": "Only one number to print."
+      }
+    ],
+    "tests": [
+      {
+        "input": "1",
+        "expected_output": "1",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "3",
+        "expected_output": "1 2 3",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "5",
+        "expected_output": "1 2 3 4 5",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "7",
+        "expected_output": "1 2 3 4 5 6 7",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "10",
+        "expected_output": "1 2 3 4 5 6 7 8 9 10",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 22,
+    "problem_number": 22,
+    "title": "Sum from 1 to N",
+    "slug": "level1-sum-1-to-n",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops",
+      "arithmetic"
+    ],
+    "description": "Level 1 \u00b7 Question 22\n\nCalculate the sum 1 + 2 + 3 + ... + n.",
+    "constraints": "1 <= n <= 10^6",
+    "input_format": "A single positive integer n.",
+    "output_format": "Print the sum from 1 to n.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nprint(n*(n+1)//2)\n",
+    "examples": [
+      {
+        "input": "1",
+        "output": "1",
+        "explanation": "Sum of 1 = 1."
+      }
+    ],
+    "tests": [
+      {
+        "input": "1",
+        "expected_output": "1",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "5",
+        "expected_output": "15",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "10",
+        "expected_output": "55",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "20",
+        "expected_output": "210",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "100",
+        "expected_output": "5050",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 23,
+    "problem_number": 23,
+    "title": "Multiplication Table",
+    "slug": "level1-multiplication-table",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops"
+    ],
+    "description": "Level 1 \u00b7 Question 23\n\nGiven an integer n, print the first five multiples of n.",
+    "constraints": "-10^6 <= n <= 10^6",
+    "input_format": "A single integer n.",
+    "output_format": "Print n*1 through n*5 separated by single spaces.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nprint(' '.join(str(n*i) for i in range(1,6)))\n",
+    "examples": [
+      {
+        "input": "2",
+        "output": "2 4 6 8 10",
+        "explanation": "First 5 multiples of 2."
+      }
+    ],
+    "tests": [
+      {
+        "input": "2",
+        "expected_output": "2 4 6 8 10",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "5",
+        "expected_output": "5 10 15 20 25",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "10",
+        "expected_output": "10 20 30 40 50",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "7",
+        "expected_output": "7 14 21 28 35",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "1",
+        "expected_output": "1 2 3 4 5",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 24,
+    "problem_number": 24,
+    "title": "Factorial",
+    "slug": "level1-factorial",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops",
+      "arithmetic"
+    ],
+    "description": "Level 1 \u00b7 Question 24\n\nCalculate the factorial of n. n! = 1 * 2 * ... * n and 0! = 1.",
+    "constraints": "0 <= n <= 20",
+    "input_format": "A single non-negative integer n.",
+    "output_format": "Print n factorial.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nf=1\nfor i in range(1,n+1):f*=i\nprint(f)\n",
+    "examples": [
+      {
+        "input": "0",
+        "output": "1",
+        "explanation": "0! = 1 by definition."
+      }
+    ],
+    "tests": [
+      {
+        "input": "0",
+        "expected_output": "1",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "1",
+        "expected_output": "1",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "3",
+        "expected_output": "6",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "5",
+        "expected_output": "120",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "7",
+        "expected_output": "5040",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 25,
+    "problem_number": 25,
+    "title": "Count Digits",
+    "slug": "level1-count-digits",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops",
+      "digit-manipulation"
+    ],
+    "description": "Level 1 \u00b7 Question 25\n\nCount the number of digits in a non-negative integer. The number 0 contains one digit.",
+    "constraints": "0 <= n <= 10^9",
+    "input_format": "A single non-negative integer n.",
+    "output_format": "Print the number of digits.",
+    "reference_solution": "import sys\nn=sys.stdin.read().strip()\nprint(len(n))\n",
+    "examples": [
+      {
+        "input": "5",
+        "output": "1",
+        "explanation": "5 is a single digit number."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5",
+        "expected_output": "1",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "25",
+        "expected_output": "2",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "100",
+        "expected_output": "3",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "98765",
+        "expected_output": "5",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "0",
+        "expected_output": "1",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 26,
+    "problem_number": 26,
+    "title": "Sum of Digits",
+    "slug": "level1-sum-of-digits",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops",
+      "digit-manipulation"
+    ],
+    "description": "Level 1 \u00b7 Question 26\n\nCalculate the sum of all digits of a non-negative integer.",
+    "constraints": "0 <= n <= 10^9",
+    "input_format": "A single non-negative integer n.",
+    "output_format": "Print the sum of its digits.",
+    "reference_solution": "import sys\nn=sys.stdin.read().strip()\nprint(sum(int(d) for d in n))\n",
+    "examples": [
+      {
+        "input": "123",
+        "output": "6",
+        "explanation": "1 + 2 + 3 = 6."
+      }
+    ],
+    "tests": [
+      {
+        "input": "123",
+        "expected_output": "6",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "555",
+        "expected_output": "15",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "100",
+        "expected_output": "1",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "9876",
+        "expected_output": "30",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "0",
+        "expected_output": "0",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 27,
+    "problem_number": 27,
+    "title": "Reverse a Number",
+    "slug": "level1-reverse-a-number",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops",
+      "digit-manipulation"
+    ],
+    "description": "Level 1 \u00b7 Question 27\n\nReverse the digits of a non-negative integer. Leading zeroes in the reversed result are not printed.",
+    "constraints": "0 <= n <= 10^9",
+    "input_format": "A single non-negative integer n.",
+    "output_format": "Print the reversed integer.",
+    "reference_solution": "import sys\nn=sys.stdin.read().strip()\nprint(int(n[::-1]))\n",
+    "examples": [
+      {
+        "input": "123",
+        "output": "321",
+        "explanation": "123 reversed is 321."
+      }
+    ],
+    "tests": [
+      {
+        "input": "123",
+        "expected_output": "321",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "4567",
+        "expected_output": "7654",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "100",
+        "expected_output": "1",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "5",
+        "expected_output": "5",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "1205",
+        "expected_output": "5021",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 28,
+    "problem_number": 28,
+    "title": "Palindrome Number",
+    "slug": "level1-palindrome-number",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops",
+      "digit-manipulation"
+    ],
+    "description": "Level 1 \u00b7 Question 28\n\nDetermine whether a non-negative integer reads the same forward and backward.",
+    "constraints": "0 <= n <= 10^9",
+    "input_format": "A single non-negative integer n.",
+    "output_format": "Print Palindrome or Not Palindrome.",
+    "reference_solution": "import sys\nn=sys.stdin.read().strip()\nprint('Palindrome' if n==n[::-1] else 'Not Palindrome')\n",
+    "examples": [
+      {
+        "input": "121",
+        "output": "Palindrome",
+        "explanation": "121 reads the same forward and backward."
+      }
+    ],
+    "tests": [
+      {
+        "input": "121",
+        "expected_output": "Palindrome",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "123",
+        "expected_output": "Not Palindrome",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "7",
+        "expected_output": "Palindrome",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "1221",
+        "expected_output": "Palindrome",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "1234",
+        "expected_output": "Not Palindrome",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 29,
+    "problem_number": 29,
+    "title": "Count Even Digits",
+    "slug": "level1-count-even-digits",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops",
+      "digit-manipulation"
+    ],
+    "description": "Level 1 \u00b7 Question 29\n\nCount how many digits in a non-negative integer are even. The digit 0 is considered even.",
+    "constraints": "0 <= n <= 10^9",
+    "input_format": "A single non-negative integer n.",
+    "output_format": "Print the count of even digits.",
+    "reference_solution": "import sys\nn=sys.stdin.read().strip()\nprint(sum(1 for d in n if int(d)%2==0))\n",
+    "examples": [
+      {
+        "input": "1234",
+        "output": "2",
+        "explanation": "Digits 2 and 4 are even."
+      }
+    ],
+    "tests": [
+      {
+        "input": "1234",
+        "expected_output": "2",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "2468",
+        "expected_output": "4",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "1357",
+        "expected_output": "0",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "10203",
+        "expected_output": "3",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "8",
+        "expected_output": "1",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 30,
+    "problem_number": 30,
+    "title": "Sum of Multiples of 3",
+    "slug": "level1-sum-multiples-of-3",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops",
+      "arithmetic"
+    ],
+    "description": "Level 1 \u00b7 Question 30\n\nGiven n, calculate the sum of all positive multiples of 3 from 1 to n.",
+    "constraints": "1 <= n <= 10^6",
+    "input_format": "A single positive integer n.",
+    "output_format": "Print the required sum.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nk=n//3\nprint(3*k*(k+1)//2)\n",
+    "examples": [
+      {
+        "input": "3",
+        "output": "3",
+        "explanation": "Only 3 is a multiple of 3 from 1 to 3."
+      }
+    ],
+    "tests": [
+      {
+        "input": "3",
+        "expected_output": "3",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "6",
+        "expected_output": "9",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "10",
+        "expected_output": "18",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "15",
+        "expected_output": "45",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "2",
+        "expected_output": "0",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 31,
+    "problem_number": 31,
+    "title": "Count Numbers Divisible by 5",
+    "slug": "level1-count-divisible-by-5",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Loops & Number Operations",
+    "tags": [
+      "level-1",
+      "loops"
+    ],
+    "description": "Level 1 \u00b7 Question 31\n\nGiven n, count how many integers from 1 to n are divisible by 5.",
+    "constraints": "1 <= n <= 10^6",
+    "input_format": "A single positive integer n.",
+    "output_format": "Print the count.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nprint(n//5)\n",
+    "examples": [
+      {
+        "input": "5",
+        "output": "1",
+        "explanation": "Only 5 is divisible by 5 from 1 to 5."
+      }
+    ],
+    "tests": [
+      {
+        "input": "5",
+        "expected_output": "1",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "10",
+        "expected_output": "2",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "24",
+        "expected_output": "4",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "25",
+        "expected_output": "5",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "4",
+        "expected_output": "0",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 32,
+    "problem_number": 32,
+    "title": "Product Discount",
+    "slug": "level1-product-discount",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Applied Calculations",
+    "tags": [
+      "level-1",
+      "arithmetic",
+      "real-world-calculation"
+    ],
+    "description": "Level 1 \u00b7 Question 32\n\nCalculate final price after discount: below Rs.1000 -> no discount; Rs.1000 to Rs.4999 -> 10%; Rs.5000 and above -> 20%.",
+    "constraints": "0 <= price <= 10^7",
+    "input_format": "A single numeric product price.",
+    "output_format": "Print the final price with exactly 2 decimal places.",
+    "reference_solution": "import sys\np=float(sys.stdin.read().strip())\nif p<1000:final=p\nelif p<5000:final=p*0.90\nelse:final=p*0.80\nprint(f'{final:.2f}')\n",
+    "examples": [
+      {
+        "input": "500",
+        "output": "500.00",
+        "explanation": "Below Rs.1000, no discount applied."
+      }
+    ],
+    "tests": [
+      {
+        "input": "500",
+        "expected_output": "500.00",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "1000",
+        "expected_output": "900.00",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "2500",
+        "expected_output": "2250.00",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "5000",
+        "expected_output": "4000.00",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "10000",
+        "expected_output": "8000.00",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 33,
+    "problem_number": 33,
+    "title": "Parking Fee Calculator",
+    "slug": "level1-parking-fee-calculator",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Applied Calculations",
+    "tags": [
+      "level-1",
+      "arithmetic",
+      "real-world-calculation"
+    ],
+    "description": "Level 1 \u00b7 Question 33\n\nCalculate parking fee: first 2 hours -> Rs.20/hour; next 3 hours -> Rs.15/hour; every additional hour above 5 -> Rs.10/hour.",
+    "constraints": "1 <= hours <= 24",
+    "input_format": "A single positive integer number of hours parked.",
+    "output_format": "Print the total parking fee.",
+    "reference_solution": "import sys\nh=int(sys.stdin.read().strip())\nfee=0\nif h<=2:fee=h*20\nelif h<=5:fee=2*20+(h-2)*15\nelse:fee=2*20+3*15+(h-5)*10\nprint(fee)\n",
+    "examples": [
+      {
+        "input": "1",
+        "output": "20",
+        "explanation": "1 hour at Rs.20/hour = Rs.20."
+      }
+    ],
+    "tests": [
+      {
+        "input": "1",
+        "expected_output": "20",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "2",
+        "expected_output": "40",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "3",
+        "expected_output": "55",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "5",
+        "expected_output": "85",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "8",
+        "expected_output": "115",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 34,
+    "problem_number": 34,
+    "title": "Find Smallest of Three Numbers",
+    "slug": "level1-smallest-of-three",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Applied Calculations",
+    "tags": [
+      "level-1",
+      "conditions"
+    ],
+    "description": "Level 1 \u00b7 Question 34\n\nGiven three integers, print the smallest value.",
+    "constraints": "-10^9 <= a, b, c <= 10^9",
+    "input_format": "Three integers a, b, and c.",
+    "output_format": "Print the smallest integer.",
+    "reference_solution": "import sys\ntokens=sys.stdin.read().split()\na,b,c=int(tokens[0]),int(tokens[1]),int(tokens[2])\nprint(min(a,b,c))\n",
+    "examples": [
+      {
+        "input": "10 20 30",
+        "output": "10",
+        "explanation": "10 is the smallest of the three."
+      }
+    ],
+    "tests": [
+      {
+        "input": "10 20 30",
+        "expected_output": "10",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "50 25 40",
+        "expected_output": "25",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "8 8 9",
+        "expected_output": "8",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "-5 -10 0",
+        "expected_output": "-10",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "100 50 75",
+        "expected_output": "50",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 1",
+    "source_number": 35,
+    "problem_number": 35,
+    "title": "Number Classification",
+    "slug": "level1-number-classification",
+    "difficulty": "Easy",
+    "category": "Level 1 \u2014 Applied Calculations",
+    "tags": [
+      "level-1",
+      "conditions",
+      "logical-operators"
+    ],
+    "description": "Level 1 \u00b7 Question 35\n\nIf n is divisible by both 4 and 6, print Divisible by Both. Else if divisible only by 4, print Divisible by 4. Else if divisible only by 6, print Divisible by 6. Otherwise print Not Divisible.",
+    "constraints": "-10^9 <= n <= 10^9",
+    "input_format": "A single integer n.",
+    "output_format": "Print the matching classification.",
+    "reference_solution": "import sys\nn=int(sys.stdin.read().strip())\nif n%4==0 and n%6==0:print('Divisible by Both')\nelif n%4==0:print('Divisible by 4')\nelif n%6==0:print('Divisible by 6')\nelse:print('Not Divisible')\n",
+    "examples": [
+      {
+        "input": "24",
+        "output": "Divisible by Both",
+        "explanation": "24 is divisible by both 4 and 6."
+      }
+    ],
+    "tests": [
+      {
+        "input": "24",
+        "expected_output": "Divisible by Both",
+        "test_type": "basic",
+        "is_hidden": false
+      },
+      {
+        "input": "8",
+        "expected_output": "Divisible by 4",
+        "test_type": "valid",
+        "is_hidden": true
+      },
+      {
+        "input": "18",
+        "expected_output": "Divisible by 6",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "7",
+        "expected_output": "Not Divisible",
+        "test_type": "edge",
+        "is_hidden": true
+      },
+      {
+        "input": "48",
+        "expected_output": "Divisible by Both",
+        "test_type": "special",
+        "is_hidden": true
+      }
+    ]
+  },
+  {
+    "source": "Level 2",
+    "source_number": 1,
+    "problem_number": 36,
     "title": "Fibonacci Series",
     "slug": "fibonacci-series",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 1\n\nPrint the first n Fibonacci numbers starting at 0,1, with a comma after every number. For n <= 0 print Invalid Input.",
+    "description": "Level 2 \u00b7 Question 1\n\nPrint the first n Fibonacci numbers starting at 0,1, with a comma after every number. For n <= 0 print Invalid Input.",
     "constraints": "-100 <= n <= 45.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -77,16 +2092,16 @@
   {
     "source": "Level 2",
     "source_number": 2,
-    "problem_number": 2,
+    "problem_number": 37,
     "title": "Smallest 5 Primes Greater Than N",
     "slug": "smallest-prime-number",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 2\n\nPrint the smallest five primes strictly greater than n, one per line.",
+    "description": "Level 2 \u00b7 Question 2\n\nPrint the smallest five primes strictly greater than n, one per line.",
     "constraints": "-100000 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -146,16 +2161,16 @@
   {
     "source": "Level 2",
     "source_number": 3,
-    "problem_number": 3,
+    "problem_number": 38,
     "title": "Prime or Composite Number",
     "slug": "prime-or-composite-number",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 3\n\nClassify n. Numbers below 2 are neither prime nor composite.",
+    "description": "Level 2 \u00b7 Question 3\n\nClassify n. Numbers below 2 are neither prime nor composite.",
     "constraints": "-100000 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -221,16 +2236,16 @@
   {
     "source": "Level 2",
     "source_number": 4,
-    "problem_number": 4,
+    "problem_number": 39,
     "title": "Series Sum Calculator",
     "slug": "series-sum-calculator",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 4\n\nRepeat digit d to form n terms (3,33,333,...). Print the series joined by \" + \", then its sum on the next line.",
+    "description": "Level 2 \u00b7 Question 4\n\nRepeat digit d to form n terms (3,33,333,...). Print the series joined by \" + \", then its sum on the next line.",
     "constraints": "0 <= d <= 9; 1 <= n <= 9.",
     "input_format": "Digit d, then number of terms n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -290,16 +2305,16 @@
   {
     "source": "Level 2",
     "source_number": 5,
-    "problem_number": 5,
+    "problem_number": 40,
     "title": "Divisor Sum and Equality Checker",
     "slug": "divisor-sum-and-equality-checker",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 5\n\nPrint all positive proper divisors in ascending order, then their sum, then whether n is an equal number (sum equals n).",
+    "description": "Level 2 \u00b7 Question 5\n\nPrint all positive proper divisors in ascending order, then their sum, then whether n is an equal number (sum equals n).",
     "constraints": "1 <= n <= 10000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -359,16 +2374,16 @@
   {
     "source": "Level 2",
     "source_number": 6,
-    "problem_number": 6,
+    "problem_number": 41,
     "title": "Abundant Number",
     "slug": "abundant-number",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 6\n\nCheck whether the sum of proper positive divisors exceeds n.",
+    "description": "Level 2 \u00b7 Question 6\n\nCheck whether the sum of proper positive divisors exceeds n.",
     "constraints": "1 <= n <= 10000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -428,16 +2443,16 @@
   {
     "source": "Level 2",
     "source_number": 7,
-    "problem_number": 7,
+    "problem_number": 42,
     "title": "Count Leap and Non-Leap Years",
     "slug": "leap-and-non-leap-years",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 7\n\nClassify year y and count leap and non-leap years in y+1 through y+10 inclusive.\n\nClarification: The next decade excludes the input year.",
+    "description": "Level 2 \u00b7 Question 7\n\nClassify year y and count leap and non-leap years in y+1 through y+10 inclusive.\n\nClarification: The next decade excludes the input year.",
     "constraints": "1 <= y <= 9990.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -503,16 +2518,16 @@
   {
     "source": "Level 2",
     "source_number": 8,
-    "problem_number": 8,
+    "problem_number": 43,
     "title": "Geometric Series Sum Calculator",
     "slug": "geometric-series-sum-calculator",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 8\n\nSum n terms of 1 + 1/2 + 1/4 + ... . For n <= 0 print 0.00. Use two decimal places.",
+    "description": "Level 2 \u00b7 Question 8\n\nSum n terms of 1 + 1/2 + 1/4 + ... . For n <= 0 print 0.00. Use two decimal places.",
     "constraints": "-100 <= n <= 1000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -578,16 +2593,16 @@
   {
     "source": "Level 2",
     "source_number": 9,
-    "problem_number": 9,
+    "problem_number": 44,
     "title": "Sum of Squares of N Natural Numbers",
     "slug": "sum-of-squares-of-n-natural-numbers",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 9\n\nSum the squares from 1 through n. For n <= 0 print Invalid input.",
+    "description": "Level 2 \u00b7 Question 9\n\nSum the squares from 1 through n. For n <= 0 print Invalid input.",
     "constraints": "-100000 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -647,16 +2662,16 @@
   {
     "source": "Level 2",
     "source_number": 10,
-    "problem_number": 10,
+    "problem_number": 45,
     "title": "Harmonic Series Sum",
     "slug": "harmonic-series",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 10\n\nSum 1 + 1/2 + ... + 1/n to two decimals. For n <= 0 print Invalid Input.",
+    "description": "Level 2 \u00b7 Question 10\n\nSum 1 + 1/2 + ... + 1/n to two decimals. For n <= 0 print Invalid Input.",
     "constraints": "-100000 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -716,16 +2731,16 @@
   {
     "source": "Level 2",
     "source_number": 11,
-    "problem_number": 11,
+    "problem_number": 46,
     "title": "Digits Count",
     "slug": "digits-count",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 11\n\nCount decimal digits, ignoring the minus sign. Zero has one digit.",
+    "description": "Level 2 \u00b7 Question 11\n\nCount decimal digits, ignoring the minus sign. Zero has one digit.",
     "constraints": "-2147483648 <= n <= 2147483647.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -785,16 +2800,16 @@
   {
     "source": "Level 2",
     "source_number": 12,
-    "problem_number": 12,
+    "problem_number": 47,
     "title": "Square Pattern",
     "slug": "level-2-12-square-pattern",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 12\n\nPrint an n by n square of # characters. For n < 1 print \"n is Invalid input.\".",
+    "description": "Level 2 \u00b7 Question 12\n\nPrint an n by n square of # characters. For n < 1 print \"n is Invalid input.\".",
     "constraints": "-100 <= n <= 50.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -854,16 +2869,16 @@
   {
     "source": "Level 2",
     "source_number": 13,
-    "problem_number": 13,
+    "problem_number": 48,
     "title": "Pyramid Pattern",
     "slug": "level-2-13-pyramid-pattern",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 13\n\nPrint consecutive integers in rows of lengths 1,2,...,n. For n <= 0 print Invalid.\n\nClarification: Numbers are separated by spaces, including the first three rows.",
+    "description": "Level 2 \u00b7 Question 13\n\nPrint consecutive integers in rows of lengths 1,2,...,n. For n <= 0 print Invalid.\n\nClarification: Numbers are separated by spaces, including the first three rows.",
     "constraints": "-100 <= n <= 50.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -923,16 +2938,16 @@
   {
     "source": "Level 2",
     "source_number": 14,
-    "problem_number": 14,
+    "problem_number": 49,
     "title": "Swap the Digits",
     "slug": "level-2-14-swap-the-digits",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 14\n\nSwap the first and last digits. A one-digit number is unchanged; discard leading zeros in the result.",
+    "description": "Level 2 \u00b7 Question 14\n\nSwap the first and last digits. A one-digit number is unchanged; discard leading zeros in the result.",
     "constraints": "0 <= n <= 2147483647.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -992,16 +3007,16 @@
   {
     "source": "Level 2",
     "source_number": 15,
-    "problem_number": 15,
+    "problem_number": 50,
     "title": "Perfect Cubes",
     "slug": "level-2-15-perfect-cubes",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 15\n\nPrint cubes of n,n+1,n+2, one per line. For n <= 0 print Invalid.",
+    "description": "Level 2 \u00b7 Question 15\n\nPrint cubes of n,n+1,n+2, one per line. For n <= 0 print Invalid.",
     "constraints": "-100 <= n <= 1000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1061,16 +3076,16 @@
   {
     "source": "Level 2",
     "source_number": 16,
-    "problem_number": 16,
+    "problem_number": 51,
     "title": "Roman Numerals",
     "slug": "level-2-16-roman-numerals",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 16\n\nConvert integers 1 to 40 to Roman numerals; otherwise print Invalid input.",
+    "description": "Level 2 \u00b7 Question 16\n\nConvert integers 1 to 40 to Roman numerals; otherwise print Invalid input.",
     "constraints": "-100000 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1136,16 +3151,16 @@
   {
     "source": "Level 2",
     "source_number": 17,
-    "problem_number": 17,
+    "problem_number": 52,
     "title": "Sum of Odd and Even Numbers up to N",
     "slug": "level-2-17-sum-of-odd-and-even-numbers-up-to-n",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 17\n\nPrint the sum of odd numbers in 1..n, then the sum of even numbers in 1..n.\n\nClarification: The samples sum numbers up to n, not the first n odd/even terms.",
+    "description": "Level 2 \u00b7 Question 17\n\nPrint the sum of odd numbers in 1..n, then the sum of even numbers in 1..n.\n\nClarification: The samples sum numbers up to n, not the first n odd/even terms.",
     "constraints": "1 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1205,16 +3220,16 @@
   {
     "source": "Level 2",
     "source_number": 18,
-    "problem_number": 18,
+    "problem_number": 53,
     "title": "Detecting Narcissistic Numbers",
     "slug": "level-2-18-detecting-narcissistic-numbers",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 18\n\nCheck whether n equals the sum of each decimal digit raised to the number of digits.",
+    "description": "Level 2 \u00b7 Question 18\n\nCheck whether n equals the sum of each decimal digit raised to the number of digits.",
     "constraints": "0 <= n <= 2147483647.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1274,16 +3289,16 @@
   {
     "source": "Level 2",
     "source_number": 19,
-    "problem_number": 19,
+    "problem_number": 54,
     "title": "Digit Sum Calculator",
     "slug": "level-2-19-digit-sum-calculator",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 19\n\nPrint the sum of even digits, then the sum of odd digits. Ignore any minus sign.",
+    "description": "Level 2 \u00b7 Question 19\n\nPrint the sum of even digits, then the sum of odd digits. Ignore any minus sign.",
     "constraints": "Absolute value has at most 10 digits.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1343,16 +3358,16 @@
   {
     "source": "Level 2",
     "source_number": 20,
-    "problem_number": 20,
+    "problem_number": 55,
     "title": "Alphabet Triangle Generator",
     "slug": "level-2-20-alphabet-triangle-generator",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 20\n\nRow i contains the ith uppercase letter repeated i times. For n <= 0 print Invalid.",
+    "description": "Level 2 \u00b7 Question 20\n\nRow i contains the ith uppercase letter repeated i times. For n <= 0 print Invalid.",
     "constraints": "-100 <= n <= 26.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1412,16 +3427,16 @@
   {
     "source": "Level 2",
     "source_number": 21,
-    "problem_number": 21,
+    "problem_number": 56,
     "title": "Finding the Next Palindrome",
     "slug": "level-2-21-finding-the-next-palindrome",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 21\n\nFind the smallest palindrome strictly greater than n.",
+    "description": "Level 2 \u00b7 Question 21\n\nFind the smallest palindrome strictly greater than n.",
     "constraints": "0 <= n <= 1000000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1481,16 +3496,16 @@
   {
     "source": "Level 2",
     "source_number": 22,
-    "problem_number": 22,
+    "problem_number": 57,
     "title": "Finding Consecutive Palindromic Numbers",
     "slug": "level-2-22-finding-consecutive-palindromic-numbers",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 22\n\nPrint the first five palindromes greater than or equal to n.\n\nClarification: Include n itself when palindromic, as in the PDF sample for 99.",
+    "description": "Level 2 \u00b7 Question 22\n\nPrint the first five palindromes greater than or equal to n.\n\nClarification: Include n itself when palindromic, as in the PDF sample for 99.",
     "constraints": "0 <= n <= 1000000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1550,16 +3565,16 @@
   {
     "source": "Level 2",
     "source_number": 23,
-    "problem_number": 23,
+    "problem_number": 58,
     "title": "Palindromic Right-Angled Triangle",
     "slug": "level-2-23-palindromic-right-angled-triangle",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 23\n\nFor each row build the next i consecutive integers, then mirror them without repeating the largest. For n <= 0 print Invalid.",
+    "description": "Level 2 \u00b7 Question 23\n\nFor each row build the next i consecutive integers, then mirror them without repeating the largest. For n <= 0 print Invalid.",
     "constraints": "-100 <= n <= 30.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1619,16 +3634,16 @@
   {
     "source": "Level 2",
     "source_number": 24,
-    "problem_number": 24,
+    "problem_number": 59,
     "title": "The Palindromic Sum",
     "slug": "level-2-24-the-palindromic-sum",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 24\n\nSum all palindromic positive integers <= n.",
+    "description": "Level 2 \u00b7 Question 24\n\nSum all palindromic positive integers <= n.",
     "constraints": "1 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1688,16 +3703,16 @@
   {
     "source": "Level 2",
     "source_number": 25,
-    "problem_number": 25,
+    "problem_number": 60,
     "title": "Pattern Printing with Multiples of 5",
     "slug": "level-2-25-pattern-printing-with-multiples-of-5",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 25\n\nRow i contains the first i positive multiples of 5. For n < 1 print Invalid.",
+    "description": "Level 2 \u00b7 Question 25\n\nRow i contains the first i positive multiples of 5. For n < 1 print Invalid.",
     "constraints": "-100 <= n <= 50.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1757,16 +3772,16 @@
   {
     "source": "Level 2",
     "source_number": 26,
-    "problem_number": 26,
+    "problem_number": 61,
     "title": "Squares of Even and Odd Numbers",
     "slug": "level-2-26-squares-of-even-and-odd-numbers",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 26\n\nPrint squares of positive integers <= n that have the same parity as n.",
+    "description": "Level 2 \u00b7 Question 26\n\nPrint squares of positive integers <= n that have the same parity as n.",
     "constraints": "1 <= n <= 1000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1826,16 +3841,16 @@
   {
     "source": "Level 2",
     "source_number": 27,
-    "problem_number": 27,
+    "problem_number": 62,
     "title": "Prime Pattern",
     "slug": "level-2-27-prime-pattern",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 27\n\nFor each prime p <= n, print a row containing p space-separated asterisks.\n\nClarification: A space follows each asterisk in the source instruction; trailing spaces are optional.",
+    "description": "Level 2 \u00b7 Question 27\n\nFor each prime p <= n, print a row containing p space-separated asterisks.\n\nClarification: A space follows each asterisk in the source instruction; trailing spaces are optional.",
     "constraints": "1 <= n <= 100.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1895,16 +3910,16 @@
   {
     "source": "Level 2",
     "source_number": 28,
-    "problem_number": 28,
+    "problem_number": 63,
     "title": "LCM Finder",
     "slug": "level-2-28-lcm-finder",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 28\n\nFind the LCM. If either input is negative print Negative Input. LCM with zero is zero.",
+    "description": "Level 2 \u00b7 Question 28\n\nFind the LCM. If either input is negative print Negative Input. LCM with zero is zero.",
     "constraints": "-100000 <= a,b <= 100000.",
     "input_format": "Two integers a and b.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -1970,16 +3985,16 @@
   {
     "source": "Level 2",
     "source_number": 29,
-    "problem_number": 29,
+    "problem_number": 64,
     "title": "The Perfect Number Detective",
     "slug": "level-2-29-the-perfect-number-detective",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 29\n\nIf n is perfect, print its largest proper divisor. Otherwise print n.",
+    "description": "Level 2 \u00b7 Question 29\n\nIf n is perfect, print its largest proper divisor. Otherwise print n.",
     "constraints": "1 <= n <= 10000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2039,16 +4054,16 @@
   {
     "source": "Level 2",
     "source_number": 30,
-    "problem_number": 30,
+    "problem_number": 65,
     "title": "Handshake Simulation Program",
     "slug": "level-2-30-handshake-simulation-program",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 30\n\nEach pair of people shakes hands once. Print the total handshakes.",
+    "description": "Level 2 \u00b7 Question 30\n\nEach pair of people shakes hands once. Print the total handshakes.",
     "constraints": "0 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2108,16 +4123,16 @@
   {
     "source": "Level 2",
     "source_number": 31,
-    "problem_number": 31,
+    "problem_number": 66,
     "title": "Odd or Even Numbers Series",
     "slug": "level-2-31-odd-or-even-numbers-series",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 31\n\nPrint positive integers <= n with the same parity as n. For n <= 0 print Not a Positive integer.",
+    "description": "Level 2 \u00b7 Question 31\n\nPrint positive integers <= n with the same parity as n. For n <= 0 print Not a Positive integer.",
     "constraints": "-100 <= n <= 1000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2177,16 +4192,16 @@
   {
     "source": "Level 2",
     "source_number": 32,
-    "problem_number": 32,
+    "problem_number": 67,
     "title": "Digit Summation",
     "slug": "level-2-32-digit-summation",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 32\n\nRepeatedly sum the digits of the absolute value until one digit remains.",
+    "description": "Level 2 \u00b7 Question 32\n\nRepeatedly sum the digits of the absolute value until one digit remains.",
     "constraints": "Absolute value has at most 10 digits.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2246,16 +4261,16 @@
   {
     "source": "Level 2",
     "source_number": 33,
-    "problem_number": 33,
+    "problem_number": 68,
     "title": "Vowel Counter",
     "slug": "level-2-33-vowel-counter",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 33\n\nCount a,e,i,o,u in a word, case-insensitively.",
+    "description": "Level 2 \u00b7 Question 33\n\nCount a,e,i,o,u in a word, case-insensitively.",
     "constraints": "1 <= word length <= 1000.",
     "input_format": "One non-empty word.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2315,16 +4330,16 @@
   {
     "source": "Level 2",
     "source_number": 34,
-    "problem_number": 34,
+    "problem_number": 69,
     "title": "Digit Incrementer",
     "slug": "level-2-34-digit-incrementer",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 34\n\nIncrement each digit; 9 wraps to 0. Output the resulting integer without leading zeros.",
+    "description": "Level 2 \u00b7 Question 34\n\nIncrement each digit; 9 wraps to 0. Output the resulting integer without leading zeros.",
     "constraints": "0 <= n <= 2147483647.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2384,16 +4399,16 @@
   {
     "source": "Level 2",
     "source_number": 35,
-    "problem_number": 35,
+    "problem_number": 70,
     "title": "Printing Pattern in Reverse Order",
     "slug": "level-2-35-printing-pattern-in-reverse-order",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 35\n\nPrint rows 1..n, then 1..n-1, down to 1. For n <= 0 print Invalid Input.\n\nClarification: Follow the sample: row values ascend; row lengths decrease.",
+    "description": "Level 2 \u00b7 Question 35\n\nPrint rows 1..n, then 1..n-1, down to 1. For n <= 0 print Invalid Input.\n\nClarification: Follow the sample: row values ascend; row lengths decrease.",
     "constraints": "-100 <= n <= 50.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2453,16 +4468,16 @@
   {
     "source": "Level 2",
     "source_number": 36,
-    "problem_number": 36,
+    "problem_number": 71,
     "title": "The Odd Factorial Quest",
     "slug": "level-2-36-the-odd-factorial-quest",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 36\n\nMultiply all odd integers from 1 through n. For n < 1 print Invalid; for positive even n print Please enter a valid odd number.",
+    "description": "Level 2 \u00b7 Question 36\n\nMultiply all odd integers from 1 through n. For n < 1 print Invalid; for positive even n print Please enter a valid odd number.",
     "constraints": "-100 <= n <= 19.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2522,16 +4537,16 @@
   {
     "source": "Level 2",
     "source_number": 37,
-    "problem_number": 37,
+    "problem_number": 72,
     "title": "Series Expansion",
     "slug": "level-2-37-series-expansion",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 37\n\nSum n terms of 1 - x^2/2! + x^4/4! - ... and print two decimal places.",
+    "description": "Level 2 \u00b7 Question 37\n\nSum n terms of 1 - x^2/2! + x^4/4! - ... and print two decimal places.",
     "constraints": "-10 <= x <= 10; 1 <= n <= 15.",
     "input_format": "Real x followed by integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2591,16 +4606,16 @@
   {
     "source": "Level 2",
     "source_number": 38,
-    "problem_number": 38,
+    "problem_number": 73,
     "title": "Fibonacci Even Number Generator",
     "slug": "level-2-38-fibonacci-even-number-generator",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 38\n\nPrint even Fibonacci values <= n, including zero. For n <= 0 print Invalid.",
+    "description": "Level 2 \u00b7 Question 38\n\nPrint even Fibonacci values <= n, including zero. For n <= 0 print Invalid.",
     "constraints": "-100000 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2666,16 +4681,16 @@
   {
     "source": "Level 2",
     "source_number": 39,
-    "problem_number": 39,
+    "problem_number": 74,
     "title": "Exploring the Growth Series",
     "slug": "level-2-39-exploring-the-growth-series",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 39\n\nPrint n terms starting from a, doubling each time.",
+    "description": "Level 2 \u00b7 Question 39\n\nPrint n terms starting from a, doubling each time.",
     "constraints": "1 <= n <= 30; -1000 <= a <= 1000.",
     "input_format": "Number of terms n, then initial term a.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2735,16 +4750,16 @@
   {
     "source": "Level 2",
     "source_number": 40,
-    "problem_number": 40,
+    "problem_number": 75,
     "title": "Sum of All Prime Factors",
     "slug": "level-2-40-sum-of-all-prime-factors",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 40\n\nSum prime factors with multiplicity. For example, 28 = 2*2*7 has sum 11.",
+    "description": "Level 2 \u00b7 Question 40\n\nSum prime factors with multiplicity. For example, 28 = 2*2*7 has sum 11.",
     "constraints": "1 <= n <= 1000000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2804,16 +4819,16 @@
   {
     "source": "Level 2",
     "source_number": 41,
-    "problem_number": 41,
+    "problem_number": 76,
     "title": "Sum of N Odd Natural Numbers",
     "slug": "level-2-41-sum-of-n-odd-natural-numbers",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 41\n\nPrint the first n positive odd integers, then their sum.",
+    "description": "Level 2 \u00b7 Question 41\n\nPrint the first n positive odd integers, then their sum.",
     "constraints": "1 <= n <= 1000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2873,16 +4888,16 @@
   {
     "source": "Level 2",
     "source_number": 42,
-    "problem_number": 42,
+    "problem_number": 77,
     "title": "Check Second Even Number",
     "slug": "level-2-42-check-second-even-number",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 42\n\nIf both endpoints are even, print the second even integer in the inclusive range. Otherwise print \"a and b are not Even.\". If both are even but the range contains fewer than two evens, print Invalid range.",
+    "description": "Level 2 \u00b7 Question 42\n\nIf both endpoints are even, print the second even integer in the inclusive range. Otherwise print \"a and b are not Even.\". If both are even but the range contains fewer than two evens, print Invalid range.",
     "constraints": "-100000 <= a,b <= 100000.",
     "input_format": "Two integer endpoints a and b.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -2948,16 +4963,16 @@
   {
     "source": "Level 2",
     "source_number": 43,
-    "problem_number": 43,
+    "problem_number": 78,
     "title": "Floyd's Triangle",
     "slug": "level-2-43-floyd-s-triangle",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 43\n\nPrint consecutive integers in rows of length 1 to n. For n <= 0 print Invalid.",
+    "description": "Level 2 \u00b7 Question 43\n\nPrint consecutive integers in rows of length 1 to n. For n <= 0 print Invalid.",
     "constraints": "-100 <= n <= 50.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3017,16 +5032,16 @@
   {
     "source": "Level 2",
     "source_number": 44,
-    "problem_number": 44,
+    "problem_number": 79,
     "title": "Automorphic Number",
     "slug": "level-2-44-automorphic-number",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 44\n\nCheck whether the decimal representation of n squared ends in the digits of n.",
+    "description": "Level 2 \u00b7 Question 44\n\nCheck whether the decimal representation of n squared ends in the digits of n.",
     "constraints": "0 <= n <= 1000000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3092,16 +5107,16 @@
   {
     "source": "Level 2",
     "source_number": 45,
-    "problem_number": 45,
+    "problem_number": 80,
     "title": "Sum of First and Last Digit",
     "slug": "level-2-45-sum-of-first-and-last-digit",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 45\n\nSum the first and last digits of the absolute value. For a single digit, count it twice.",
+    "description": "Level 2 \u00b7 Question 45\n\nSum the first and last digits of the absolute value. For a single digit, count it twice.",
     "constraints": "Absolute value has at most 10 digits.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3161,16 +5176,16 @@
   {
     "source": "Level 2",
     "source_number": 46,
-    "problem_number": 46,
+    "problem_number": 81,
     "title": "Sum of Even Numbers",
     "slug": "level-2-46-sum-of-even-numbers",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 46\n\nSum even positive integers <= n. For n <= 0 print \"n is an Invalid number.\".",
+    "description": "Level 2 \u00b7 Question 46\n\nSum even positive integers <= n. For n <= 0 print \"n is an Invalid number.\".",
     "constraints": "-100000 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3230,16 +5245,16 @@
   {
     "source": "Level 2",
     "source_number": 47,
-    "problem_number": 47,
-    "title": "XOR Operations — Collatz Steps",
+    "problem_number": 82,
+    "title": "XOR Operations \u2014 Collatz Steps",
     "slug": "level-2-47-xor-operations-collatz-steps",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 47\n\nCount steps until n becomes 1: divide even values by 2; replace odd values with 3*n+1.\n\nClarification: The PDF describes Collatz steps. Its XOR-only restriction is inconsistent with the task; this judge checks the output, not which operators you use.",
+    "description": "Level 2 \u00b7 Question 47\n\nCount steps until n becomes 1: divide even values by 2; replace odd values with 3*n+1.\n\nClarification: The PDF describes Collatz steps. Its XOR-only restriction is inconsistent with the task; this judge checks the output, not which operators you use.",
     "constraints": "1 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3299,16 +5314,16 @@
   {
     "source": "Level 2",
     "source_number": 48,
-    "problem_number": 48,
+    "problem_number": 83,
     "title": "Sum of the Middle Digits",
     "slug": "level-2-48-sum-of-the-middle-digits",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 48\n\nSum digits excluding the first and last, ignoring a minus sign. Numbers with fewer than three digits have sum zero.",
+    "description": "Level 2 \u00b7 Question 48\n\nSum digits excluding the first and last, ignoring a minus sign. Numbers with fewer than three digits have sum zero.",
     "constraints": "Absolute value has at most 10 digits.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3368,16 +5383,16 @@
   {
     "source": "Level 2",
     "source_number": 49,
-    "problem_number": 49,
+    "problem_number": 84,
     "title": "Reverse the Digits",
     "slug": "reverse-the-digits",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 49\n\nTruncate any fractional part towards zero, then reverse digits and discard leading zeros. For a negative truncated integer print \"n is not a Positive Number.\". Zero gives zero.",
+    "description": "Level 2 \u00b7 Question 49\n\nTruncate any fractional part towards zero, then reverse digits and discard leading zeros. For a negative truncated integer print \"n is not a Positive Number.\". Zero gives zero.",
     "constraints": "-1000000000 <= input <= 1000000000.",
     "input_format": "One numeric value, optionally with a fractional part.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3437,16 +5452,16 @@
   {
     "source": "Level 2",
     "source_number": 50,
-    "problem_number": 50,
+    "problem_number": 85,
     "title": "Perfect Square",
     "slug": "level-2-50-perfect-square",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 50\n\nTruncate any fractional part towards zero. Check whether n is a perfect square. For negative n print \"n is Invalid Number.\".",
+    "description": "Level 2 \u00b7 Question 50\n\nTruncate any fractional part towards zero. Check whether n is a perfect square. For negative n print \"n is Invalid Number.\".",
     "constraints": "-1000000000 <= input <= 1000000000.",
     "input_format": "One numeric value, optionally with a fractional part.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3506,16 +5521,16 @@
   {
     "source": "Level 2",
     "source_number": 51,
-    "problem_number": 51,
+    "problem_number": 86,
     "title": "Alphabetical Pattern",
     "slug": "level-2-51-alphabetical-pattern",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 51\n\nPrint A, AB, ABC, ... for n rows. For n outside 1..26 print \"n is an Invalid input.\".",
+    "description": "Level 2 \u00b7 Question 51\n\nPrint A, AB, ABC, ... for n rows. For n outside 1..26 print \"n is an Invalid input.\".",
     "constraints": "-100000 <= n <= 100000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3575,16 +5590,16 @@
   {
     "source": "Level 2",
     "source_number": 52,
-    "problem_number": 52,
-    "title": "Multiples of 5 — Pattern Printing",
+    "problem_number": 87,
+    "title": "Multiples of 5 \u2014 Pattern Printing",
     "slug": "level-2-52-multiples-of-5-pattern-printing",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 52\n\nRow i contains the first i multiples of 5. For n < 1 print \"n is an Invalid input.\".",
+    "description": "Level 2 \u00b7 Question 52\n\nRow i contains the first i multiples of 5. For n < 1 print \"n is an Invalid input.\".",
     "constraints": "-100 <= n <= 50.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3644,16 +5659,16 @@
   {
     "source": "Level 2",
     "source_number": 53,
-    "problem_number": 53,
+    "problem_number": 88,
     "title": "Product of N Digits",
     "slug": "level-2-53-product-of-n-digits",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 53\n\nMultiply the decimal digits of n. If the product is zero, print Invalid Input.",
+    "description": "Level 2 \u00b7 Question 53\n\nMultiply the decimal digits of n. If the product is zero, print Invalid Input.",
     "constraints": "0 <= n <= 999999999.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3713,16 +5728,16 @@
   {
     "source": "Level 2",
     "source_number": 54,
-    "problem_number": 54,
+    "problem_number": 89,
     "title": "Prime Numbers in a Range",
     "slug": "level-2-54-prime-numbers-in-a-range",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 54\n\nPrint all primes in the inclusive range [a,b] in increasing order. If none exist print an empty line.",
+    "description": "Level 2 \u00b7 Question 54\n\nPrint all primes in the inclusive range [a,b] in increasing order. If none exist print an empty line.",
     "constraints": "-100 <= a,b <= 100000.",
     "input_format": "Two integer endpoints a and b.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3782,16 +5797,16 @@
   {
     "source": "Level 2",
     "source_number": 55,
-    "problem_number": 55,
+    "problem_number": 90,
     "title": "Harshad Number",
     "slug": "level-2-55-harshad-number",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 55\n\nCheck whether positive integer n is divisible by its digit sum.",
+    "description": "Level 2 \u00b7 Question 55\n\nCheck whether positive integer n is divisible by its digit sum.",
     "constraints": "1 <= n <= 1000000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3851,16 +5866,16 @@
   {
     "source": "Level 2",
     "source_number": 56,
-    "problem_number": 56,
+    "problem_number": 91,
     "title": "Strong Number",
     "slug": "level-2-56-strong-number",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 56\n\nCheck whether n equals the sum of the factorials of its decimal digits.",
+    "description": "Level 2 \u00b7 Question 56\n\nCheck whether n equals the sum of the factorials of its decimal digits.",
     "constraints": "0 <= n <= 1000000.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3920,16 +5935,16 @@
   {
     "source": "Level 2",
     "source_number": 57,
-    "problem_number": 57,
+    "problem_number": 92,
     "title": "Palindrome Check",
     "slug": "level-2-57-palindrome-check",
     "difficulty": "Easy",
-    "category": "Level 2 — Loops & Numbers",
+    "category": "Level 2 \u2014 Loops & Numbers",
     "tags": [
       "level-2",
       "loops"
     ],
-    "description": "Level 2 · Question 57\n\nConvert to absolute value, then check whether digits read the same backwards. Print \"n is a Palindrome.\" or \"n is Not a Palindrome.\" using the absolute value.\n\nClarification: Use \"is a Palindrome\" consistently; one PDF example omits \"a\".",
+    "description": "Level 2 \u00b7 Question 57\n\nConvert to absolute value, then check whether digits read the same backwards. Print \"n is a Palindrome.\" or \"n is Not a Palindrome.\" using the absolute value.\n\nClarification: Use \"is a Palindrome\" consistently; one PDF example omits \"a\".",
     "constraints": "Absolute value has at most 10 digits.",
     "input_format": "A single integer n.",
     "output_format": "Print the result exactly as shown in the examples.",
@@ -3989,16 +6004,16 @@
   {
     "source": "Level 3",
     "source_number": 1,
-    "problem_number": 58,
+    "problem_number": 93,
     "title": "Average of an Array",
     "slug": "level-3-01-average-of-an-array",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 1\n\nRead exactly five integers. Print their integer average, truncating towards zero.\n\nClarification: The supplied answer fixes n=5 and uses integer division.",
+    "description": "Level 3 \u00b7 Question 1\n\nRead exactly five integers. Print their integer average, truncating towards zero.\n\nClarification: The supplied answer fixes n=5 and uses integer division.",
     "constraints": "-1000 <= each of five values <= 1000.",
     "input_format": "Exactly five integers; no size prefix.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4058,16 +6073,16 @@
   {
     "source": "Level 3",
     "source_number": 2,
-    "problem_number": 59,
+    "problem_number": 94,
     "title": "Finding the Maximum Number",
     "slug": "level-3-02-finding-the-maximum-number",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 2\n\nPrint the largest array value.",
+    "description": "Level 3 \u00b7 Question 2\n\nPrint the largest array value.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4127,16 +6142,16 @@
   {
     "source": "Level 3",
     "source_number": 3,
-    "problem_number": 60,
+    "problem_number": 95,
     "title": "Peak Elements",
     "slug": "level-3-03-peak-elements",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 3\n\nA peak is at least as large as its existing neighbors. Print the first endpoint if a peak, then the last endpoint if a peak, then internal peaks from left to right. A singleton is printed once.\n\nClarification: Endpoint-first ordering matches the answer code; equal neighbors qualify.",
+    "description": "Level 3 \u00b7 Question 3\n\nA peak is at least as large as its existing neighbors. Print the first endpoint if a peak, then the last endpoint if a peak, then internal peaks from left to right. A singleton is printed once.\n\nClarification: Endpoint-first ordering matches the answer code; equal neighbors qualify.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4196,16 +6211,16 @@
   {
     "source": "Level 3",
     "source_number": 4,
-    "problem_number": 61,
+    "problem_number": 96,
     "title": "Left Rotation",
     "slug": "level-3-04-left-rotation",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 4\n\nRotate the array left by k positions; k may exceed n.",
+    "description": "Level 3 \u00b7 Question 4\n\nRotate the array left by k positions; k may exceed n.",
     "constraints": "1 <= n <= 100; -1000 <= values <= 1000; 0 <= k <= 1000000.",
     "input_format": "n, n array values, then k.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4265,16 +6280,16 @@
   {
     "source": "Level 3",
     "source_number": 5,
-    "problem_number": 62,
+    "problem_number": 97,
     "title": "Right Rotation",
     "slug": "level-3-05-right-rotation",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 5\n\nRotate the array right by k positions; k may exceed n.",
+    "description": "Level 3 \u00b7 Question 5\n\nRotate the array right by k positions; k may exceed n.",
     "constraints": "1 <= n <= 100; -1000 <= values <= 1000; 0 <= k <= 1000000.",
     "input_format": "n, n array values, then k.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4334,16 +6349,16 @@
   {
     "source": "Level 3",
     "source_number": 6,
-    "problem_number": 63,
+    "problem_number": 98,
     "title": "Number of Occurrences",
     "slug": "level-3-06-number-of-occurrences",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 6\n\nCount the occurrences of target x.",
+    "description": "Level 3 \u00b7 Question 6\n\nCount the occurrences of target x.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n array values, then target x.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4403,16 +6418,16 @@
   {
     "source": "Level 3",
     "source_number": 7,
-    "problem_number": 64,
+    "problem_number": 99,
     "title": "Sum and Product of an Array",
     "slug": "level-3-07-sum-and-product-of-an-array",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 7\n\nPrint the sum on the first line and product on the second.",
+    "description": "Level 3 \u00b7 Question 7\n\nPrint the sum on the first line and product on the second.",
     "constraints": "1 <= n <= 100; -1000 <= values <= 1000; all intermediate products fit signed 64-bit integers.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4472,16 +6487,16 @@
   {
     "source": "Level 3",
     "source_number": 8,
-    "problem_number": 65,
+    "problem_number": 100,
     "title": "Square of Array Elements",
     "slug": "level-3-08-square-of-array-elements",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 8\n\nPrint the square of each element, preserving order.",
+    "description": "Level 3 \u00b7 Question 8\n\nPrint the square of each element, preserving order.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4541,16 +6556,16 @@
   {
     "source": "Level 3",
     "source_number": 9,
-    "problem_number": 66,
+    "problem_number": 101,
     "title": "Difference Between Maximum and Minimum",
     "slug": "level-3-09-difference-between-maximum-and-minimum",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 9\n\nPrint maximum and minimum on the first line; print maximum minus minimum on the next.",
+    "description": "Level 3 \u00b7 Question 9\n\nPrint maximum and minimum on the first line; print maximum minus minimum on the next.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4610,16 +6625,16 @@
   {
     "source": "Level 3",
     "source_number": 10,
-    "problem_number": 67,
+    "problem_number": 102,
     "title": "Elements Divisible by a Number",
     "slug": "level-3-10-elements-divisible-by-a-number",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 10\n\nCount values divisible by divisor d. If d is zero print Invalid.",
+    "description": "Level 3 \u00b7 Question 10\n\nCount values divisible by divisor d. If d is zero print Invalid.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n array values, then divisor d.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4679,16 +6694,16 @@
   {
     "source": "Level 3",
     "source_number": 11,
-    "problem_number": 68,
-    "title": "Removing Duplicate Elements — Keep Last",
+    "problem_number": 103,
+    "title": "Removing Duplicate Elements \u2014 Keep Last",
     "slug": "level-3-11-removing-duplicate-elements-keep-last",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 11\n\nKeep only the last occurrence of each value, preserving their relative order.\n\nClarification: Unlike question 28, this answer keeps the last occurrence.",
+    "description": "Level 3 \u00b7 Question 11\n\nKeep only the last occurrence of each value, preserving their relative order.\n\nClarification: Unlike question 28, this answer keeps the last occurrence.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4748,16 +6763,16 @@
   {
     "source": "Level 3",
     "source_number": 12,
-    "problem_number": 69,
+    "problem_number": 104,
     "title": "Negative Elements",
     "slug": "level-3-12-negative-elements",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 12\n\nPrint only values strictly less than zero.",
+    "description": "Level 3 \u00b7 Question 12\n\nPrint only values strictly less than zero.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4817,16 +6832,16 @@
   {
     "source": "Level 3",
     "source_number": 13,
-    "problem_number": 70,
+    "problem_number": 105,
     "title": "Positive Elements",
     "slug": "level-3-13-positive-elements",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 13\n\nPrint only values strictly greater than zero.",
+    "description": "Level 3 \u00b7 Question 13\n\nPrint only values strictly greater than zero.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4886,16 +6901,16 @@
   {
     "source": "Level 3",
     "source_number": 14,
-    "problem_number": 71,
+    "problem_number": 106,
     "title": "Delete an Element at a Position",
     "slug": "level-3-14-delete-an-element-at-a-position",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 14\n\nDelete the value at the 1-based position p. For p outside 1..n print Invalid.",
+    "description": "Level 3 \u00b7 Question 14\n\nDelete the value at the 1-based position p. For p outside 1..n print Invalid.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n values, then 1-based position p.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -4955,16 +6970,16 @@
   {
     "source": "Level 3",
     "source_number": 15,
-    "problem_number": 72,
+    "problem_number": 107,
     "title": "Sum of Duplicate Elements",
     "slug": "level-3-15-sum-of-duplicate-elements",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 15\n\nPrint each occurrence which has another equal value later in the array. Then print the sum of those printed occurrences.\n\nClarification: For [2,2,2], print 2 2 then sum 4. This follows the supplied answer rather than summing each repeated value once.",
+    "description": "Level 3 \u00b7 Question 15\n\nPrint each occurrence which has another equal value later in the array. Then print the sum of those printed occurrences.\n\nClarification: For [2,2,2], print 2 2 then sum 4. This follows the supplied answer rather than summing each repeated value once.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5024,16 +7039,16 @@
   {
     "source": "Level 3",
     "source_number": 16,
-    "problem_number": 73,
+    "problem_number": 108,
     "title": "Non-Prime Numbers",
     "slug": "level-3-16-non-prime-numbers",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 16\n\nPrint composite integers in the array (integers >1 which are not prime).\n\nClarification: The supplied code excludes 0,1 and negative values, so this exercise uses composite numbers.",
+    "description": "Level 3 \u00b7 Question 16\n\nPrint composite integers in the array (integers >1 which are not prime).\n\nClarification: The supplied code excludes 0,1 and negative values, so this exercise uses composite numbers.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5093,16 +7108,16 @@
   {
     "source": "Level 3",
     "source_number": 17,
-    "problem_number": 74,
+    "problem_number": 109,
     "title": "Sum of First, Second, Last and Penultimate",
     "slug": "level-3-17-sum-of-first-second-last-and-penultimate",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 17\n\nSum the first two and last two elements. There are at least four elements.",
+    "description": "Level 3 \u00b7 Question 17\n\nSum the first two and last two elements. There are at least four elements.",
     "constraints": "4 <= n <= 100; -1000 <= values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5162,16 +7177,16 @@
   {
     "source": "Level 3",
     "source_number": 18,
-    "problem_number": 75,
+    "problem_number": 110,
     "title": "Printing Unique Numbers",
     "slug": "level-3-18-printing-unique-numbers",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 18\n\nPrint elements whose frequency is exactly one, in original order.",
+    "description": "Level 3 \u00b7 Question 18\n\nPrint elements whose frequency is exactly one, in original order.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5231,16 +7246,16 @@
   {
     "source": "Level 3",
     "source_number": 19,
-    "problem_number": 76,
+    "problem_number": 111,
     "title": "Second Largest Number",
     "slug": "level-3-19-second-largest-number",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 19\n\nPrint the second largest distinct value. If fewer than two distinct values exist print Not found.\n\nClarification: Fixes the source initialization bug when the first element is already the largest.",
+    "description": "Level 3 \u00b7 Question 19\n\nPrint the second largest distinct value. If fewer than two distinct values exist print Not found.\n\nClarification: Fixes the source initialization bug when the first element is already the largest.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5300,16 +7315,16 @@
   {
     "source": "Level 3",
     "source_number": 20,
-    "problem_number": 77,
+    "problem_number": 112,
     "title": "Ascending Order",
     "slug": "level-3-20-ascending-order",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 20\n\nSort the array in nondecreasing order.",
+    "description": "Level 3 \u00b7 Question 20\n\nSort the array in nondecreasing order.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5369,16 +7384,16 @@
   {
     "source": "Level 3",
     "source_number": 21,
-    "problem_number": 78,
+    "problem_number": 113,
     "title": "Removing Even Numbers",
     "slug": "level-3-21-removing-even-numbers",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 21\n\nRemove every even number, preserving odd values in order.",
+    "description": "Level 3 \u00b7 Question 21\n\nRemove every even number, preserving odd values in order.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5438,16 +7453,16 @@
   {
     "source": "Level 3",
     "source_number": 22,
-    "problem_number": 79,
+    "problem_number": 114,
     "title": "Removing First Occurrence",
     "slug": "level-3-22-removing-first-occurrence",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 22\n\nRemove only the first occurrence of x. If absent, leave the array unchanged.\n\nClarification: Fixes the source code dropping the last element when x is absent.",
+    "description": "Level 3 \u00b7 Question 22\n\nRemove only the first occurrence of x. If absent, leave the array unchanged.\n\nClarification: Fixes the source code dropping the last element when x is absent.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n array values, then x.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5507,16 +7522,16 @@
   {
     "source": "Level 3",
     "source_number": 23,
-    "problem_number": 80,
+    "problem_number": 115,
     "title": "Pair with Sum Closest to Zero",
     "slug": "level-3-23-pair-with-sum-closest-to-zero",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 23\n\nFor array length outside 2..10 print Invalid. Otherwise choose distinct indices i<j minimizing abs(a[i]+a[j]). Ties choose the smallest i, then smallest j. Print the two values.\n\nClarification: The 2..10 restriction is applied to length. Applying it to values would contradict the PDF example with -10 and -1.",
+    "description": "Level 3 \u00b7 Question 23\n\nFor array length outside 2..10 print Invalid. Otherwise choose distinct indices i<j minimizing abs(a[i]+a[j]). Ties choose the smallest i, then smallest j. Print the two values.\n\nClarification: The 2..10 restriction is applied to length. Applying it to values would contradict the PDF example with -10 and -1.",
     "constraints": "0 <= n <= 100; -1000 <= values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5582,16 +7597,16 @@
   {
     "source": "Level 3",
     "source_number": 24,
-    "problem_number": 81,
+    "problem_number": 116,
     "title": "Median",
     "slug": "level-3-24-median",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 24\n\nPrint the sorted array, then its median to six decimal places. For even length take the arithmetic mean of the two middle values.\n\nClarification: Fractional medians are preserved; the source accidentally uses integer division.",
+    "description": "Level 3 \u00b7 Question 24\n\nPrint the sorted array, then its median to six decimal places. For even length take the arithmetic mean of the two middle values.\n\nClarification: Fractional medians are preserved; the source accidentally uses integer division.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5651,16 +7666,16 @@
   {
     "source": "Level 3",
     "source_number": 25,
-    "problem_number": 82,
+    "problem_number": 117,
     "title": "Chunk Size",
     "slug": "level-3-25-chunk-size",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 25\n\nSplit the array into consecutive chunks of at most k elements. Print adjacent bracketed comma-separated chunks with no spaces, e.g. [1,2][3]. For k <= 0 print Invalid.",
+    "description": "Level 3 \u00b7 Question 25\n\nSplit the array into consecutive chunks of at most k elements. Print adjacent bracketed comma-separated chunks with no spaces, e.g. [1,2][3]. For k <= 0 print Invalid.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n values, then chunk size k.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5726,16 +7741,16 @@
   {
     "source": "Level 3",
     "source_number": 26,
-    "problem_number": 83,
+    "problem_number": 118,
     "title": "Insert at a Particular Position",
     "slug": "level-3-26-insert-at-a-particular-position",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 26\n\nInsert value x at 1-based position p (1..n+1). If p is invalid print Invalid.",
+    "description": "Level 3 \u00b7 Question 26\n\nInsert value x at 1-based position p (1..n+1). If p is invalid print Invalid.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n values, then value x and 1-based position p.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5795,16 +7810,16 @@
   {
     "source": "Level 3",
     "source_number": 27,
-    "problem_number": 84,
+    "problem_number": 119,
     "title": "Frequency of Elements",
     "slug": "level-3-27-frequency-of-elements",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 27\n\nPrint each distinct value followed by its frequency, one pair per line, in order of first appearance.",
+    "description": "Level 3 \u00b7 Question 27\n\nPrint each distinct value followed by its frequency, one pair per line, in order of first appearance.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5864,16 +7879,16 @@
   {
     "source": "Level 3",
     "source_number": 28,
-    "problem_number": 85,
-    "title": "Deleting Duplicates — Keep First",
+    "problem_number": 120,
+    "title": "Deleting Duplicates \u2014 Keep First",
     "slug": "level-3-28-deleting-duplicates-keep-first",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 28\n\nKeep the first occurrence of each value and delete later occurrences.",
+    "description": "Level 3 \u00b7 Question 28\n\nKeep the first occurrence of each value and delete later occurrences.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -5933,16 +7948,16 @@
   {
     "source": "Level 3",
     "source_number": 29,
-    "problem_number": 86,
+    "problem_number": 121,
     "title": "Merge Two Arrays and Sort",
     "slug": "level-3-29-merge-two-arrays-and-sort",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 29\n\nMerge both arrays and sort all elements in nondecreasing order; retain duplicates.",
+    "description": "Level 3 \u00b7 Question 29\n\nMerge both arrays and sort all elements in nondecreasing order; retain duplicates.",
     "constraints": "0 <= n,m <= 100; n+m >= 1; -1000 <= values <= 1000.",
     "input_format": "Sizes n and m first, then n values of the first array and m values of the second.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6002,16 +8017,16 @@
   {
     "source": "Level 3",
     "source_number": 30,
-    "problem_number": 87,
+    "problem_number": 122,
     "title": "Reverse Array Elements",
     "slug": "level-3-30-reverse-array-elements",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 30\n\nPrint elements in reverse order.",
+    "description": "Level 3 \u00b7 Question 30\n\nPrint elements in reverse order.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6071,16 +8086,16 @@
   {
     "source": "Level 3",
     "source_number": 31,
-    "problem_number": 88,
+    "problem_number": 123,
     "title": "Even and Odd Numbers in Separate Arrays",
     "slug": "level-3-31-even-and-odd-numbers-in-separate-arrays",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 31\n\nPrint even values on the first line and odd values on the second, each preserving input order.",
+    "description": "Level 3 \u00b7 Question 31\n\nPrint even values on the first line and odd values on the second, each preserving input order.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6140,16 +8155,16 @@
   {
     "source": "Level 3",
     "source_number": 32,
-    "problem_number": 89,
+    "problem_number": 124,
     "title": "Search an Element and Print Its Position",
     "slug": "level-3-32-search-an-element-and-print-its-position",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 32\n\nPrint the 1-based position of the first occurrence of x, or -1 if absent.",
+    "description": "Level 3 \u00b7 Question 32\n\nPrint the 1-based position of the first occurrence of x, or -1 if absent.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n array values, then x.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6209,16 +8224,16 @@
   {
     "source": "Level 3",
     "source_number": 33,
-    "problem_number": 90,
+    "problem_number": 125,
     "title": "Even-Odd Partition and Sorted Array",
     "slug": "level-3-33-even-odd-partition-and-sorted-array",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 33\n\nPrint even values followed by odd values, preserving order within each group, on the first line. Print the fully sorted original array on the second.\n\nClarification: The PDF labels this question only \"33.\"; its two answer screenshots define this operation.",
+    "description": "Level 3 \u00b7 Question 33\n\nPrint even values followed by odd values, preserving order within each group, on the first line. Print the fully sorted original array on the second.\n\nClarification: The PDF labels this question only \"33.\"; its two answer screenshots define this operation.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6278,16 +8293,16 @@
   {
     "source": "Level 3",
     "source_number": 34,
-    "problem_number": 91,
+    "problem_number": 126,
     "title": "Find a Pair with a Given Sum",
     "slug": "level-3-34-find-a-pair-with-a-given-sum",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 34\n\nPrint zero-based indices of the first pair i<j summing to target (smallest i, then j). Print NOT FOUND if no pair exists.\n\nClarification: The screenshot prints indices rather than values.",
+    "description": "Level 3 \u00b7 Question 34\n\nPrint zero-based indices of the first pair i<j summing to target (smallest i, then j). Print NOT FOUND if no pair exists.\n\nClarification: The screenshot prints indices rather than values.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n values, then target.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6347,16 +8362,16 @@
   {
     "source": "Level 3",
     "source_number": 35,
-    "problem_number": 92,
-    "title": "Removing First Occurrence — Practice",
+    "problem_number": 127,
+    "title": "Removing First Occurrence \u2014 Practice",
     "slug": "level-3-35-removing-first-occurrence-practice",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 35\n\nRemove only the first occurrence of x, preserving all other values. If absent, return the original array.",
+    "description": "Level 3 \u00b7 Question 35\n\nRemove only the first occurrence of x, preserving all other values. If absent, return the original array.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n values, then x.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6416,16 +8431,16 @@
   {
     "source": "Level 3",
     "source_number": 36,
-    "problem_number": 93,
+    "problem_number": 128,
     "title": "Sum of Neighbor Peak Elements",
     "slug": "level-3-36-sum-of-neighbor-peak-elements",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 36\n\nReplace each peak with itself plus its existing immediate neighbors. A peak is >= every existing neighbor. Determine all peaks and sums from the original array, simultaneously. Non-peaks stay unchanged.\n\nClarification: The source reads outside array bounds and modifies values while detecting peaks. This contract uses existing neighbors and simultaneous updates to make results deterministic.",
+    "description": "Level 3 \u00b7 Question 36\n\nReplace each peak with itself plus its existing immediate neighbors. A peak is >= every existing neighbor. Determine all peaks and sums from the original array, simultaneously. Non-peaks stay unchanged.\n\nClarification: The source reads outside array bounds and modifies values while detecting peaks. This contract uses existing neighbors and simultaneous updates to make results deterministic.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6485,16 +8500,16 @@
   {
     "source": "Level 3",
     "source_number": 37,
-    "problem_number": 94,
+    "problem_number": 129,
     "title": "Swapping Two Elements",
     "slug": "level-3-37-swapping-two-elements",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 37\n\nSwap values at zero-based indices i and j. If either index is outside 0..n-1 print Invalid.",
+    "description": "Level 3 \u00b7 Question 37\n\nSwap values at zero-based indices i and j. If either index is outside 0..n-1 print Invalid.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n values, then zero-based indices i and j.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6554,16 +8569,16 @@
   {
     "source": "Level 3",
     "source_number": 38,
-    "problem_number": 95,
+    "problem_number": 130,
     "title": "Sorted or Not Sorted",
     "slug": "level-3-38-sorted-or-not-sorted",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 38\n\nAn array is sorted if nondecreasing OR nonincreasing; equality is allowed. Print array is sorted or array is not sorted.",
+    "description": "Level 3 \u00b7 Question 38\n\nAn array is sorted if nondecreasing OR nonincreasing; equality is allowed. Print array is sorted or array is not sorted.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6623,16 +8638,16 @@
   {
     "source": "Level 3",
     "source_number": 39,
-    "problem_number": 96,
+    "problem_number": 131,
     "title": "Sort Even Numbers First, Odd Numbers Next",
     "slug": "level-3-39-sort-even-numbers-first-odd-numbers-next",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 39\n\nSort the even values ascending, then the odd values ascending; print both groups on one line.",
+    "description": "Level 3 \u00b7 Question 39\n\nSort the even values ascending, then the odd values ascending; print both groups on one line.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6692,16 +8707,16 @@
   {
     "source": "Level 3",
     "source_number": 40,
-    "problem_number": 97,
+    "problem_number": 132,
     "title": "Remove All Occurrences of a Value",
     "slug": "level-3-40-remove-all-occurrences-of-a-value",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 40\n\nRemove every array element equal to x, including adjacent occurrences.\n\nClarification: This removes whole elements, not digits within multi-digit integers.",
+    "description": "Level 3 \u00b7 Question 40\n\nRemove every array element equal to x, including adjacent occurrences.\n\nClarification: This removes whole elements, not digits within multi-digit integers.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n values, then x.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6761,16 +8776,16 @@
   {
     "source": "Level 3",
     "source_number": 41,
-    "problem_number": 98,
+    "problem_number": 133,
     "title": "Product of Array Except Self",
     "slug": "level-3-41-product-of-array-except-self",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 41\n\nFor each position print the product of every other element. Do not divide by the current value. The empty product for a singleton is 1.",
+    "description": "Level 3 \u00b7 Question 41\n\nFor each position print the product of every other element. Do not divide by the current value. The empty product for a singleton is 1.",
     "constraints": "1 <= n <= 100; -1000 <= values <= 1000; products fit signed 64-bit integers.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6836,16 +8851,16 @@
   {
     "source": "Level 3",
     "source_number": 42,
-    "problem_number": 99,
+    "problem_number": 134,
     "title": "Numbers Smaller Than the Current Number",
     "slug": "level-3-42-numbers-smaller-than-the-current-number",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 42\n\nFor every element count array entries strictly smaller than it.",
+    "description": "Level 3 \u00b7 Question 42\n\nFor every element count array entries strictly smaller than it.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6905,16 +8920,16 @@
   {
     "source": "Level 3",
     "source_number": 43,
-    "problem_number": 100,
+    "problem_number": 135,
     "title": "Ranking",
     "slug": "level-3-43-ranking",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 43\n\nRank each element as 1 plus the number of array entries strictly smaller than it. Equal values share ranks; ranks may have gaps.\n\nClarification: Uses competition ranking, not dense ranking: [10,10,20] gives [1,1,3].",
+    "description": "Level 3 \u00b7 Question 43\n\nRank each element as 1 plus the number of array entries strictly smaller than it. Equal values share ranks; ranks may have gaps.\n\nClarification: Uses competition ranking, not dense ranking: [10,10,20] gives [1,1,3].",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -6974,16 +8989,16 @@
   {
     "source": "Level 3",
     "source_number": 44,
-    "problem_number": 101,
+    "problem_number": 136,
     "title": "Remove Even Numbers at Even Indices",
     "slug": "level-3-44-remove-even-numbers-at-even-indices",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 44\n\nRemove elements that are even AND located at an even zero-based index in the original array (including index 0). Retained elements keep their order.\n\nClarification: The source starts at index 2 and shifts indices during deletion. This corrected contract uses original zero-based indices consistently.",
+    "description": "Level 3 \u00b7 Question 44\n\nRemove elements that are even AND located at an even zero-based index in the original array (including index 0). Retained elements keep their order.\n\nClarification: The source starts at index 2 and shifts indices during deletion. This corrected contract uses original zero-based indices consistently.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -7043,16 +9058,16 @@
   {
     "source": "Level 3",
     "source_number": 45,
-    "problem_number": 102,
+    "problem_number": 137,
     "title": "Remove Elements Greater Than a Number",
     "slug": "level-3-45-remove-elements-greater-than-a-number",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 45\n\nRemove values strictly greater than x. Values equal to x remain.\n\nClarification: Follows the question heading; the screenshot uses < and accidentally also removes equal values.",
+    "description": "Level 3 \u00b7 Question 45\n\nRemove values strictly greater than x. Values equal to x remain.\n\nClarification: Follows the question heading; the screenshot uses < and accidentally also removes equal values.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n values, then threshold x.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -7112,16 +9127,16 @@
   {
     "source": "Level 3",
     "source_number": 46,
-    "problem_number": 103,
+    "problem_number": 138,
     "title": "Last Repeated Element",
     "slug": "level-3-46-last-repeated-element",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 46\n\nAmong values appearing at least twice, print the one whose last occurrence is farthest right. If none repeat print no elements duplicate.",
+    "description": "Level 3 \u00b7 Question 46\n\nAmong values appearing at least twice, print the one whose last occurrence is farthest right. If none repeat print no elements duplicate.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -7181,16 +9196,16 @@
   {
     "source": "Level 3",
     "source_number": 47,
-    "problem_number": 104,
+    "problem_number": 139,
     "title": "Array Leaders in Ascending Order",
     "slug": "level-3-47-array-leaders-in-ascending-order",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 47\n\nA leader is strictly greater than every element to its right. The last element is always a leader. Print leaders in ascending order.",
+    "description": "Level 3 \u00b7 Question 47\n\nA leader is strictly greater than every element to its right. The last element is always a leader. Print leaders in ascending order.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -7250,16 +9265,16 @@
   {
     "source": "Level 3",
     "source_number": 48,
-    "problem_number": 105,
+    "problem_number": 140,
     "title": "Maximum Subarray Sum",
     "slug": "level-3-48-maximum-subarray-sum",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 48\n\nFind the maximum sum of a non-empty contiguous subarray. For an all-negative array return its largest value.\n\nClarification: The source code repeats arr[i] instead of summing a subarray and shows 42 for [7,8,9,6,5,4]. This corrected maximum-subarray problem gives 39 for that array.",
+    "description": "Level 3 \u00b7 Question 48\n\nFind the maximum sum of a non-empty contiguous subarray. For an all-negative array return its largest value.\n\nClarification: The source code repeats arr[i] instead of summing a subarray and shows 42 for [7,8,9,6,5,4]. This corrected maximum-subarray problem gives 39 for that array.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -7319,16 +9334,16 @@
   {
     "source": "Level 3",
     "source_number": 49,
-    "problem_number": 106,
+    "problem_number": 141,
     "title": "Sum of Non-Repeated Numbers",
     "slug": "level-3-49-sum-of-non-repeated-numbers",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 49\n\nSum values which occur exactly once. If none exist print 0.",
+    "description": "Level 3 \u00b7 Question 49\n\nSum values which occur exactly once. If none exist print 0.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "Integer n, followed by n integers. Read across any whitespace.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -7388,16 +9403,16 @@
   {
     "source": "Level 3",
     "source_number": 50,
-    "problem_number": 107,
+    "problem_number": 142,
     "title": "Left Character Rotation",
     "slug": "level-3-50-left-character-rotation",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 50\n\nRotate a word left by k characters, preserving case. Reduce k modulo the word length.\n\nClarification: The PDF supplies only a heading for this question; this input/output contract completes it.",
+    "description": "Level 3 \u00b7 Question 50\n\nRotate a word left by k characters, preserving case. Reduce k modulo the word length.\n\nClarification: The PDF supplies only a heading for this question; this input/output contract completes it.",
     "constraints": "1 <= word length <= 1000; 0 <= k <= 1000000.",
     "input_format": "One word followed by a nonnegative rotation count k.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -7457,16 +9472,16 @@
   {
     "source": "Level 3",
     "source_number": 51,
-    "problem_number": 108,
+    "problem_number": 143,
     "title": "Indices of All Pairs with Target Sum",
     "slug": "level-3-51-indices-of-all-pairs-with-target-sum",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 51\n\nPrint all zero-based index pairs i<j whose values sum to target, ordered by i then j. Print each pair on its own line. If no pairs exist print NOT FOUND.",
+    "description": "Level 3 \u00b7 Question 51\n\nPrint all zero-based index pairs i<j whose values sum to target, ordered by i then j. Print each pair on its own line. If no pairs exist print NOT FOUND.",
     "constraints": "1 <= n <= 100; -1000 <= array values <= 1000.",
     "input_format": "n, n values, then target.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
@@ -7526,16 +9541,16 @@
   {
     "source": "Level 3",
     "source_number": 52,
-    "problem_number": 109,
+    "problem_number": 144,
     "title": "Converting Angle to Radians",
     "slug": "level-3-52-converting-angle-to-radians",
     "difficulty": "Medium",
-    "category": "Level 3 — Arrays",
+    "category": "Level 3 \u2014 Arrays",
     "tags": [
       "level-3",
       "array"
     ],
-    "description": "Level 3 · Question 52\n\nConvert degrees to radians using pi. Print \"Angle in radians: \" followed by the value to two decimal places.",
+    "description": "Level 3 \u00b7 Question 52\n\nConvert degrees to radians using pi. Print \"Angle in radians: \" followed by the value to two decimal places.",
     "constraints": "-100000 <= degrees <= 100000.",
     "input_format": "One real-valued angle in degrees.",
     "output_format": "Separate array values by spaces. Print no prompts, brackets, or commas unless specified. An empty result is an empty line.",
