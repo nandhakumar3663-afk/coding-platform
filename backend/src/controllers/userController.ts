@@ -140,16 +140,17 @@ export function getLeaderboard(req: AuthRequest, res: Response): void {
     return;
   }
   const users = queryAll(`SELECT id, username FROM users WHERE role = 'student' AND username != 'guest'`);
-  const entries = new Map(users.map(u => [u.id, { user_id: u.id, username: u.username, solved: 0, level2_solved: 0, level3_solved: 0, points: 0 }]));
+  const entries = new Map(users.map(u => [u.id, { user_id: u.id, username: u.username, solved: 0, level1_solved: 0, level2_solved: 0, level3_solved: 0, points: 0 }]));
   for (const p of queryAll(`SELECT up.user_id, p.slug, p.category FROM user_progress up
     JOIN problems p ON p.id = up.problem_id WHERE up.status = 'solved' AND p.is_published = 1`)) {
     const entry = entries.get(p.user_id);
     if (!entry) continue;
     const level = levelForProblem(p);
     entry.solved++;
+    if (level === 'Level 1') entry.level1_solved++;
     if (level === 'Level 2') entry.level2_solved++;
     if (level === 'Level 3') entry.level3_solved++;
-    entry.points += level === 'Level 3' ? 20 : 10;
+    entry.points += level === 'Level 3' ? 20 : level === 'Level 2' ? 10 : level === 'Level 1' ? 5 : 10;
   }
   const sorted = [...entries.values()].sort((a, b) => b.points - a.points || b.solved - a.solved || a.username.localeCompare(b.username) || a.user_id.localeCompare(b.user_id));
   let rank = 0;

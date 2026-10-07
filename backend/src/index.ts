@@ -9,14 +9,15 @@ import userRoutes from './routes/userRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import './models/db.js'; // Ensure DB initialized
 import { queryOne } from './models/db.js';
+import { catalog } from './catalog/index.js';
 import { seedDatabase } from './seed.js';
 
 dotenv.config();
 
 // Ensure the complete catalog is seeded automatically if DB is fresh or incomplete
 const countRow = queryOne<{ count: number }>('SELECT COUNT(*) as count FROM problems');
-if (!countRow || Number(countRow.count) < 109) {
-  console.log('📦 Auto-seeding database with complete 109 problem catalog...');
+if (!countRow || Number(countRow.count) < catalog.length) {
+  console.log(`📦 Auto-seeding database with complete ${catalog.length} problem catalog...`);
   try {
     await seedDatabase();
     console.log('✅ Database auto-seeded successfully.');

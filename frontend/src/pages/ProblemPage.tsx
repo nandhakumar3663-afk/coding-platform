@@ -54,7 +54,7 @@ export const ProblemPage: React.FC = () => {
   const [allProblems, setAllProblems] = useState<any[]>([]);
   const [showPicker, setShowPicker] = useState(false);
   const [pickerSearch, setPickerSearch] = useState('');
-  const [pickerFilter, setPickerFilter] = useState<'all' | 'Level 2' | 'Level 3'>('all');
+  const [pickerFilter, setPickerFilter] = useState<'all' | 'Level 1' | 'Level 2' | 'Level 3'>('all');
   const activePillRef = useRef<HTMLAnchorElement>(null);
   const pillsContainerRef = useRef<HTMLDivElement>(null);
 
@@ -313,7 +313,7 @@ export const ProblemPage: React.FC = () => {
 
               {/* Filter Tabs */}
               <div className="flex gap-1 overflow-x-auto no-scrollbar pt-1">
-                {(['all', 'Level 2', 'Level 3'] as const).map(tab => (
+                {(['all', 'Level 1', 'Level 2', 'Level 3'] as const).map(tab => (
                   <button
                     key={tab}
                     onClick={() => setPickerFilter(tab)}
@@ -386,7 +386,7 @@ export const ProblemPage: React.FC = () => {
                 <span className={`px-2.5 py-0.5 rounded-md text-xs font-semibold border ${
                   levelBadge[problemLevel(problem)] || 'border-dark-700'
                 } ${diffClass}`}>
-                  {problemLevel(problem)}
+                  {problemLevel(problem)}{problem.level_question_number ? ` · Question ${problem.level_question_number}` : ''}
                 </span>
                 {problem.category && (
                   <span className="text-xs text-slate-400 bg-dark-850 border border-dark-700/60 px-2 py-0.5 rounded-md">

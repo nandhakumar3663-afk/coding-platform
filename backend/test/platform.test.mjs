@@ -57,12 +57,13 @@ after(async () => {
   rmSync(directory, { recursive: true, force: true });
 });
 
-test('109 questions, all sample anchors and reference solutions pass the real judge', async () => {
-  assert.equal(catalog.length, 109);
+test('144 questions, all sample anchors and reference solutions pass the real judge', async () => {
+  assert.equal(catalog.length, 144);
+  assert.equal(catalog.filter(p => p.source === 'Level 1').length, 35);
   assert.equal(catalog.filter(p => p.source === 'Level 2').length, 57);
   assert.equal(catalog.filter(p => p.source === 'Level 3').length, 52);
   for (const p of catalog) {
-    assert.ok(p.tests.filter(t => t.is_hidden).length >= 5, p.slug);
+    assert.ok(p.tests.filter(t => t.is_hidden).length >= (p.source === 'Level 1' ? 4 : 5), p.slug);
     assert.ok(p.tests.some(t => t.expected_output !== p.examples[0].output), `${p.slug} must reject sample hardcoding`);
     const result = await judgeSubmission('python', p.reference_solution, p.tests.map((t, i) => ({ input: t.input, expectedOutput: t.expected_output, isHidden: t.is_hidden, testCaseNumber: i + 1 })));
     assert.equal(result.verdict, 'Accepted', `${p.slug}: ${JSON.stringify(result.testCaseResults.filter(t => t.status !== 'PASS'))}`);
@@ -133,10 +134,10 @@ test('reseed preserves problem IDs, progress and submissions, and maintains plat
   execute('UPDATE problems SET problem_number=12 WHERE id=?', [before.id]);
   await seedDatabase();
   assert.equal(queryOne('SELECT id FROM problems WHERE slug=?', ['reverse-the-digits']).id, before.id);
-  assert.equal(queryOne('SELECT problem_number FROM problems WHERE id=?', [before.id]).problem_number, 49);
-  assert.equal(queryOne('SELECT COUNT(*) AS count FROM problems').count, 109);
+  assert.equal(queryOne('SELECT problem_number FROM problems WHERE id=?', [before.id]).problem_number, 84);
+  assert.equal(queryOne('SELECT COUNT(*) AS count FROM problems').count, 144);
   assert.equal(queryOne('SELECT COUNT(*) AS count FROM submissions').count, count);
-  assert.equal(queryOne('SELECT COUNT(*) AS count FROM test_cases').count, 776);
+  assert.equal(queryOne('SELECT COUNT(*) AS count FROM test_cases').count, 951);
   assert.equal((await request('/auth/login', null, { username: 'test_admin', password: 'password123' })).status, 200);
 });
 

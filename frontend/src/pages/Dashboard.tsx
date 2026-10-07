@@ -3,15 +3,17 @@ import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import {
   Trophy, Target, BarChart3, CheckCircle2, Flame, Zap,
-  Activity, Clock, Code2, TrendingUp
+  Activity, Clock, Code2, TrendingUp, Sparkles
 } from 'lucide-react';
 
 const diffBg: Record<string, string> = {
+  'Level 1': 'from-sky-600 to-sky-500',
   'Level 2': 'from-emerald-600 to-emerald-500',
   'Level 3': 'from-amber-600 to-amber-500',
   Practice: 'from-rose-600 to-rose-500',
 };
 const diffTrack: Record<string, string> = {
+  'Level 1': 'bg-sky-500/20',
   'Level 2': 'bg-emerald-500/20',
   'Level 3': 'bg-amber-500/20',
   Practice: 'bg-rose-500/20',
@@ -106,12 +108,12 @@ export const Dashboard: React.FC = () => {
               const d = stats.levels[key];
               const pct = d.total > 0 ? Math.round((d.solved / d.total) * 100) : 0;
               const label = key;
-              const Icon = key === 'Level 2' ? Zap : key === 'Level 3' ? Flame : Trophy;
+              const Icon = key === 'Level 1' ? Sparkles : key === 'Level 2' ? Zap : key === 'Level 3' ? Flame : Trophy;
               return (
                 <div key={key}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
-                      <Icon className={`w-4 h-4 ${key === 'Level 2' ? 'text-emerald-400' : key === 'Level 3' ? 'text-amber-400' : 'text-rose-400'}`} />
+                      <Icon className={`w-4 h-4 ${key === 'Level 1' ? 'text-sky-400' : key === 'Level 2' ? 'text-emerald-400' : key === 'Level 3' ? 'text-amber-400' : 'text-rose-400'}`} />
                       <span className="text-sm font-medium text-slate-300">{label}</span>
                     </div>
                     <span className="text-sm font-mono text-slate-400">{d.solved} / {d.total}</span>

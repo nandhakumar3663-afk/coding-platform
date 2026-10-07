@@ -24,7 +24,7 @@ export const ProblemList: React.FC = () => {
     return () => { active = false; };
   }, [user?.id]);
   const tags = useMemo(() => ['All', ...new Set<string>(problems.flatMap(p => p.tags?.map((t: any) => t.name) || []))], [problems]);
-  const levels = ['All', 'Level 2', 'Level 3', ...(problems.some(p => problemLevel(p) === 'Practice') ? ['Practice'] : [])];
+  const levels = ['All', 'Level 1', 'Level 2', 'Level 3', ...(problems.some(p => problemLevel(p) === 'Practice') ? ['Practice'] : [])];
   const filtered = problems.filter(p => {
     if (level !== 'All' && problemLevel(p) !== level) return false;
     if (status === 'Solved' && p.user_status !== 'solved') return false;
@@ -40,11 +40,11 @@ export const ProblemList: React.FC = () => {
     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 mb-8">
       <div><p className="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-3">Your daily practice space</p>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-strong tracking-tight">Build skill. Solve one more.</h1>
-        <p className="mt-3 text-sm text-slate-400">Work through Level 2 and Level 3. Your code stays saved in this browser.</p></div>
+        <p className="mt-3 text-sm text-slate-400">Practice programming from Level 1 through Level 3. Your code stays saved in this browser.</p></div>
       <Link to="/leaderboard" className="flex items-center gap-2 text-sm font-semibold text-indigo-400 shrink-0"><Trophy className="w-4 h-4" />View leaderboard<ArrowUpRight className="w-4 h-4" /></Link>
     </div>
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-7 stagger-cards">
-      {[['Total questions', problems.length], ['Level 2', problems.filter(p => problemLevel(p) === 'Level 2').length], ['Level 3', problems.filter(p => problemLevel(p) === 'Level 3').length], ['Your solves', solved]].map(([label, count]) =>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-7 stagger-cards">
+      {[['Total questions', problems.length], ['Level 1', problems.filter(p => problemLevel(p) === 'Level 1').length], ['Level 2', problems.filter(p => problemLevel(p) === 'Level 2').length], ['Level 3', problems.filter(p => problemLevel(p) === 'Level 3').length], ['Your solves', solved]].map(([label, count]) =>
         <div key={label} className="stat-card bg-dark-900 border border-dark-700 rounded-2xl p-5"><p className="text-xs text-slate-400 mb-2">{label}</p><p className="text-3xl font-bold text-strong">{count}</p></div>)}
     </div>
     <div className="flex flex-wrap gap-2 mb-5" aria-label="Filter by level">
