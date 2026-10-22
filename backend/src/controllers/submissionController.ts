@@ -2,9 +2,32 @@ import { Response } from 'express';
 import { queryAll, queryOne } from '../models/db.js';
 import { AuthRequest } from '../middleware/auth.js';
 
+const DEFAULT_SUBMISSION_LIMIT = 50;
+const MAX_SUBMISSION_LIMIT = 100;
+
 export function getSubmissions(req: AuthRequest, res: Response): void {
   const userId = req.user?.id;
-  const { problemId, limit = 50 } = req.query;
+  const rawProblemId = req.query.problemId;
+  const rawLimit = req.query.limit;
+  let limit = DEFAULT_SUBMISSION_LIMIT;
+
+  if (rawLimit !== undefined) {
+    if (typeof rawLimit !== 'string' || !/^\\d+$/.test(rawLimit)) {
+      res.status(400).json({ error: 'limit must be an integer between 1 and 100' });
+      return;
+    }
+
+    limit = Number(rawLimit);
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > MAX_SUBMISSION_LIMIT) {
+      res.status(400).json({ error: 'limit must be an integer between 1 and 100' });
+      return;
+    }
+  }
+
+  if (rawProblemId !== undefined && (typeof rawProblemId !== 'string' || !rawProblemId.trim())) {
+    res.status(400).json({ error: 'problemId must be a non-empty string' });
+    return;
+  }
 
   let sql = `
     SELECT 
@@ -17,20 +40,20 @@ export function getSubmissions(req: AuthRequest, res: Response): void {
     JOIN users u ON u.id = s.user_id
     WHERE 1=1
   `;
-  const params: any[] = [];
+  const params: Array<string | number> = [];
 
   if (userId && req.user?.role !== 'admin') {
     sql += ' AND s.user_id = ? ';
     params.push(userId);
   }
 
-  if (problemId) {
+  if (typeof rawProblemId === 'string') {
     sql += ' AND s.problem_id = ? ';
-    params.push(problemId);
+    params.push(rawProblemId);
   }
 
   sql += ' ORDER BY s.created_at DESC LIMIT ? ';
-  params.push(Number(limit));
+  params.push(limit);
 
   const submissions = queryAll(sql, params);
   res.json({ submissions });
