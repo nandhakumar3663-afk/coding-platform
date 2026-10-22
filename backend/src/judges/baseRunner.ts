@@ -44,7 +44,7 @@ export abstract class BaseRunner {
   }
 
   private terminateProcess(child: ChildProcess): void {
-    if (!child.pid || child.killed) return;
+    if (!child.pid) return;
 
     try {
       if (process.platform !== 'win32') {
