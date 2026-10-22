@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import type { ChildProcess } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
@@ -25,16 +26,12 @@ export abstract class BaseRunner {
   }
 
   public async initSandbox(): Promise<void> {
-    if (!fs.existsSync(this.sandboxDir)) {
-      await fs.promises.mkdir(this.sandboxDir, { recursive: true });
-    }
+    await fs.promises.mkdir(this.sandboxDir, { recursive: true });
   }
 
   public async cleanup(): Promise<void> {
     try {
-      if (fs.existsSync(this.sandboxDir)) {
-        await fs.promises.rm(this.sandboxDir, { recursive: true, force: true });
-      }
+      await fs.promises.rm(this.sandboxDir, { recursive: true, force: true });
     } catch {
       // Ignore cleanup error
     }
@@ -46,6 +43,26 @@ export abstract class BaseRunner {
     return filePath;
   }
 
+  private terminateProcess(child: ChildProcess): void {
+    if (!child.pid) return;
+
+    try {
+      if (process.platform !== 'win32') {
+        // Each judge command is launched in its own process group on POSIX.
+        // Killing the group also stops descendants left behind by submitted code.
+        process.kill(-child.pid, 'SIGKILL');
+      } else {
+        child.kill('SIGKILL');
+      }
+    } catch {
+      try {
+        child.kill('SIGKILL');
+      } catch {
+        // The process may already have exited.
+      }
+    }
+  }
+
   protected executeCommand(
     command: string,
     args: string[],
@@ -53,14 +70,17 @@ export abstract class BaseRunner {
     timeoutOverride?: number
   ): Promise<ProcessResult> {
     return new Promise((resolve) => {
-      const timeout = timeoutOverride || this.timeoutMs;
+      // A zero timeout is invalid; use the normal configured limit instead.
+      const requestedTimeout = timeoutOverride ?? this.timeoutMs;
+      const timeout = Number.isFinite(requestedTimeout) && requestedTimeout > 0
+        ? requestedTimeout
+        : this.timeoutMs;
       const startTime = process.hrtime.bigint();
       let stdoutData = '';
       let stderrData = '';
       let timedOut = false;
-      let memoryUsedKb = 0;
+      let settled = false;
 
-      // Ensure PATH includes the micromamba env bin if present
       const mambaPath = fs.existsSync('/home/nandha/tools/env/bin') ? '/home/nandha/tools/env/bin:' : '';
       const env = {
         ...process.env,
@@ -70,82 +90,53 @@ export abstract class BaseRunner {
       const child = spawn(command, args, {
         cwd: this.sandboxDir,
         env,
+        detached: process.platform !== 'win32',
         stdio: ['pipe', 'pipe', 'pipe'],
       });
 
+      const finish = (exitCode: number | null, extraStderr = '') => {
+        if (settled) return;
+        settled = true;
+        if (timer) clearTimeout(timer);
+        const executionTimeMs = Number((process.hrtime.bigint() - startTime) / BigInt(1_000_000));
+        resolve({
+          stdout: stdoutData,
+          stderr: stderrData + extraStderr,
+          exitCode,
+          executionTimeMs,
+          // Memory accounting is not implemented; do not claim the configured
+          // limit was measured or enforced.
+          memoryUsedKb: 0,
+          timedOut,
+        });
+      };
+
       let timer: NodeJS.Timeout | null = setTimeout(() => {
         timedOut = true;
-        try {
-          child.kill('SIGKILL');
-        } catch {
-          // ignore
-        }
+        this.terminateProcess(child);
       }, timeout);
 
-      if (child.stdin) {
-        child.stdin.on('error', () => { /* A program may exit without reading stdin. */ });
-        child.stdin.setDefaultEncoding('utf-8');
-        if (input) {
-          child.stdin.write(input);
-        }
-        child.stdin.end();
-      }
+      child.stdin?.on('error', () => {
+        // Submitted programs are allowed to exit without consuming all stdin.
+      });
+      child.stdin?.setDefaultEncoding('utf-8');
+      if (input) child.stdin?.write(input);
+      child.stdin?.end();
 
-      if (child.stdout) {
-        child.stdout.on('data', (data) => {
-          if (stdoutData.length < 2 * 1024 * 1024) {
-            stdoutData += data.toString();
-          }
-        });
-      }
-
-      if (child.stderr) {
-        child.stderr.on('data', (data) => {
-          if (stderrData.length < 512 * 1024) {
-            stderrData += data.toString();
-          }
-        });
-      }
-
-      child.on('close', (code) => {
-        if (timer) {
-          clearTimeout(timer);
-          timer = null;
-        }
-
-        const endTime = process.hrtime.bigint();
-        const executionTimeMs = Number((endTime - startTime) / BigInt(1_000_000));
-
-        // Basic memory estimate
-        memoryUsedKb = 0;
-
-        resolve({
-          stdout: stdoutData,
-          stderr: stderrData,
-          exitCode: code,
-          executionTimeMs,
-          memoryUsedKb,
-          timedOut,
-        });
+      child.stdout?.on('data', (data: Buffer | string) => {
+        // Continue draining the pipe even after the cap so a noisy process does
+        // not block forever when its output is larger than the retained result.
+        const remaining = 2 * 1024 * 1024 - Buffer.byteLength(stdoutData);
+        if (remaining > 0) stdoutData += Buffer.from(data).subarray(0, remaining).toString();
       });
 
-      child.on('error', (err) => {
-        if (timer) {
-          clearTimeout(timer);
-          timer = null;
-        }
-        const endTime = process.hrtime.bigint();
-        const executionTimeMs = Number((endTime - startTime) / BigInt(1_000_000));
-
-        resolve({
-          stdout: stdoutData,
-          stderr: (stderrData ? stderrData + '\n' : '') + err.message,
-          exitCode: 1,
-          executionTimeMs,
-          memoryUsedKb,
-          timedOut,
-        });
+      child.stderr?.on('data', (data: Buffer | string) => {
+        const remaining = 512 * 1024 - Buffer.byteLength(stderrData);
+        if (remaining > 0) stderrData += Buffer.from(data).subarray(0, remaining).toString();
       });
+
+      child.once('error', (err) => finish(1, (stderrData ? '\n' : '') + err.message));
+      child.once('close', (code) => finish(code));
     });
   }
 }
