@@ -12,7 +12,7 @@ export function getSubmissions(req: AuthRequest, res: Response): void {
   let limit = DEFAULT_SUBMISSION_LIMIT;
 
   if (rawLimit !== undefined) {
-    if (typeof rawLimit !== 'string' || !/^\\d+$/.test(rawLimit)) {
+    if (typeof rawLimit !== 'string' || !/^\d+$/.test(rawLimit)) {
       res.status(400).json({ error: 'limit must be an integer between 1 and 100' });
       return;
     }
