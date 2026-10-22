@@ -221,3 +221,30 @@ test('global leaderboard scores unique published solves, shares tied ranks, pagi
     for (const id of ids) execute('DELETE FROM users WHERE id=?', [id]);
   }
 });
+
+
+test('submission history validates limit and problemId query parameters', async () => {
+  for (const query of [
+    'limit=0',
+    'limit=101',
+    'limit=oops',
+    'limit=-1',
+    'limit=1.5',
+    'limit=',
+    'limit=9007199254740992',
+    'limit=1&limit=2',
+    'problemId=',
+    'problemId[]=unexpected',
+  ]) {
+    const result = await request('/submissions?' + query, student.token);
+    assert.equal(result.status, 400, query);
+  }
+
+  const defaultLimit = await request('/submissions', student.token);
+  assert.equal(defaultLimit.status, 200);
+  assert.ok(Array.isArray(defaultLimit.data.submissions));
+
+  const limited = await request('/submissions?limit=1', student.token);
+  assert.equal(limited.status, 200);
+  assert.ok(limited.data.submissions.length <= 1);
+});
