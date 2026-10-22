@@ -1,0 +1,63 @@
+:root {
+  --neon-indigo: #6366f1;
+  --neon-cyan: #06b6d4;
+  --neon-emerald: #10b981;
+  --neon-rose: #f43f5e;
+  --neon-amber: #f59e0b;
+}
+
+.perspective-1000 { perspective: 1000px; }
+.perspective-1500 { perspective: 1500px; }
+.preserve-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; }
+
+.glass-panel-3d {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6),
+              inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-tactile-primary {
+  position: relative;
+  transform: translateY(0);
+  background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+  border: 1px solid #818cf8;
+  box-shadow: 0 4px 0 #312e81, 0 10px 20px -5px rgba(79, 70, 229, 0.5);
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-tactile-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #312e81, 0 14px 24px -5px rgba(79, 70, 229, 0.6);
+}
+.btn-tactile-primary:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #312e81, 0 4px 10px -2px rgba(79, 70, 229, 0.4);
+}
+
+.btn-tactile-success {
+  position: relative;
+  transform: translateY(0);
+  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+  border: 1px solid #34d399;
+  box-shadow: 0 4px 0 #064e3b, 0 10px 20px -5px rgba(16, 185, 129, 0.5);
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-tactile-success:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #064e3b, 0 14px 24px -5px rgba(16, 185, 129, 0.6);
+}
+.btn-tactile-success:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #064e3b, 0 4px 10px -2px rgba(16, 185, 129, 0.4);
+}
+
+.podium-pillar {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+.podium-pillar:hover {
+  transform: translateY(-8px) rotateX(15deg) rotateY(-10deg);
+}
